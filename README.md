@@ -5,10 +5,7 @@ Personal collection of Claude Code commands, skills, and agents.
 ## Installation
 
 ```bash
-# Clone the repo
 git clone https://github.com/omriariav/omri-cc-stuff.git ~/Code/omri-cc-stuff
-
-# Symlink commands (add to your ~/.claude/)
 ln -s ~/Code/omri-cc-stuff/commands ~/.claude/commands
 ```
 
