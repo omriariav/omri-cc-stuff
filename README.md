@@ -35,6 +35,10 @@ Copy data/tables/text to clipboard, formatted for the destination.
 - QuickChart URL generation for numeric data
 - Numbers auto-formatted ($2.45M not 2450000)
 
+## Contributing
+
+Contributions welcome! Feel free to open a PR or issue.
+
 ## License
 
 Free to use with attribution. Credit: [Omri Ariav](https://github.com/omriariav)
