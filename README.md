@@ -33,7 +33,22 @@ Copy data/tables/text to clipboard, formatted for the destination.
 - ASCII tables for Slack & GChat (they don't render markdown tables)
 - HTML tables for email
 - QuickChart URL generation for numeric data
-- Numbers auto-formatted ($2.45M not 2450000)
+- Numbers auto-formatted (e.g., 2.45M not 2450000)
+
+**Example:**
+```
+You: Compare the top programming languages
+
+Claude: | Language   | Stars  | Growth |
+        |------------|--------|--------|
+        | Python     | 142K   | +18%   |
+        | JavaScript | 128K   | +12%   |
+        | Rust       | 89K    | +31%   |
+
+You: /copy slack
+
+Claude: ✓ Copied to clipboard (format: Slack)
+```
 
 ## Contributing
 
