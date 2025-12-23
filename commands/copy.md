@@ -66,10 +66,11 @@ Copy data/tables/text to clipboard, formatted for the destination.
 - Image: `!url!`
 
 ### Google Docs (gdocs)
-- Tables as tab-separated values (TSV) - auto-converts to table on paste
-- Bold: `**text**` or plain text (Docs handles it)
-- Links: full URLs (Docs auto-links)
-- Clean formatting, no code blocks
+- Full Markdown formatting (tables, bold, links, headers)
+- User pastes via **Edit → Paste from Markdown**
+- Tables as Markdown `| col |` syntax
+- Bold: `**text**`
+- Links: `[text](url)`
 
 ## ASCII Table Format (Slack & GChat)
 
@@ -121,7 +122,7 @@ Find last output, format for Slack with ASCII table + chart URL.
 Find last output, format same as Slack (ASCII table in code block).
 
 ### `/copy gdocs`
-Find last output, format as clean text with TSV tables for Google Docs.
+Find last output, format as Markdown. User pastes via Edit → Paste from Markdown.
 
 ### `/copy the summary`
 Find "summary" in conversation, copy as clear text.
