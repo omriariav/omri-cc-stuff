@@ -4,9 +4,9 @@ Personal collection of Claude Code commands, skills, and agents.
 
 ## Installation
 
-```bash
-git clone https://github.com/omriariav/omri-cc-stuff.git ~/Code/omri-cc-stuff
-ln -s ~/Code/omri-cc-stuff/commands ~/.claude/commands
+In Claude Code:
+```
+/plugin → Marketplace → Add → omriariav/omri-cc-stuff
 ```
 
 ## Commands
