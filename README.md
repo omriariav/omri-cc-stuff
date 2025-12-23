@@ -37,4 +37,4 @@ Copy data/tables/text to clipboard, formatted for the destination.
 
 ## License
 
-MIT
+Free to use with attribution. Credit: [Omri Ariav](https://github.com/omriariav)
