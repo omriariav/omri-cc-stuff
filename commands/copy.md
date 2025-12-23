@@ -1,5 +1,5 @@
 ---
-description: Format and copy output to clipboard. Guesses what to copy from context. Optional destination (slack/email/gchat/jira) and what to copy.
+description: Format and copy output to clipboard. Guesses what to copy from context. Optional destination (slack/email/gchat/jira/gdocs) and what to copy.
 argument-hint: [destination] [what to copy]
 ---
 
@@ -14,9 +14,10 @@ Copy data/tables/text to clipboard, formatted for the destination.
 /copy slack               → Format for Slack
 /copy email               → Format for Gmail/email
 /copy gchat               → Format for Google Chat
+/copy gdocs               → Format for Google Docs
 /copy jira                → Format for Jira
-/copy slack the table     → Format specific content for Slack
-/copy the segment data    → Clear text, copy specific content
+/copy slack the summary   → Format specific content for Slack
+/copy the findings        → Clear text, copy specific content
 ```
 
 **$ARGUMENTS** = `[destination] [what to copy]`
@@ -63,6 +64,12 @@ Copy data/tables/text to clipboard, formatted for the destination.
 - Tables: `||header||` and `|cell|`
 - Bold: `*text*`
 - Image: `!url!`
+
+### Google Docs (gdocs)
+- Tables as tab-separated values (TSV) - auto-converts to table on paste
+- Bold: `**text**` or plain text (Docs handles it)
+- Links: full URLs (Docs auto-links)
+- Clean formatting, no code blocks
 
 ## ASCII Table Format (Slack & GChat)
 
@@ -113,11 +120,14 @@ Find last output, format for Slack with ASCII table + chart URL.
 ### `/copy gchat`
 Find last output, format same as Slack (ASCII table in code block).
 
-### `/copy the campaign metrics`
-Find "campaign metrics" in conversation, copy as clear text.
+### `/copy gdocs`
+Find last output, format as clean text with TSV tables for Google Docs.
 
-### `/copy email the segment breakdown`
-Find "segment breakdown", format as HTML table for email.
+### `/copy the summary`
+Find "summary" in conversation, copy as clear text.
+
+### `/copy email the comparison`
+Find "comparison", format as HTML table for email.
 
 ## Output
 

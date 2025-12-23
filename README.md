@@ -22,17 +22,20 @@ Copy data/tables/text to clipboard, formatted for the destination.
 ```
 /copy                     → Clear text, guess what to copy
 /copy slack               → Format for Slack
-/copy email               → Format for Gmail/email
+/copy email               → Format for Gmail
 /copy gchat               → Format for Google Chat
+/copy gdocs               → Format for Google Docs
 /copy jira                → Format for Jira
-/copy slack the table     → Format specific content for Slack
+/copy slack the summary   → Copy specific content for Slack
 ```
 
 **Features:**
 - Auto-detects what to copy from conversation context
-- ASCII tables for Slack & GChat (they don't render markdown tables)
+- Formats text, tables, lists, code, summaries - anything
+- ASCII tables for Slack & GChat
+- TSV tables for Google Docs (auto-converts on paste)
 - HTML tables for email
-- QuickChart URL generation for numeric data
+- QuickChart URLs for numeric data
 - Numbers auto-formatted (e.g., 2.45M not 2450000)
 
 **Example:**
