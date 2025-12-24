@@ -11,7 +11,7 @@
   "plugins": [
     {
       "name": "copy-command",
-      "source": "./commands",
+      "source": "./.claude/commands",
       "description": "Format and copy Claude output to clipboard for Slack, Email, Google Chat, Google Docs, or Jira.",
       "version": "1.0.0",
       "author": {
