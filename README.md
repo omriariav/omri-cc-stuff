@@ -14,6 +14,19 @@ In Claude Code:
 | Command | Usage | Description |
 |---------|-------|-------------|
 | `/copy` | `/copy [destination] [what]` | Format & copy output to clipboard |
+| `/setup-pulse` | `/setup-pulse` | Install claude-pulse statusline |
+
+### `/setup-pulse` - Install Token Usage Statusline
+
+Installs [claude-pulse](https://github.com/omriariav/claude-pulse) - shows real-time context usage in your statusline.
+
+```
+/setup-pulse
+```
+
+After running, you'll see: `72k/200k (36%)` with color-coded warnings (green/yellow/red).
+
+---
 
 ### `/copy` - Format Output for Destination
 
