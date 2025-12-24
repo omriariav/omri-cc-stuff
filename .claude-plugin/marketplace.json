@@ -1,0 +1,25 @@
+{
+  "name": "omri-cc-stuff",
+  "owner": {
+    "name": "Omri Ariav",
+    "email": "omriariav@gmail.com"
+  },
+  "metadata": {
+    "description": "Personal Claude Code commands and utilities. Currently includes /copy for formatting output to different destinations.",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "copy-command",
+      "source": "./commands",
+      "description": "Format and copy Claude output to clipboard for Slack, Email, Google Chat, Google Docs, or Jira.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Omri Ariav",
+        "email": "omriariav@gmail.com"
+      },
+      "category": "utilities",
+      "keywords": ["copy", "clipboard", "slack", "email", "formatting"]
+    }
+  ]
+}
