@@ -1,55 +1,44 @@
 # Omri's Claude Code Stuff
 
-Personal collection of Claude Code commands, skills, and agents.
+Personal collection of Claude Code commands and utilities.
 
 ## Installation
 
 In Claude Code:
 ```
-/plugin → Marketplace → Add → omriariav/omri-cc-stuff
+/plugins → Marketplace → Add → omriariav/omri-cc-stuff
 ```
+
+Then install the `copy` plugin from the marketplace.
 
 ## Commands
 
-| Command | Usage | Description |
-|---------|-------|-------------|
-| `/copy` | `/copy [destination] [what]` | Format & copy output to clipboard |
-| `/setup-pulse` | `/setup-pulse` | Install claude-pulse statusline |
+### `/copy:*` - Format & Copy to Clipboard
 
-### `/setup-pulse` - Install Token Usage Statusline
+Copy data/tables/text to clipboard, formatted for your destination.
 
-Installs [claude-pulse](https://github.com/omriariav/claude-pulse) - shows real-time context usage in your statusline.
+| Command | Description |
+|---------|-------------|
+| `/copy:slack` | Format for Slack (ASCII tables, `*bold*`) |
+| `/copy:gchat` | Format for Google Chat (same as Slack) |
+| `/copy:gmail` | Format for Gmail/email (HTML tables) |
+| `/copy:gdocs` | Format for Google Docs (Markdown, paste via Edit → Paste from Markdown) |
+| `/copy:jira` | Format for Jira Cloud (Markdown) |
+| `/copy:cleartext` | Plain text (universal) |
+| `/copy:richformat` | Rich Text Format (RTF) for Word, Pages |
 
+**Usage:**
 ```
-/setup-pulse
-```
-
-After running, you'll see: `72k/200k (36%)` with color-coded warnings (green/yellow/red).
-
----
-
-### `/copy` - Format Output for Destination
-
-Copy data/tables/text to clipboard, formatted for the destination.
-
-```
-/copy                     → Clear text, guess what to copy
-/copy slack               → Format for Slack
-/copy email               → Format for Gmail
-/copy gchat               → Format for Google Chat
-/copy gdocs               → Format for Google Docs
-/copy jira                → Format for Jira
-/copy slack the summary   → Copy specific content for Slack
+/copy:slack                    → Auto-detect what to copy, format for Slack
+/copy:slack the summary table  → Copy specific content for Slack
+/copy:gmail                    → Auto-detect, format as HTML for email
 ```
 
 **Features:**
 - Auto-detects what to copy from conversation context
-- Formats text, tables, lists, code, summaries - anything
-- ASCII tables for Slack & GChat
-- TSV tables for Google Docs (auto-converts on paste)
-- HTML tables for email
-- QuickChart URLs for numeric data
-- Numbers auto-formatted (e.g., 2.45M not 2450000)
+- Formats text, tables, lists, code, summaries
+- Numbers auto-formatted (e.g., `$2.45M` not `2450000`)
+- QuickChart URLs for numeric data visualization
 
 **Example:**
 ```
@@ -61,10 +50,26 @@ Claude: | Language   | Stars  | Growth |
         | JavaScript | 128K   | +12%   |
         | Rust       | 89K    | +31%   |
 
-You: /copy slack
+You: /copy:slack
 
 Claude: ✓ Copied to clipboard (format: Slack)
 ```
+
+## Other Commands
+
+| Command | Description |
+|---------|-------------|
+| `/setup-pulse` | Install [claude-pulse](https://github.com/omriariav/claude-pulse) statusline |
+
+### `/setup-pulse` - Install Token Usage Statusline
+
+Installs [claude-pulse](https://github.com/omriariav/claude-pulse) - shows real-time context usage in your statusline.
+
+```
+/setup-pulse
+```
+
+After running, you'll see: `72k/200k (36%)` with color-coded warnings (green/yellow/red).
 
 ## Contributing
 
