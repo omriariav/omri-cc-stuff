@@ -19,11 +19,7 @@
         "email": "omriariav@gmail.com"
       },
       "category": "utilities",
-      "keywords": ["copy", "clipboard", "slack", "email", "formatting"],
-      "skills": [
-        "./skills/copy",
-        "./skills/setup-pulse"
-      ]
+      "keywords": ["copy", "clipboard", "slack", "email", "formatting"]
     }
   ]
 }
