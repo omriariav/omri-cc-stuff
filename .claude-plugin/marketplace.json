@@ -6,14 +6,14 @@
   },
   "metadata": {
     "description": "Personal Claude Code commands and utilities. Currently includes /copy for formatting output to different destinations.",
-    "version": "1.0.0"
+    "version": "1.2.1"
   },
   "plugins": [
     {
-      "name": "copy-command",
+      "name": "copy",
       "source": "./.claude/commands",
       "description": "Format and copy Claude output to clipboard for Slack, Email, Google Chat, Google Docs, or Jira.",
-      "version": "1.0.0",
+      "version": "1.2.1",
       "author": {
         "name": "Omri Ariav",
         "email": "omriariav@gmail.com"
