@@ -32,7 +32,9 @@ Copy data/tables/text to clipboard, formatted for the destination.
    - If content specified → find that specific content in conversation
    - If not specified → find most recent table, data, or significant output
 3. **Format for destination** (or clear text if none specified)
-4. **Copy to clipboard**: `pbcopy`
+4. **Copy to clipboard**:
+   - **Email**: Write HTML to temp file → `textutil` convert to RTF → `osascript` to copy RTF (rich text paste)
+   - **All others**: `pbcopy` (plain text)
 5. **Confirm**: Show preview of what was copied
 
 ## Destination Formatting Rules
@@ -59,6 +61,11 @@ Copy data/tables/text to clipboard, formatted for the destination.
 - HTML `<table>` with inline styles
 - Bold: `<b>` tags
 - Embed chart as `<img src="QuickChart URL">`
+- **IMPORTANT: Rich text copy** — Gmail pastes raw HTML as text. You MUST copy as rich text:
+  1. Write HTML to a temp file (e.g., `/tmp/claude-email.html`)
+  2. Convert to RTF: `textutil -convert rtf -inputencoding UTF-8 /tmp/claude-email.html -output /tmp/claude-email.rtf`
+  3. Copy RTF to clipboard: `osascript -e 'set the clipboard to (read (POSIX file "/tmp/claude-email.rtf") as «class RTF »)'`
+- Do NOT use `pbcopy` for email — it copies plain text only
 
 ### Jira
 - Tables: `||header||` and `|cell|`
