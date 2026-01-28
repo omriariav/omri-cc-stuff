@@ -1,6 +1,6 @@
 ---
 description: Format and copy output to clipboard. Guesses what to copy from context. Optional destination (slack/email/gchat/jira/gdocs) and what to copy.
-argument-hint: [destination] [what to copy]
+argument-hint: "[destination] [what to copy]"
 ---
 
 # /copy - Format Output for Destination
