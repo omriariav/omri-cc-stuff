@@ -36,7 +36,7 @@ Post tweets from Claude Code via the X API v2. Supports single tweets, threads (
    3/3: Final part shown in full. (42/280)
    ```
    Then `AskUserQuestion` with options:
-   - "Post it" — post the thread
+   - "Post it" — post the thread using `--reply-to` chaining (see "Thread (pre-split)" in Step 3)
    - "Edit" — user revises, loop back to step 2
    - "Cancel" — abort
 3. **Post**: Execute the appropriate command based on mode:
