@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "Personal Claude Code commands and utilities. Copy formatting, tweet posting, and more.",
-    "version": "2.1.0"
+    "version": "2.2.0"
   },
   "plugins": [
     {
@@ -39,8 +39,8 @@
     {
       "name": "tweet",
       "source": "./plugins/tweet",
-      "description": "Post tweets to X (Twitter) from Claude Code. Drafts, previews, and posts with approval.",
-      "version": "1.0.0",
+      "description": "Post tweets to X (Twitter) from Claude Code. Drafts, previews, posts with approval. Supports threads and replies.",
+      "version": "1.1.0",
       "author": {
         "name": "Omri Ariav",
         "email": "omriariav@gmail.com"
