@@ -40,7 +40,7 @@
       "name": "tweet",
       "source": "./plugins/tweet",
       "description": "Post tweets to X (Twitter) from Claude Code. Drafts, previews, posts with approval. Supports threads and replies.",
-      "version": "1.1.0",
+      "version": "1.1.1",
       "author": {
         "name": "Omri Ariav",
         "email": "omriariav@gmail.com"

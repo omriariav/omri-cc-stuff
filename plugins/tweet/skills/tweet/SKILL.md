@@ -36,12 +36,19 @@ Post tweets from Claude Code via the X API v2. Supports single tweets, threads (
    3/3: Final part shown in full. (42/280)
    ```
    Then `AskUserQuestion` with options:
-   - "Post it" — post the thread
+   - "Post it" — post the thread using `--reply-to` chaining (see "Thread (pre-split)" in Step 3)
    - "Edit" — user revises, loop back to step 2
    - "Cancel" — abort
 3. **Post**: Execute the appropriate command based on mode:
    - **Single tweet**: `python3 scripts/post.py "the tweet text here"`
-   - **Thread**: `python3 scripts/post.py --thread "the full long text here"`
+   - **Thread (pre-split)**: Post each tweet individually using `--reply-to` chaining. This preserves your exact tweet boundaries from the preview:
+     ```
+     python3 scripts/post.py "1/N: first tweet text"
+     # capture tweet_id from output
+     python3 scripts/post.py --reply-to TWEET_ID "2/N: second tweet text"
+     # repeat for each part
+     ```
+   - **Thread (auto-split)**: `python3 scripts/post.py --thread "the full long text here"` — WARNING: this splits on word boundaries by character count, ignoring paragraph breaks. Only use for unstructured text where split points don't matter.
    - **Reply**: `python3 scripts/post.py --reply-to TWEET_ID "reply text here"`
 4. **Confirm**: Show the tweet URL(s) from the script output.
 
@@ -92,3 +99,8 @@ bash scripts/verify-setup.sh
 - **ALWAYS show the full tweet text** before asking the user to approve — never ask "Post it?" without displaying exactly what will be posted
 - Always show character count in preview
 - For threads, show the full text of every part with per-part character counts
+- **For manually crafted threads: ALWAYS use --reply-to chaining**, not `--thread`. The `--thread` auto-splitter ignores paragraph structure and will break your carefully crafted tweets at arbitrary word boundaries.
+
+## Known Issues
+
+- `--thread` auto-splitter collapses all whitespace (including `\n\n`) and re-splits on word count, not paragraph boundaries. A previewed 7-tweet thread may become 6 tweets with mid-sentence breaks. Fix: use `--reply-to` chaining for pre-split threads. (2026-02-20)
