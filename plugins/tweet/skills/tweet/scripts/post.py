@@ -90,12 +90,22 @@ def split_into_thread(text):
     Each chunk is formatted as '{i}/{total}: {text}' where the prefix
     takes 5-7 chars (e.g. '1/3: ' = 5 chars, '10/12: ' = 7 chars).
     Splits on word boundaries to avoid breaking mid-word.
+
+    Raises ValueError if any word is too long to fit in a single chunk.
     """
-    # Estimate total parts to determine prefix length
-    # Start with a rough estimate, then refine
     words = text.split()
     if not words:
         return []
+
+    # Check for unsplittable words upfront (worst-case prefix is ~7 chars)
+    max_prefix_len = len("99/99: ")
+    max_word_len = 280 - max_prefix_len
+    for word in words:
+        if len(word) > max_word_len:
+            raise ValueError(
+                f"Word is {len(word)} chars (max {max_word_len} per chunk after thread prefix). "
+                f"Shorten or break up: '{word[:50]}...'"
+            )
 
     # Try splitting with increasing part counts until all chunks fit
     for total in range(2, 100):
@@ -120,25 +130,29 @@ def split_into_thread(text):
             chunks.append(" ".join(current_chunk_words))
 
         if len(chunks) <= total:
-            # Format with actual count
             actual_total = len(chunks)
             return [f"{i+1}/{actual_total}: {chunk}" for i, chunk in enumerate(chunks)]
 
-    # Fallback: shouldn't reach here for reasonable text
     return [text[:280]]
 
 
-def post_thread(chunks, oauth):
+def post_thread(chunks, oauth, reply_to=None):
     """Post a thread of tweets, each replying to the previous.
 
-    Returns list of result dicts. If a chunk fails mid-thread,
-    reports what succeeded and what failed.
+    If reply_to is provided, the first chunk is posted as a reply to that tweet.
+    Returns list of result dicts. On mid-thread failure, emits partial results
+    to stderr before exiting.
     """
     results = []
-    previous_id = None
+    previous_id = reply_to  # first chunk replies to this (None = standalone)
 
     for i, chunk in enumerate(chunks):
-        tweet_id, _ = post_single_tweet(oauth, chunk, reply_to=previous_id)
+        try:
+            tweet_id, _ = post_single_tweet(oauth, chunk, reply_to=previous_id)
+        except SystemExit:
+            if results:
+                print(json.dumps({"partial_results": results, "failed_at_part": i + 1}), file=sys.stderr)
+            raise
         results.append({
             "id": tweet_id,
             "url": f"https://x.com/i/status/{tweet_id}",
@@ -171,28 +185,27 @@ def post_tweet(text, reply_to=None):
     }))
 
 
-def post_tweet_thread(text):
+def post_tweet_thread(text, reply_to=None):
     """Split text into thread chunks and post as a thread."""
     if not text.strip():
         print(json.dumps({"error": "Tweet text is empty"}))
         sys.exit(1)
 
-    chunks = split_into_thread(text)
+    try:
+        chunks = split_into_thread(text)
+    except ValueError as e:
+        print(json.dumps({"error": str(e)}))
+        sys.exit(1)
+
     if len(chunks) < 2:
         print(json.dumps({"error": "Text fits in a single tweet, no thread needed. Post without --thread."}))
         sys.exit(1)
-
-    # Validate all chunks fit
-    for i, chunk in enumerate(chunks):
-        if len(chunk) > 280:
-            print(json.dumps({"error": f"Chunk {i+1} is {len(chunk)} chars — contains a word too long to split. Shorten it."}))
-            sys.exit(1)
 
     creds = load_credentials()
     oauth = make_oauth_session(creds)
 
     try:
-        results = post_thread(chunks, oauth)
+        results = post_thread(chunks, oauth, reply_to=reply_to)
         print(json.dumps(results))
     except SystemExit:
         raise
@@ -210,6 +223,6 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if args.thread:
-        post_tweet_thread(args.text)
+        post_tweet_thread(args.text, reply_to=args.reply_to)
     else:
         post_tweet(args.text, reply_to=args.reply_to)
