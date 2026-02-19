@@ -1,0 +1,9 @@
+{
+  "name": "tweet",
+  "version": "1.0.0",
+  "description": "Post tweets to X (Twitter) from Claude Code. Drafts, previews, and posts with approval.",
+  "author": {
+    "name": "Omri Ariav",
+    "email": "omriariav@gmail.com"
+  }
+}

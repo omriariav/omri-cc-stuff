@@ -1,3 +1,11 @@
+---
+name: setup-pulse
+description: |
+  Install claude-pulse statusline for real-time token usage monitoring.
+  Use when user says "/setup-pulse", "install statusline", "setup pulse".
+allowed-tools: Bash
+---
+
 # /setup-pulse
 
 Install claude-pulse statusline for real-time token usage monitoring.

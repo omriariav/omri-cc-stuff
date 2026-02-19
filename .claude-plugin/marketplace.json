@@ -5,8 +5,8 @@
     "email": "omriariav@gmail.com"
   },
   "metadata": {
-    "description": "Personal Claude Code commands and utilities. Currently includes /copy for formatting output to different destinations.",
-    "version": "2.0.0"
+    "description": "Personal Claude Code commands and utilities. Copy formatting, tweet posting, and more.",
+    "version": "2.1.0"
   },
   "plugins": [
     {
@@ -20,6 +20,36 @@
       },
       "category": "utilities",
       "keywords": ["copy", "clipboard", "slack", "email", "formatting"]
+    },
+    {
+      "name": "setup-pulse",
+      "source": "./plugins/setup-pulse",
+      "description": "Install claude-pulse statusline for real-time token usage monitoring.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Omri Ariav",
+        "email": "omriariav@gmail.com"
+      },
+      "category": "utilities",
+      "keywords": ["statusline", "pulse", "context", "tokens"],
+      "skills": [
+        "./skills/setup-pulse"
+      ]
+    },
+    {
+      "name": "tweet",
+      "source": "./plugins/tweet",
+      "description": "Post tweets to X (Twitter) from Claude Code. Drafts, previews, and posts with approval.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Omri Ariav",
+        "email": "omriariav@gmail.com"
+      },
+      "category": "social",
+      "keywords": ["tweet", "twitter", "x", "social", "posting"],
+      "skills": [
+        "./skills/tweet"
+      ]
     }
   ]
 }

@@ -1,0 +1,9 @@
+{
+  "name": "setup-pulse",
+  "version": "1.0.0",
+  "description": "Install claude-pulse statusline for real-time token usage monitoring.",
+  "author": {
+    "name": "Omri Ariav",
+    "email": "omriariav@gmail.com"
+  }
+}

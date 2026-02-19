@@ -1,7 +1,7 @@
 {
-  "name": "copy",
-  "version": "2.0.1",
-  "description": "Format and copy Claude output to clipboard for Slack, Email, Google Chat, Google Docs, or Jira.",
+  "name": "omri-cc-stuff",
+  "version": "2.1.0",
+  "description": "Personal Claude Code commands and utilities. Copy formatting, tweet posting, and more.",
   "author": {
     "name": "Omri Ariav",
     "email": "omriariav@gmail.com"

@@ -55,6 +55,29 @@ You: /copy:slack
 Claude: ✓ Copied to clipboard (format: Slack)
 ```
 
+### `/tweet` - Post to X (Twitter)
+
+Post tweets directly from Claude Code. Drafts the text, shows a preview with character count, and asks for approval before posting.
+
+```
+/tweet Testing my new tweet skill from Claude Code
+/tweet Announce the launch of our new attribution feature
+```
+
+**Workflow:**
+1. Draft tweet text (or use your text as-is)
+2. Preview with character count (max 280)
+3. Approve / Edit / Cancel
+4. Posts via X API v2, returns tweet URL
+
+**Setup (one-time):**
+```bash
+pip3 install requests-oauthlib
+```
+On first run, `/tweet` will pop up native macOS dialogs to store your X API credentials securely in Keychain. Get keys from [developer.x.com](https://developer.x.com) → your app → Keys and Tokens (Consumer Key/Secret + Access Token/Secret with Read+Write permissions).
+
+Alternatively, set env vars in `~/.zshrc`: `X_API_KEY`, `X_API_SECRET`, `X_ACCESS_TOKEN`, `X_ACCESS_TOKEN_SECRET`.
+
 ## Other Commands
 
 | Command | Description |
