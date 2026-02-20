@@ -1,0 +1,9 @@
+{
+  "name": "copy",
+  "version": "2.1.0",
+  "description": "Format and copy Claude output to clipboard for Slack, Email, Google Chat, Google Docs, or Jira.",
+  "author": {
+    "name": "Omri Ariav",
+    "email": "omriariav@gmail.com"
+  }
+}
