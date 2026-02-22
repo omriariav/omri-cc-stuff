@@ -60,6 +60,19 @@ Post tweets from Claude Code via the X API v2. Supports single tweets, threads (
 - Include relevant context (product name, what happened)
 - If announcing something, lead with the news
 
+## Character Counting — Critical
+
+**Your markdown char count will NOT match the script's count.** Common mismatches:
+
+- **URLs**: X wraps all URLs to t.co (23 chars), but `post.py` counts raw URL length. Always count the full URL string length, not 23.
+- **Backticks**: Backtick characters (`` ` ``) in your preview are real chars in the tweet. Don't use them in length estimation then omit them.
+- **Newlines**: Each `\n` counts as a character.
+- **Em dashes**: `—` is 1 char but may render wider in preview.
+
+**Best practice**: Aim for **270 chars max** in your preview to leave a safety margin. If the script rejects, you only need to trim a few words instead of multiple retry loops.
+
+**Do NOT estimate char count yourself.** If close to the limit, use `python3 -c "print(len('''tweet text here'''))"` to get the exact count before previewing to the user.
+
 ## Script Output
 
 Single tweet outputs JSON:
@@ -104,3 +117,4 @@ bash scripts/verify-setup.sh
 ## Known Issues
 
 - `--thread` auto-splitter collapses all whitespace (including `\n\n`) and re-splits on word count, not paragraph boundaries. A previewed 7-tweet thread may become 6 tweets with mid-sentence breaks. Fix: use `--reply-to` chaining for pre-split threads. (2026-02-20)
+- **Char count mismatch between preview and post.py**: Claude's estimated char count in preview often differs from `post.py`'s actual count by 5-30 chars, causing "Tweet too long" errors and retry loops. Root cause: URL length, special chars, newlines counted differently. Fix: use `python3 -c "print(len(...))"` for exact count, or aim for 270 chars. (2026-02-22)
