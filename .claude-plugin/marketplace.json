@@ -19,7 +19,13 @@
         "email": "omriariav@gmail.com"
       },
       "category": "utilities",
-      "keywords": ["copy", "clipboard", "slack", "email", "formatting"]
+      "keywords": [
+        "copy",
+        "clipboard",
+        "slack",
+        "email",
+        "formatting"
+      ]
     },
     {
       "name": "setup-pulse",
@@ -31,7 +37,12 @@
         "email": "omriariav@gmail.com"
       },
       "category": "utilities",
-      "keywords": ["statusline", "pulse", "context", "tokens"],
+      "keywords": [
+        "statusline",
+        "pulse",
+        "context",
+        "tokens"
+      ],
       "skills": [
         "./skills/setup-pulse"
       ]
@@ -46,9 +57,52 @@
         "email": "omriariav@gmail.com"
       },
       "category": "social",
-      "keywords": ["tweet", "twitter", "x", "social", "posting"],
+      "keywords": [
+        "tweet",
+        "twitter",
+        "x",
+        "social",
+        "posting"
+      ],
       "skills": [
         "./skills/tweet"
+      ]
+    },
+    {
+      "name": "session-context",
+      "source": "./plugins/session-context",
+      "description": "Injects daily work context, detects new actions, and surfaces vault blindspots on session start.",
+      "version": "1.2.0",
+      "author": {
+        "name": "Omri Ariav"
+      },
+      "category": "productivity",
+      "keywords": [
+        "context",
+        "calendar",
+        "gmail",
+        "tasks",
+        "jira"
+      ]
+    },
+    {
+      "name": "skill-review",
+      "source": "./plugins/skill-review",
+      "description": "Evaluate any skill's design quality against best practices. Scores 10 dimensions (29-point rubric), detects anti-patterns, and optionally applies safe fixes.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Omri Ariav",
+        "email": "omriariav@gmail.com"
+      },
+      "category": "utilities",
+      "keywords": [
+        "skill",
+        "review",
+        "evaluation",
+        "quality"
+      ],
+      "skills": [
+        "./skills/skill-review"
       ]
     }
   ]
