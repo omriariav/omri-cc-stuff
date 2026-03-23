@@ -1,21 +1,21 @@
 ---
-name: skill-review
+name: skill-reviewer
 description: |
   Evaluate any skill against best practices - structure, progressive disclosure, gotchas, description quality, scripts, memory, and anti-patterns.
-  Use when: "/skill-review", "review this skill", "evaluate skill quality", "audit skill", "how good is this skill", "rate this skill".
+  Use when: "/skill-reviewer", "review this skill", "evaluate skill quality", "audit skill", "how good is this skill", "rate this skill".
   NOT for: conversation-level reflection (use /reflect), code review, or PR review.
 user-invocable: true
 argument-hint: [--fix] <skill-path-or-name> | --compare <left-skill> <right-skill>
 allowed-tools: Read, Glob, Grep, Edit, Write, Bash(python3*)
 ---
 
-# /skill-review - Skill Design Evaluation
+# /skill-reviewer - Skill Design Evaluation
 
 Evaluate a skill's design quality against best practices from Anthropic's skill-building guidance and real-world patterns from high-quality skills.
 
 ## How It Differs from /reflect
 
-| | /reflect | /skill-review |
+| | /reflect | /skill-reviewer |
 |---|---------|---------------|
 | **Input** | Current conversation history | Skill files on disk |
 | **Evaluates** | What worked/failed during usage | Design, structure, documentation quality |
@@ -25,10 +25,10 @@ Evaluate a skill's design quality against best practices from Anthropic's skill-
 ## Arguments
 
 ```
-/skill-review publisher-lookup          → Review by skill name (auto-discovers path)
-/skill-review ./skills/my-skill/        → Review by path
-/skill-review --fix publisher-lookup    → Review + apply quick fixes automatically
-/skill-review --compare reflect taboolar → Side-by-side comparison of two skills
+/skill-reviewer publisher-lookup          → Review by skill name (auto-discovers path)
+/skill-reviewer ./skills/my-skill/        → Review by path
+/skill-reviewer --fix publisher-lookup    → Review + apply quick fixes automatically
+/skill-reviewer --compare reflect taboolar → Side-by-side comparison of two skills
 ```
 
 **$ARGUMENTS** = `[--fix] <skill-path-or-name>` OR `--compare <left-skill> <right-skill>`
@@ -215,7 +215,7 @@ Adjust a structural score only if you have specific semantic evidence that contr
 
 Read `config.json` at startup. Key settings:
 
-- `history_log` — path to history log (default: `~/.claude/plugin-data/skill-review/history.log`)
+- `history_log` — path to history log (default: `~/.claude/plugin-data/skill-reviewer/history.log`)
 - `default_verbose` — show evidence in table output
 - `benchmarks_check` — whether to attempt benchmark comparison (default: true)
 - `auto_fix_threshold` — only offer `--fix` mode if score is below this (default: 15)

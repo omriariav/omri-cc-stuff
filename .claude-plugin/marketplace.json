@@ -69,8 +69,8 @@
       ]
     },
     {
-      "name": "skill-review",
-      "source": "./plugins/skill-review",
+      "name": "skill-reviewer",
+      "source": "./plugins/skill-reviewer",
       "description": "Evaluate any skill's design quality against best practices (based on https://x.com/trq212/status/2033949937936085378). Scores 10 dimensions (29-point rubric), detects anti-patterns, and optionally applies safe fixes.",
       "version": "1.0.0",
       "author": {
@@ -85,14 +85,14 @@
         "quality"
       ],
       "skills": [
-        "./skills/skill-review"
+        "./skills/skill-reviewer"
       ]
     },
     {
       "name": "claude-reviewer",
       "source": "./plugins/claude-reviewer",
       "description": "Review any project's .claude/ folder setup against best practices (based on https://x.com/akshay_pachaar/status/2035341800739877091). Scores 8 dimensions (24-point rubric) covering CLAUDE.md quality, permissions, rules, commands, skills, agents, git hygiene, and progressive disclosure.",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "author": {
         "name": "Omri Ariav",
         "email": "omri.ariav@gmail.com"

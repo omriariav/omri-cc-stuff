@@ -3,7 +3,7 @@ name: claude-reviewer
 description: |
   Review any project's .claude/ folder setup against Claude Code best practices. Scores 8 dimensions (24-point rubric), detects anti-patterns, and produces an actionable improvement report.
   Use when: "/claude-reviewer", "review my claude config", "audit .claude setup", "check my CLAUDE.md", "how good is my claude config", "rate this project's claude setup".
-  NOT for: reviewing individual skill quality (use /skill-review), code review, PR review.
+  NOT for: reviewing individual skill quality (use /skill-reviewer), code review, PR review.
 user-invocable: true
 argument-hint: "[--global] [--verbose] [project-path]"
 allowed-tools: Read, Glob, Grep, Bash(python3*), Bash(git*)
@@ -13,9 +13,9 @@ allowed-tools: Read, Glob, Grep, Bash(python3*), Bash(git*)
 
 Review any project's `.claude/` folder against best practices from Anthropic's Claude Code configuration guidance.
 
-## How It Differs from /skill-review
+## How It Differs from /skill-reviewer
 
-| | /skill-review | /claude-reviewer |
+| | /skill-reviewer | /claude-reviewer |
 |---|---------|---------------|
 | **Input** | A single skill directory | An entire project's .claude/ folder |
 | **Evaluates** | Skill design quality (SKILL.md, scripts, references) | Config hygiene (CLAUDE.md, settings.json, rules/, commands/, skills/, agents/) |
@@ -25,21 +25,24 @@ Review any project's `.claude/` folder against best practices from Anthropic's C
 ## Arguments
 
 ```
-/claude-reviewer                          -> Review current working directory
-/claude-reviewer ~/Code/myproject         -> Review specific project
-/claude-reviewer --global                 -> Also audit ~/.claude/ global config
-/claude-reviewer --verbose                -> Include evidence quotes in report
-/claude-reviewer --global ~/Code/myproject -> Combined
+/claude-reviewer                      -> Review current working directory
+/claude-reviewer ~/Code/myproject     -> Review specific project
+/claude-reviewer --global             -> Review ONLY ~/.claude/ global config
+/claude-reviewer --verbose            -> Include evidence quotes in report
 ```
 
 **$ARGUMENTS** = `[--global] [--verbose] [project-path]`
 
 Parse the argument before starting:
-- Extract `--global` flag if present. When set, also audit `~/.claude/` and append a Global Configuration section to the report. **Ask the user for confirmation before reading home directory contents.**
+- Extract `--global` flag if present.
 - Extract `--verbose` flag if present. When set, include evidence quotes.
-- Remaining token is the project path. If none, use the current working directory.
+- Remaining token is the project path.
+- **Routing logic:**
+  - `--global` → **Global mode**: audit only `~/.claude/`. Score 5 applicable dimensions (D1, D2, D4, D5, D6 — max 15). Ignore any project path. Use the Global Configuration report template only.
+  - No `--global` → **Project mode**: audit the project path (or cwd if none given). Score all 8 dimensions (max 24). No global section.
+- **Ask the user for confirmation before reading home directory contents** when `--global` is used.
 - If the path doesn't exist, report "Directory not found: [path]."
-- If the path has no `.claude/` directory AND no `CLAUDE.md`, report "No Claude Code configuration found at [path]."
+- If the path has no `.claude/` directory AND no `CLAUDE.md` (project mode only), report "No Claude Code configuration found at [path]."
 
 ## Workflow
 
@@ -89,12 +92,11 @@ The scanner auto-detects structural anti-patterns. Add semantic ones:
 
 ### Phase 4: Generate Report
 
-Read `references/report-template.md` and fill every section.
+Read `references/report-template.md` and fill the appropriate sections.
 
-Score total: D1+D2+D3+D4+D5+D6+D7+D8 = max 24
-Grade: 21-24=A, 16-20=B, 11-15=C, 6-10=D, 0-5=F
+**Project mode**: Score all 8 dimensions (D1-D8, max 24). Grade: 21-24=A, 16-20=B, 11-15=C, 6-10=D, 0-5=F.
 
-If `--global` was used, append the Global Configuration section with its own inventory, mini-scores (D1, D2, D4, D5, D6 — max 15), and recommendations.
+**Global mode**: Use only the Global Configuration section of the template. Score 5 dimensions (D1, D2, D4, D5, D6 — max 15). Grade: 13-15=A, 10-12=B, 7-9=C, 4-6=D, 0-3=F.
 
 ### Phase 5: Actionable Recommendations
 

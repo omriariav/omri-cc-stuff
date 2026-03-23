@@ -78,14 +78,14 @@ On first run, `/tweet` will pop up native macOS dialogs to store your X API cred
 
 Alternatively, set env vars in `~/.zshrc`: `X_API_KEY`, `X_API_SECRET`, `X_ACCESS_TOKEN`, `X_ACCESS_TOKEN_SECRET`.
 
-### `/skill-review` - Skill Design Evaluation
+### `/skill-reviewer` - Skill Design Evaluation
 
 Evaluate any skill's design quality against [best practices](https://x.com/trq212/status/2033949937936085378). Scores 10 dimensions (29-point rubric), detects anti-patterns, and optionally applies safe fixes.
 
 ```
-/skill-review publisher-lookup          → Review by skill name
-/skill-review --fix my-skill            → Review + auto-apply safe fixes
-/skill-review --compare skill-a skill-b → Side-by-side comparison
+/skill-reviewer publisher-lookup          → Review by skill name
+/skill-reviewer --fix my-skill            → Review + auto-apply safe fixes
+/skill-reviewer --compare skill-a skill-b → Side-by-side comparison
 ```
 
 **Dimensions scored:** Progressive Disclosure, Description Quality, Gotchas, Non-Obvious Content, Flexibility, Setup & Config, Memory, Scripts, Frontmatter, Hooks Integration.
@@ -99,7 +99,7 @@ Review any project's `.claude/` folder setup against [best practices](https://x.
 ```
 /claude-reviewer                       → Review current project
 /claude-reviewer ~/Code/myproject      → Review specific project
-/claude-reviewer --global              → Also audit ~/.claude/ global config
+/claude-reviewer --global              → Review only ~/.claude/ global config
 ```
 
 **Dimensions scored:** CLAUDE.md Quality, Permission Hygiene, Modular Instructions, Custom Commands, Skills Setup, Agent Configuration, Git Hygiene, Progressive Disclosure.

@@ -9,8 +9,8 @@ evaluation (D5, D6, D8 partially) to Claude.
 Usage:
     python3 scripts/scan.py <project-directory>
     python3 scripts/scan.py <project-directory> --json
-    python3 scripts/scan.py <project-directory> --global
-    python3 scripts/scan.py <project-directory> --json --global
+    python3 scripts/scan.py --global
+    python3 scripts/scan.py --global --json
 """
 
 import argparse
@@ -762,13 +762,38 @@ def detect_anti_patterns(project_dir: Path, inv: dict, analysis: dict) -> list:
 
 def main():
     parser = argparse.ArgumentParser(description="Structural scanner for Claude Code configuration")
-    parser.add_argument("project_dir", help="Path to project directory")
+    parser.add_argument("project_dir", nargs="?", default=".",
+                        help="Path to project directory (ignored in --global mode)")
     parser.add_argument("--json", action="store_true", help="Output raw JSON")
     parser.add_argument("--verbose", action="store_true", help="Show detailed evidence")
     parser.add_argument("--global", dest="scan_global", action="store_true",
-                        help="Also scan ~/.claude/ global configuration")
+                        help="Scan ONLY ~/.claude/ global configuration")
     args = parser.parse_args()
 
+    # Global-only mode
+    if args.scan_global:
+        global_inv = inventory_global()
+        result = {
+            "mode": "global",
+            "path": str(Path.home() / ".claude"),
+            "inventory": global_inv,
+            "note": "Global-only mode. Scores require semantic evaluation by Claude.",
+        }
+        if args.json:
+            print(json.dumps(result, indent=2, default=str))
+        else:
+            gi = global_inv
+            print("\n  Global Configuration Review: ~/.claude/")
+            print(f"  CLAUDE.md: {'yes' if gi['claude_md']['exists'] else 'no'}" +
+                  (f" ({gi['claude_md']['lines']} lines)" if gi['claude_md']['exists'] else ""))
+            print(f"  settings.json: {'yes' if gi['settings_json']['exists'] else 'no'}")
+            print(f"  commands/: {gi['commands']['count']} file(s)")
+            print(f"  skills/: {gi['skills']['count']} skill(s)")
+            print(f"  agents/: {gi['agents']['count']} agent(s)")
+            print()
+        return
+
+    # Project mode
     project_dir = Path(args.project_dir).resolve()
     if not project_dir.is_dir():
         print(json.dumps({"error": f"Not a directory: {project_dir}"}))
@@ -799,6 +824,7 @@ def main():
     anti_patterns = detect_anti_patterns(project_dir, inv, analysis)
 
     result = {
+        "mode": "project",
         "project": project_dir.name,
         "path": str(project_dir),
         "inventory": inv,
@@ -810,11 +836,6 @@ def main():
         "anti_patterns": anti_patterns,
         "note": "Dimensions with score=null require semantic evaluation by Claude.",
     }
-
-    # Global scan
-    if args.scan_global:
-        global_inv = inventory_global()
-        result["global"] = {"inventory": global_inv}
 
     if args.json:
         print(json.dumps(result, indent=2, default=str))
@@ -852,17 +873,6 @@ def main():
         else:
             print("  Anti-patterns: none detected")
         print()
-
-        if args.scan_global:
-            gi = result["global"]["inventory"]
-            print("  --- Global Configuration (~/.claude/) ---")
-            print(f"  CLAUDE.md: {'yes' if gi['claude_md']['exists'] else 'no'}" +
-                  (f" ({gi['claude_md']['lines']} lines)" if gi['claude_md']['exists'] else ""))
-            print(f"  settings.json: {'yes' if gi['settings_json']['exists'] else 'no'}")
-            print(f"  commands/: {gi['commands']['count']} file(s)")
-            print(f"  skills/: {gi['skills']['count']} skill(s)")
-            print(f"  agents/: {gi['agents']['count']} agent(s)")
-            print()
 
 
 if __name__ == "__main__":
