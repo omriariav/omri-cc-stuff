@@ -50,6 +50,18 @@
       "skills": [
         "./skills/tweet"
       ]
+    },
+    {
+      "name": "session-context",
+      "source": "./plugins/session-context",
+      "description": "Injects daily work context (Calendar, Gmail, Tasks) as a system-reminder on session start.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Omri Ariav",
+        "email": "omriariav@gmail.com"
+      },
+      "category": "productivity",
+      "keywords": ["context", "calendar", "gmail", "tasks", "session"]
     }
   ]
 }
