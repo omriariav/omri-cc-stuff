@@ -1,6 +1,6 @@
 # Skill Review: publisher-lookup
 
-> Example output from `/skill-review publisher-lookup` — use as reference for report quality.
+> Example output from `/skill-reviewer publisher-lookup` — use as reference for report quality.
 
 **Path**: `~/Code/taboola-pm-skills/plugins/publisher-lookup/skills/publisher-lookup/`
 **Category**: Library & API Reference (confidence: high)

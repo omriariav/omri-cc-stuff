@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-View and query the skill-review history log.
+View and query the skill-reviewer history log.
 
 Usage:
     python3 scripts/history.py                    # Show all entries
@@ -69,7 +69,7 @@ def append_entry(log_path: Path, entry: str):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Query skill-review history log")
+    parser = argparse.ArgumentParser(description="Query skill-reviewer history log")
     parser.add_argument("--skill", help="Filter by skill name (partial match)")
     parser.add_argument("--last", type=int, default=0, help="Show last N entries")
     parser.add_argument("--append", help="Append a new log entry")
@@ -86,7 +86,7 @@ def main():
 
     if not records:
         print(f"No history found at {log_path}")
-        print("Run /skill-review on any skill to start tracking.")
+        print("Run /skill-reviewer on any skill to start tracking.")
         return
 
     # Filter

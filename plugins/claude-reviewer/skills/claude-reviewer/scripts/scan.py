@@ -9,8 +9,8 @@ evaluation (D5, D6, D8 partially) to Claude.
 Usage:
     python3 scripts/scan.py <project-directory>
     python3 scripts/scan.py <project-directory> --json
-    python3 scripts/scan.py <project-directory> --global
-    python3 scripts/scan.py <project-directory> --json --global
+    python3 scripts/scan.py --global
+    python3 scripts/scan.py --global --json
 """
 
 import argparse
