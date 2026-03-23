@@ -1,0 +1,9 @@
+{
+  "name": "claude-reviewer",
+  "version": "1.0.0",
+  "description": "Review any project's .claude/ folder setup against best practices (based on https://x.com/akshay_pachaar/status/2035341800739877091). Scores 8 dimensions (24-point rubric).",
+  "author": {
+    "name": "Omri Ariav",
+    "email": "omri.ariav@gmail.com"
+  }
+}
