@@ -25,7 +25,7 @@
       "name": "setup-pulse",
       "source": "./plugins/setup-pulse",
       "description": "Install claude-pulse statusline for real-time token usage monitoring.",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "author": {
         "name": "Omri Ariav",
         "email": "omriariav@gmail.com"
@@ -55,7 +55,7 @@
       "name": "session-context",
       "source": "./plugins/session-context",
       "description": "Injects daily work context (Calendar, Gmail, Tasks) as a system-reminder on session start.",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "author": {
         "name": "Omri Ariav",
         "email": "omriariav@gmail.com"
