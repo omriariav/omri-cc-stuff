@@ -34,7 +34,7 @@ Fill every section. Never omit a section.
 | D4: Custom Commands | [0-3] | [one-line justification] |
 | D5: Skills Setup | [0-3] | [one-line justification] |
 | D6: Agent Configuration | [0-3] | [one-line justification] |
-| D7: Git Hygiene | [0-3] | [one-line justification] |
+| D7: Git Hygiene | [0-3 or N/A] | [one-line justification. Use N/A if not a git repo] |
 | D8: Progressive Disclosure | [0-3] | [one-line justification] |
 | **Total** | **[N]/24** | **Grade: [A/B/C/D/F]** |
 

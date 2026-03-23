@@ -179,13 +179,16 @@ def inventory_project(project_dir: Path) -> dict:
 
     # CLAUDE.md
     if claude_md.exists():
-        text = claude_md.read_text(encoding="utf-8")
-        lines = text.splitlines()
-        inv["claude_md"] = {
-            "exists": True,
-            "lines": len(lines),
-            "bytes": claude_md.stat().st_size,
-        }
+        try:
+            text = claude_md.read_text(encoding="utf-8")
+            lines = text.splitlines()
+            inv["claude_md"] = {
+                "exists": True,
+                "lines": len(lines),
+                "bytes": claude_md.stat().st_size,
+            }
+        except (OSError, UnicodeDecodeError):
+            inv["claude_md"] = {"exists": True, "lines": 0, "bytes": 0}
     else:
         inv["claude_md"] = {"exists": False, "lines": 0, "bytes": 0}
 
@@ -336,7 +339,10 @@ def analyze_claude_md(project_dir: Path) -> dict:
     if not claude_md.exists():
         return {"exists": False}
 
-    text = claude_md.read_text(encoding="utf-8")
+    try:
+        text = claude_md.read_text(encoding="utf-8")
+    except (OSError, UnicodeDecodeError):
+        return {"exists": True, "lines": 0, "sections_found": 0}
     text_lower = text.lower()
     lines = text.splitlines()
 
@@ -414,7 +420,7 @@ def score_d1_claude_md(inv: dict, analysis: dict) -> dict:
     if has_theory:
         issues.append(f"{analysis['theory_paragraphs']} theory paragraph(s)")
 
-    if not issues and sections >= 3 and line_count <= 150:
+    if not issues and sections >= 4 and line_count <= 150:
         score = 3
         evidence = f"Lean ({line_count} lines), {sections}/4 key sections, no anti-patterns"
     elif sections >= 2 and line_count <= 200 and not has_linter:
@@ -454,11 +460,10 @@ def score_d2_permissions(inv: dict) -> dict:
     blocks_env = any(term in deny_str for term in [".env", "credentials", "secrets"])
 
     deny_quality = sum([blocks_destructive, blocks_network, blocks_env])
-    if deny_quality >= 2:
+    if deny_quality == 3:
         score = 3
-        evidence = f"Allow ({len(sj['allow_entries'])}) + Deny ({len(sj['deny_entries'])}), blocks destructive/sensitive"
+        evidence = f"Allow ({len(sj['allow_entries'])}) + Deny ({len(sj['deny_entries'])}), blocks destructive + network + sensitive"
     else:
-        score = 2
         missing = []
         if not blocks_destructive:
             missing.append("destructive commands")
@@ -600,16 +605,16 @@ def score_d7_git(project_dir: Path, inv: dict) -> dict:
     passed = sum(1 for v in checks.values() if v)
     total = len(checks)
 
-    # Critical: local files committed is a failure
+    # Critical: local files actually tracked in git is a failure
     local_committed = False
-    if inv["claude_local_md"]["exists"] and not checks.get("CLAUDE.local.md gitignored", True):
+    if inv["claude_local_md"]["exists"] and is_tracked(project_dir, "CLAUDE.local.md"):
         local_committed = True
-    if inv["settings_local_json"]["exists"] and not checks.get("settings.local.json gitignored", True):
+    if inv["settings_local_json"]["exists"] and is_tracked(project_dir, ".claude/settings.local.json"):
         local_committed = True
 
     if local_committed:
         score = 0
-        evidence = "Local config files committed to git (security risk)"
+        evidence = "Local config files tracked in git (security risk)"
     elif passed == total:
         score = 3
         evidence = f"All {total} checks pass: {', '.join(checks.keys())}"
