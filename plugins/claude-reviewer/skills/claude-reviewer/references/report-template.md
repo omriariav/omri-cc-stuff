@@ -72,9 +72,13 @@ step for this project's maturity level?]
 
 ---
 
-## Global Configuration (~/.claude/)
+# Global Configuration Review: ~/.claude/
 
-> Only include this section if `--global` was used.
+> Use this template when `--global` is used. This is a standalone report, not appended to a project report.
+
+**Date**: [YYYY-MM-DD]
+
+## Inventory
 
 | Component | Status | Details |
 |-----------|--------|---------|
@@ -84,17 +88,37 @@ step for this project's maturity level?]
 | skills/ | [N skills] | [skill names] |
 | agents/ | [N agents] | [agent names] |
 
-### Global Mini-Scores (applicable dimensions only)
+## Scores
 
 | Dimension | Score | Notes |
 |-----------|-------|-------|
-| D1: CLAUDE.md Quality | [0-3] | |
-| D2: Permission Hygiene | [0-3] | |
-| D4: Custom Commands | [0-3] | |
-| D5: Skills Setup | [0-3] | |
-| D6: Agent Configuration | [0-3] | |
-| **Total** | **[N]/15** | |
+| D1: CLAUDE.md Quality | [0-3] | [one-line justification] |
+| D2: Permission Hygiene | [0-3] | [one-line justification] |
+| D4: Custom Commands | [0-3] | [one-line justification] |
+| D5: Skills Setup | [0-3] | [one-line justification] |
+| D6: Agent Configuration | [0-3] | [one-line justification] |
+| **Total** | **[N]/15** | **Grade: [A/B/C/D/F]** |
 
-### Global Recommendations
+Grade thresholds: 13-15 = A, 10-12 = B, 7-9 = C, 4-6 = D, 0-3 = F
 
-[Specific recommendations for improving the global configuration]
+## Anti-Patterns Found
+
+[List each detected anti-pattern, or "None detected"]
+
+## Top 3 Strengths
+
+1. [strength]
+2. [strength]
+3. [strength]
+
+## Top 3 Improvements (Priority Order)
+
+1. **[issue]** — [what to change] — [expected score impact: +N pts]
+2. **[issue]** — [what to change] — [expected score impact: +N pts]
+3. **[issue]** — [what to change] — [expected score impact: +N pts]
+
+## Quick Wins
+
+- [ ] [specific actionable item]
+- [ ] [item]
+- [ ] [item]
