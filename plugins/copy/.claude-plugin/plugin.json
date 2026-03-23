@@ -4,6 +4,6 @@
   "description": "Format and copy Claude output to clipboard for Slack, Email, Google Chat, Google Docs, or Jira.",
   "author": {
     "name": "Omri Ariav",
-    "email": "omriariav@gmail.com"
+    "email": "omri.ariav@gmail.com"
   }
 }

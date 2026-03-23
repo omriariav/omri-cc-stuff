@@ -1,0 +1,6 @@
+{
+  "history_log": "~/.claude/plugin-data/skill-review/history.log",
+  "default_verbose": false,
+  "benchmarks_check": true,
+  "auto_fix_threshold": 15
+}

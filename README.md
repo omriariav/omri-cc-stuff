@@ -78,6 +78,20 @@ On first run, `/tweet` will pop up native macOS dialogs to store your X API cred
 
 Alternatively, set env vars in `~/.zshrc`: `X_API_KEY`, `X_API_SECRET`, `X_ACCESS_TOKEN`, `X_ACCESS_TOKEN_SECRET`.
 
+### `/skill-review` - Skill Design Evaluation
+
+Evaluate any skill's design quality against best practices. Scores 10 dimensions (29-point rubric), detects anti-patterns, and optionally applies safe fixes.
+
+```
+/skill-review publisher-lookup          → Review by skill name
+/skill-review --fix my-skill            → Review + auto-apply safe fixes
+/skill-review --compare skill-a skill-b → Side-by-side comparison
+```
+
+**Dimensions scored:** Progressive Disclosure, Description Quality, Gotchas, Non-Obvious Content, Flexibility, Setup & Config, Memory, Scripts, Frontmatter, Hooks Integration.
+
+**Grades:** A (25-29), B (20-24), C (15-19), D (10-14), F (0-9)
+
 ## Other Commands
 
 | Command | Description |
