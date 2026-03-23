@@ -1,5 +1,0 @@
-{
-  "name": "session-context",
-  "version": "1.0.1",
-  "description": "Injects daily work context (Calendar, Gmail, Tasks) as a system-reminder on session start."
-}
