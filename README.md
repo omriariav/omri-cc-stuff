@@ -99,7 +99,7 @@ Review any project's `.claude/` folder setup against [best practices](https://x.
 ```
 /claude-reviewer                       → Review current project
 /claude-reviewer ~/Code/myproject      → Review specific project
-/claude-reviewer --global              → Also audit ~/.claude/ global config
+/claude-reviewer --global              → Review only ~/.claude/ global config
 ```
 
 **Dimensions scored:** CLAUDE.md Quality, Permission Hygiene, Modular Instructions, Custom Commands, Skills Setup, Agent Configuration, Git Hygiene, Progressive Disclosure.
