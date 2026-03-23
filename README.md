@@ -80,7 +80,7 @@ Alternatively, set env vars in `~/.zshrc`: `X_API_KEY`, `X_API_SECRET`, `X_ACCES
 
 ### `/skill-review` - Skill Design Evaluation
 
-Evaluate any skill's design quality against best practices. Scores 10 dimensions (29-point rubric), detects anti-patterns, and optionally applies safe fixes.
+Evaluate any skill's design quality against [best practices](https://x.com/trq212/status/2033949937936085378). Scores 10 dimensions (29-point rubric), detects anti-patterns, and optionally applies safe fixes.
 
 ```
 /skill-review publisher-lookup          → Review by skill name
@@ -91,6 +91,20 @@ Evaluate any skill's design quality against best practices. Scores 10 dimensions
 **Dimensions scored:** Progressive Disclosure, Description Quality, Gotchas, Non-Obvious Content, Flexibility, Setup & Config, Memory, Scripts, Frontmatter, Hooks Integration.
 
 **Grades:** A (25-29), B (20-24), C (15-19), D (10-14), F (0-9)
+
+### `/claude-reviewer` - Claude Code Configuration Auditor
+
+Review any project's `.claude/` folder setup against [best practices](https://x.com/akshay_pachaar/status/2035341800739877091). Scores 8 dimensions (24-point rubric), detects anti-patterns, and produces an actionable improvement report.
+
+```
+/claude-reviewer                       → Review current project
+/claude-reviewer ~/Code/myproject      → Review specific project
+/claude-reviewer --global              → Also audit ~/.claude/ global config
+```
+
+**Dimensions scored:** CLAUDE.md Quality, Permission Hygiene, Modular Instructions, Custom Commands, Skills Setup, Agent Configuration, Git Hygiene, Progressive Disclosure.
+
+**Grades:** A (21-24), B (16-20), C (11-15), D (6-10), F (0-5)
 
 ## Other Commands
 
