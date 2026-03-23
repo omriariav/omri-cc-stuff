@@ -18,7 +18,8 @@ if [ -f "$CACHE_FILE" ]; then
         python3 -c "
 import json, sys
 context = sys.stdin.read()
-print(json.dumps({'hookSpecificOutput':{'hookEventName':'SessionStart','additionalContext':context}}))
+banner = '📋 Work context loaded (cached)'
+print(json.dumps({'hookSpecificOutput':{'hookEventName':'SessionStart','additionalContext':context},'systemMessage':banner}))
 " <<< "$CONTEXT"
         exit 0
     fi
@@ -96,12 +97,19 @@ os.makedirs(os.path.dirname(cache_path), exist_ok=True)
 with open(cache_path, "w") as f:
     f.write(context)
 
+# Build summary line for visual banner
+cal_count = len([e for e in (cal or {}).get("events", []) if e.get("event_type") != "workingLocation"])
+gmail_count = len((gmail or {}).get("threads", []))
+task_count = len(pending) if 'pending' in dir() else 0
+banner = f"📋 Work context: {cal_count} meetings, {gmail_count} starred, {task_count} tasks ({now.strftime('%H:%M')})"
+
 # Output for hook injection
 output = {
     "hookSpecificOutput": {
         "hookEventName": "SessionStart",
         "additionalContext": context
-    }
+    },
+    "systemMessage": banner
 }
 print(json.dumps(output))
 sys.exit(0)
