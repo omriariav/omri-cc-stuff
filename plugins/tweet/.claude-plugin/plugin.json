@@ -4,6 +4,6 @@
   "description": "Post tweets to X (Twitter) from Claude Code. Drafts, previews, posts with approval. Supports threads and replies.",
   "author": {
     "name": "Omri Ariav",
-    "email": "omriariav@gmail.com"
+    "email": "omri.ariav@gmail.com"
   }
 }

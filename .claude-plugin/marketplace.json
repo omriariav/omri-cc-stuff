@@ -2,7 +2,7 @@
   "name": "omri-cc-stuff",
   "owner": {
     "name": "Omri Ariav",
-    "email": "omriariav@gmail.com"
+    "email": "omri.ariav@gmail.com"
   },
   "metadata": {
     "description": "Personal Claude Code commands and utilities. Copy formatting, tweet posting, and more.",
@@ -16,7 +16,7 @@
       "version": "2.1.0",
       "author": {
         "name": "Omri Ariav",
-        "email": "omriariav@gmail.com"
+        "email": "omri.ariav@gmail.com"
       },
       "category": "utilities",
       "keywords": [
@@ -34,7 +34,7 @@
       "version": "1.0.0",
       "author": {
         "name": "Omri Ariav",
-        "email": "omriariav@gmail.com"
+        "email": "omri.ariav@gmail.com"
       },
       "category": "utilities",
       "keywords": [
@@ -54,7 +54,7 @@
       "version": "1.2.0",
       "author": {
         "name": "Omri Ariav",
-        "email": "omriariav@gmail.com"
+        "email": "omri.ariav@gmail.com"
       },
       "category": "social",
       "keywords": [
@@ -69,30 +69,13 @@
       ]
     },
     {
-      "name": "session-context",
-      "source": "./plugins/session-context",
-      "description": "Injects daily work context, detects new actions, and surfaces vault blindspots on session start.",
-      "version": "1.2.0",
-      "author": {
-        "name": "Omri Ariav"
-      },
-      "category": "productivity",
-      "keywords": [
-        "context",
-        "calendar",
-        "gmail",
-        "tasks",
-        "jira"
-      ]
-    },
-    {
       "name": "skill-review",
       "source": "./plugins/skill-review",
       "description": "Evaluate any skill's design quality against best practices. Scores 10 dimensions (29-point rubric), detects anti-patterns, and optionally applies safe fixes.",
       "version": "1.0.0",
       "author": {
         "name": "Omri Ariav",
-        "email": "omriariav@gmail.com"
+        "email": "omri.ariav@gmail.com"
       },
       "category": "utilities",
       "keywords": [

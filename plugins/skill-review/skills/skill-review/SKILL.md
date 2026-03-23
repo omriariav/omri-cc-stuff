@@ -268,7 +268,7 @@ See `examples/publisher-lookup-review.md` for a complete example output to calib
 
 **Symlink resolution**: Resolve the symlink once, work from the real path. Do not chase further symlinks inside the skill. Some skills in taboola-pm-skills are symlinked 2-3 levels deep.
 
-**Nested plugins**: This repo has `plugins/taboolar/skills/taboolar/plugins/` nested structure. Do not recurse into it — it's an artifact, not a skill substructure.
+**Nested plugins**: Some repos have nested `plugins/*/skills/*/plugins/` structures. Do not recurse into them — they are artifacts, not skill substructures.
 
 **Multiple matches**: Glob searches will find the same skill in both the plugin source and its symlinked location. Prefer the real path (plugin source) over the symlink.
 
