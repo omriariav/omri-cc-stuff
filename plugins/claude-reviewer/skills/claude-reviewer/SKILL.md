@@ -3,7 +3,7 @@ name: claude-reviewer
 description: |
   Review any project's .claude/ folder setup against Claude Code best practices. Scores 8 dimensions (24-point rubric), detects anti-patterns, and produces an actionable improvement report.
   Use when: "/claude-reviewer", "review my claude config", "audit .claude setup", "check my CLAUDE.md", "how good is my claude config", "rate this project's claude setup".
-  NOT for: reviewing individual skill quality (use /skill-review), code review, PR review.
+  NOT for: reviewing individual skill quality (use /skill-reviewer), code review, PR review.
 user-invocable: true
 argument-hint: "[--global] [--verbose] [project-path]"
 allowed-tools: Read, Glob, Grep, Bash(python3*), Bash(git*)
@@ -13,9 +13,9 @@ allowed-tools: Read, Glob, Grep, Bash(python3*), Bash(git*)
 
 Review any project's `.claude/` folder against best practices from Anthropic's Claude Code configuration guidance.
 
-## How It Differs from /skill-review
+## How It Differs from /skill-reviewer
 
-| | /skill-review | /claude-reviewer |
+| | /skill-reviewer | /claude-reviewer |
 |---|---------|---------------|
 | **Input** | A single skill directory | An entire project's .claude/ folder |
 | **Evaluates** | Skill design quality (SKILL.md, scripts, references) | Config hygiene (CLAUDE.md, settings.json, rules/, commands/, skills/, agents/) |

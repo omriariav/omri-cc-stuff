@@ -1,5 +1,5 @@
 {
-  "name": "skill-review",
+  "name": "skill-reviewer",
   "version": "1.0.0",
   "description": "Evaluate any skill's design quality against best practices (based on https://x.com/trq212/status/2033949937936085378). Scores 10 dimensions (29-point rubric), detects anti-patterns, and optionally applies safe fixes. Complements /reflect which covers conversation-level learnings.",
   "author": {
