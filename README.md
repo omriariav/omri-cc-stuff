@@ -24,6 +24,7 @@ Copy data/tables/text to clipboard, formatted for your destination.
 | `/copy:gmail` | Format for Gmail/email (HTML tables) |
 | `/copy:gdocs` | Format for Google Docs (Markdown, paste via Edit → Paste from Markdown) |
 | `/copy:jira` | Format for Jira Cloud (Markdown) |
+| `/copy:md` | Markdown (standard syntax) |
 | `/copy:cleartext` | Plain text (universal) |
 | `/copy:richformat` | Rich Text Format (RTF) for Word, Pages |
 
@@ -57,7 +58,7 @@ Claude: ✓ Copied to clipboard (format: Slack)
 
 ### `/tweet` - Post to X (Twitter)
 
-Post tweets directly from Claude Code. Drafts the text, shows a preview with character count, and asks for approval before posting.
+Post tweets directly from Claude Code. Drafts the text, shows a preview with character count, and asks for approval before posting. Learns your voice over time from editing patterns and feedback.
 
 ```
 /tweet Testing my new tweet skill from Claude Code
