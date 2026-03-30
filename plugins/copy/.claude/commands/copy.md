@@ -16,6 +16,7 @@ Copy data/tables/text to clipboard, formatted for the destination.
 /copy gchat               → Format for Google Chat
 /copy gdocs               → Format for Google Docs
 /copy jira                → Format for Jira
+/copy md                  → Format as Markdown
 /copy slack the summary   → Format specific content for Slack
 /copy the findings        → Clear text, copy specific content
 ```
@@ -72,6 +73,13 @@ Copy data/tables/text to clipboard, formatted for the destination.
 - Bold: `*text*`
 - Image: `!url!`
 
+### Markdown (md)
+- Standard Markdown syntax
+- Tables as Markdown `| col |` syntax
+- Bold: `**text**`
+- Links: `[text](url)`
+- Headers, lists, code blocks preserved as-is
+
 ### Google Docs (gdocs)
 - Full Markdown formatting (tables, bold, links, headers)
 - User pastes via **Edit → Paste from Markdown**
@@ -127,6 +135,9 @@ Find last output, format for Slack with ASCII table + chart URL.
 
 ### `/copy gchat`
 Find last output, format same as Slack (ASCII table in code block).
+
+### `/copy md`
+Find last output, format as standard Markdown.
 
 ### `/copy gdocs`
 Find last output, format as Markdown. User pastes via Edit → Paste from Markdown.
