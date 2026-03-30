@@ -1,0 +1,11 @@
+{
+  "description": "User voice preferences learned from tweet drafting and editing. Read before drafting, append after posting.",
+  "entries": [
+    {"date": "2026-03-30", "category": "tone", "observation": "Prefers direct, factual tone. No fluff, no hype."},
+    {"date": "2026-03-30", "category": "phrasing", "observation": "Avoids em dashes and dashes as punctuation. Use commas, periods, or restructure instead."},
+    {"date": "2026-03-30", "category": "structure", "observation": "Likes data-driven posts with visual elements (bar charts, lists, structured numbers)."},
+    {"date": "2026-03-30", "category": "structure", "observation": "Prefers threads over single tweets for complex topics."},
+    {"date": "2026-03-30", "category": "structure", "observation": "Wants sources credited at the end of a tweet or thread."},
+    {"date": "2026-03-30", "category": "tone", "observation": "Tone: informative, not preachy or political."}
+  ]
+}

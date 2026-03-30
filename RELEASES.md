@@ -1,5 +1,27 @@
 # Releases
 
+## tweet v1.3.0 (2026-03-30)
+
+Voice learning and skill structure improvements.
+
+### New
+- **Voice learning**: Reads `LEARNINGS.json` before drafting to match your established voice, appends observations after each posted tweet
+- `config.json` for operational defaults (char target, thread style)
+- `references/` directory with extracted char-counting rules and drafting guidelines
+
+### Changed
+- Scoped `allowed-tools` to `Bash(python3*), Bash(bash scripts/*)` for security
+- Expanded description with negative trigger cases
+- Trimmed SKILL.md from 134 to 92 lines via progressive disclosure
+- Removed duplicate credential setup and verbose script output sections
+
+## copy v2.2.0 (2026-03-30)
+
+### New
+- `/copy:md` - Copy as standard Markdown (tables, headers, bold, links, code blocks)
+
+---
+
 ## v2.0.0 (2025-12-29)
 
 **Breaking Change:** Restructured `/copy` command into separate format-specific commands.

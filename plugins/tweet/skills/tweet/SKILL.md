@@ -1,10 +1,10 @@
 ---
 name: tweet
 description: |
-  Post tweets to X (Twitter) from Claude Code.
-  Use when user says "/tweet", "post a tweet", "tweet this".
-allowed-tools: Bash, Read, AskUserQuestion
-argument-hint: [what to tweet about]
+  Post tweets to X (Twitter) from Claude Code. Supports single tweets, threads (auto-split or manual), and replies.
+  Use when user says "/tweet", "post a tweet", "tweet this", "post a thread", "reply to this tweet".
+  NOT for reading tweets, analytics, scheduling, or DMs.
+allowed-tools: Bash(python3*), Bash(bash scripts/*), Read, AskUserQuestion
 ---
 
 # Tweet - Post to X (Twitter)
@@ -54,57 +54,28 @@ Post tweets from Claude Code via the X API v2. Supports single tweets, threads (
 
 ## Tweet Drafting Guidelines
 
-- Max 280 characters per tweet. Longer text: user chooses to post as numbered thread or shorten.
-- Professional but authentic tone
-- No hashtag spam (0-2 max, only if natural)
-- Include relevant context (product name, what happened)
-- If announcing something, lead with the news
+Read `references/drafting-guidelines.md` for baseline rules, `config.json` for operational defaults (char target, thread style), and `LEARNINGS.json` for user-specific voice and preferences.
+
+## Voice Learning
+
+Before drafting any tweet, read `LEARNINGS.json` to match the user's established voice and preferences. Read `config.json` for operational defaults.
+
+After each tweet is posted (confirmed via script output), append a new entry to the `entries` array in `LEARNINGS.json` for any patterns you noticed:
+- Tone adjustments the user made during editing
+- Phrasing preferences (words they added, removed, or rephrased)
+- Structural preferences (thread vs. single tweet, use of lists, data, visuals)
+- Any explicit feedback the user gave about style
+
+Each entry has `date`, `category` (one of: `tone`, `phrasing`, `structure`, `feedback`), and `observation` fields. Do not duplicate existing observations.
+If the `entries` array exceeds 30 items, consolidate related entries before appending new ones.
 
 ## Character Counting — Critical
 
-**Your markdown char count will NOT match the script's count.** Common mismatches:
-
-- **URLs**: X wraps all URLs to t.co (23 chars), but `post.py` counts raw URL length. Always count the full URL string length, not 23.
-- **Backticks**: Backtick characters (`` ` ``) in your preview are real chars in the tweet. Don't use them in length estimation then omit them.
-- **Newlines**: Each `\n` counts as a character.
-- **Em dashes**: `—` is 1 char but may render wider in preview.
-
-**Best practice**: Aim for **270 chars max** in your preview to leave a safety margin. If the script rejects, you only need to trim a few words instead of multiple retry loops.
-
-**Do NOT estimate char count yourself.** If close to the limit, use `python3 -c "print(len('''tweet text here'''))"` to get the exact count before previewing to the user.
+Read `references/char-counting.md` for detailed rules. Key point: aim for **270 chars max** and use `python3 -c "print(len(...))"` for exact counts near the limit.
 
 ## Script Output
 
-Single tweet outputs JSON:
-```json
-{"id": "1234567890", "url": "https://x.com/i/status/1234567890", "text": "the posted tweet"}
-```
-
-Thread outputs a JSON array:
-```json
-[
-  {"id": "111", "url": "https://x.com/i/status/111", "text": "1/3: First part...", "part": 1},
-  {"id": "222", "url": "https://x.com/i/status/222", "text": "2/3: Second part...", "part": 2},
-  {"id": "333", "url": "https://x.com/i/status/333", "text": "3/3: Final part.", "part": 3}
-]
-```
-
-On error, it outputs:
-```json
-{"error": "description of what went wrong"}
-```
-
-## Credential Setup (One-Time)
-
-Run `bash scripts/setup.sh` — pops up native macOS dialogs to collect and store keys in Keychain.
-
-**Fallback** — env vars in `~/.zshrc`: `X_API_KEY`, `X_API_SECRET`, `X_ACCESS_TOKEN`, `X_ACCESS_TOKEN_SECRET`.
-
-## Setup Verification
-
-```bash
-bash scripts/verify-setup.sh
-```
+Scripts output JSON with `id`, `url`, `text` fields. Threads return an array with a `part` number per entry. Errors return `{"error": "..."}`.
 
 ## Important
 
