@@ -1,0 +1,6 @@
+{
+  "max_results": 20,
+  "use_haiku_summary": true,
+  "haiku_threshold": 10,
+  "exclude_slugs": []
+}
