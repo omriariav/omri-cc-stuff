@@ -2,7 +2,7 @@
 name: find-session
 description: Search past Claude Code conversations by keyword and return session IDs for resuming. Use when the user asks to find, locate, or look for a past/previous conversation, or needs a session ID to resume a conversation with claude --resume. NOT for searching within a conversation (use /reflect), NOT as a replacement for claude --resume itself.
 argument-hint: [--all] [keywords...]
-allowed-tools: Bash(python3*)
+allowed-tools: Bash(python3*), AskUserQuestion
 user-invocable: true
 ---
 
@@ -22,7 +22,7 @@ python3 scripts/find_session.py [--all] KEYWORDS
 Replace `KEYWORDS` with the user's search terms (space-separated). Omit keywords to list the most recent sessions.
 
 **Before presenting results**, check the `# UNTITLED_COUNT=N TOTAL_SHOWN=M` hint line at the end of the script output and `config.json`:
-- If `use_haiku_summary` is true (default) AND `UNTITLED_COUNT >= 2` AND `TOTAL_SHOWN <= haiku_threshold` (default 50): **ask the user** if they want Haiku to summarize the untitled sessions before you show the list. If they agree, spawn a single subagent (model: `claude-haiku-4-5-20251001`) to read the first 15 messages of each untitled session and return a one-line summary per session. Then present the full results as a table: date | session ID | summary | `claude --resume` command.
+- If `use_haiku_summary` is true (default) AND `UNTITLED_COUNT >= 2` AND `TOTAL_SHOWN <= haiku_threshold` (default 50): use `AskUserQuestion` to ask if they want Haiku to summarize the untitled sessions before you show the list. If they agree, spawn a single subagent (model: `claude-haiku-4-5-20251001`) to read the first 15 messages of each untitled session and return a one-line summary per session. Then present the full results as a table: date | session ID | summary | `claude --resume` command.
 - If the user declines, or conditions aren't met: present the script output as-is. The user copies the `claude --resume [id]` line to resume.
 
 If the script exits with an error or prints "No sessions found", check that the working directory is inside a Claude Code project. Then fall back to `mcp__plugin_claude-mem_mcp-search__search` with the same query for semantic matching.
