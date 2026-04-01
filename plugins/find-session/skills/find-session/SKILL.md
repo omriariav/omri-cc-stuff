@@ -24,7 +24,7 @@ Replace `KEYWORDS` with the user's search terms (space-separated). Omit keywords
 If the script runs cleanly, present its output as-is. The user copies the `claude --resume [id]` line to resume.
 
 **After the script output**, check the `# UNTITLED_COUNT=N TOTAL_SHOWN=M` hint line and `config.json`:
-- If `use_haiku_summary` is true (default) AND `UNTITLED_COUNT >= 2` AND `TOTAL_SHOWN <= haiku_threshold` (default 10): spawn a single subagent (model: `claude-haiku-4-5-20251001`) to read the first 15 messages of each untitled session and return a one-line summary per session. Present as a table: date | session ID | summary | `claude --resume` command.
+- If `use_haiku_summary` is true (default) AND `UNTITLED_COUNT >= 2` AND `TOTAL_SHOWN <= haiku_threshold` (default 50): **ask the user** if they want Haiku to summarize the untitled sessions. If they agree, spawn a single subagent (model: `claude-haiku-4-5-20251001`) to read the first 15 messages of each untitled session and return a one-line summary per session. Present as a table: date | session ID | summary | `claude --resume` command.
 - Otherwise: present the script output as-is.
 
 If the script exits with an error or prints "No sessions found", check that the working directory is inside a Claude Code project. Then fall back to `mcp__plugin_claude-mem_mcp-search__search` with the same query for semantic matching.
