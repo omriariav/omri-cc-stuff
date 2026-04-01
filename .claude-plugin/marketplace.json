@@ -89,6 +89,27 @@
       ]
     },
     {
+      "name": "find-session",
+      "source": "./plugins/find-session",
+      "description": "Search past Claude Code conversations by keyword and get session IDs for claude --resume.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Omri Ariav",
+        "email": "omri.ariav@gmail.com"
+      },
+      "category": "utilities",
+      "keywords": [
+        "session",
+        "search",
+        "resume",
+        "history",
+        "conversations"
+      ],
+      "skills": [
+        "./skills/find-session"
+      ]
+    },
+    {
       "name": "claude-reviewer",
       "source": "./plugins/claude-reviewer",
       "description": "Review any project's .claude/ folder setup against best practices (based on https://x.com/akshay_pachaar/status/2035341800739877091). Scores 8 dimensions (24-point rubric) covering CLAUDE.md quality, permissions, rules, commands, skills, agents, git hygiene, and progressive disclosure.",
