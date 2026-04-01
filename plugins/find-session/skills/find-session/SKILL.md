@@ -19,14 +19,14 @@ python3 scripts/find_session.py [--all] [--json] KEYWORDS
 ```
 
 - Default: searches the current project's sessions only (fast, no noise)
-- `--all`: searches across all `~/.claude/projects/` and shows `[project]` labels
-- `--json`: outputs structured JSON (useful for programmatic follow-up)
+- `--all` (or `-all`): searches across all `~/.claude/projects/` and shows `[project]` labels
+- `--json`: outputs structured JSON (useful for programmatic follow-up); error paths also return JSON
 
 Replace `KEYWORDS` with the user's search terms (space-separated). Omit keywords to list the most recent sessions. Always shell-quote arguments that contain special characters.
 
 ## Step 2: Check for Haiku summarization
 
-Read `config.json` and check the `# UNTITLED_COUNT=N TOTAL_SHOWN=M` hint line at the end of the script output.
+Read `config.json` and check the `# UNTITLED_COUNT=N TOTAL_SHOWN=M` hint line on stderr.
 
 1. Is `use_haiku_summary` true in config.json? If no → skip to Step 3.
 2. Is `UNTITLED_COUNT >= 2`? If no → skip to Step 3.

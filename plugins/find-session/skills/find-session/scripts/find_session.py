@@ -49,8 +49,8 @@ def resolve_project_root() -> str:
     return os.getcwd()
 
 
-def parse_session(content: str, query: str) -> tuple:
-    """Single-pass parse: returns (custom_title, first_user_msg, user_text_parts, session_path_hint).
+def parse_session(content: str) -> tuple:
+    """Single-pass parse: returns (custom_title, first_user_msg, user_text_lower).
 
     Extracts the latest custom-title, first user message preview,
     and all user message text for keyword matching — in one pass.
@@ -77,21 +77,17 @@ def parse_session(content: str, query: str) -> tuple:
             continue
 
         c = msg.get("content", "")
-        text = ""
         if isinstance(c, list):
             for item in c:
                 if isinstance(item, dict) and item.get("type") == "text":
                     text = item["text"]
-                    break
-        elif isinstance(c, str):
-            text = c
-
-        if text:
-            user_parts.append(text)
+                    user_parts.append(text)
+                    if first_msg == "(no message)":
+                        first_msg = " ".join(text.split())[:130]
+        elif isinstance(c, str) and c:
+            user_parts.append(c)
             if first_msg == "(no message)":
-                # Clean preview: collapse whitespace, single line
-                preview = " ".join(text.split())[:130]
-                first_msg = preview
+                first_msg = " ".join(c.split())[:130]
 
     return custom_title, first_msg, "\n".join(user_parts).lower()
 
@@ -118,7 +114,7 @@ def search_project_dir(project_dir: Path, query: str, display: str) -> list:
         except Exception:
             continue
 
-        custom_title, first_msg, user_text = parse_session(content, query)
+        custom_title, first_msg, user_text = parse_session(content)
 
         if query and not matches_query(user_text, query):
             continue
@@ -155,7 +151,8 @@ def format_text(results: list, search_all: bool, query: str, max_results: int):
         print(f"(showing {max_results} of {total} — refine your query to narrow down)")
 
     untitled = sum(1 for r in shown if not r["title"])
-    print(f"# UNTITLED_COUNT={untitled} TOTAL_SHOWN={len(shown)}")
+    # Hint line on stderr so it doesn't pollute user-visible output
+    print(f"# UNTITLED_COUNT={untitled} TOTAL_SHOWN={len(shown)}", file=sys.stderr)
 
 
 def format_json(results: list, search_all: bool, query: str, max_results: int):
@@ -202,7 +199,10 @@ def main():
     projects_root = Path.home() / ".claude" / "projects"
 
     if not projects_root.exists():
-        print("No sessions directory found at ~/.claude/projects/")
+        if output_json:
+            print(json.dumps({"error": "No sessions directory found at ~/.claude/projects/", "sessions": [], "total": 0}))
+        else:
+            print("No sessions directory found at ~/.claude/projects/")
         return
 
     if search_all:
@@ -226,18 +226,23 @@ def main():
     for project_dir, display in dirs_to_search:
         if not project_dir.exists():
             if not search_all:
-                print(f"No session directory found for current project.")
-                print(f"Expected: {project_dir}")
+                msg = f"No session directory found for current project.\nExpected: {project_dir}"
+                if output_json:
+                    print(json.dumps({"error": msg, "sessions": [], "total": 0}))
+                else:
+                    print(msg)
             continue
         results.extend(search_project_dir(project_dir, query, display))
 
     if not results:
         scope = "all projects" if search_all else "current project"
-        print(f"No matching sessions found in {scope}.")
-        if query:
-            print(f'Query: "{query}"')
-            if not search_all:
-                print("Try adding --all to search across all projects.")
+        msg = f'No matching sessions found in {scope}.'
+        hint = f'\nQuery: "{query}"' if query else ""
+        suggestion = "\nTry adding --all to search across all projects." if query and not search_all else ""
+        if output_json:
+            print(json.dumps({"error": msg, "query": query, "scope": scope, "sessions": [], "total": 0}))
+        else:
+            print(msg + hint + suggestion)
         return
 
     results.sort(key=lambda r: r["date"], reverse=True)
