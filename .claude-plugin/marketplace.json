@@ -5,8 +5,7 @@
     "email": "omri.ariav@gmail.com"
   },
   "metadata": {
-    "description": "Personal Claude Code commands and utilities. Copy formatting, tweet posting, and more.",
-    "version": "2.4.0"
+    "description": "Personal Claude Code commands and utilities. Copy formatting, tweet posting, and more."
   },
   "plugins": [
     {
