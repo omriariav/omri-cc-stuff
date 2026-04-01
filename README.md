@@ -93,6 +93,33 @@ Evaluate any skill's design quality against [best practices](https://x.com/trq21
 
 **Grades:** A (25-29), B (20-24), C (15-19), D (10-14), F (0-9)
 
+### `/find-session` - Search Past Conversations
+
+Search past Claude Code session history by keyword and get `claude --resume` commands to pick up where you left off.
+
+```
+/find-session deploy                → Search current project for "deploy"
+/find-session --all taboola         → Search across all projects
+/find-session --all --json auth     → Structured JSON output
+```
+
+**Features:**
+- Searches user messages and custom titles (not assistant text)
+- Word-boundary matching for clean terms, literal match for punctuation (`claude-mem`, `c++`)
+- Shows custom title (from `/rename`) when set, falls back to first message preview
+- Optional Haiku summarization for untitled sessions (asks before running)
+- `--json` mode for programmatic use
+- Git-aware project root resolution (works from subdirectories)
+
+**Configuration** (`config.json`):
+| Setting | Default | Description |
+|---------|---------|-------------|
+| `max_results` | 20 | Max sessions to show |
+| `use_haiku_summary` | true | Enable Haiku summarization prompt |
+| `haiku_threshold` | 50 | Max results for Haiku to trigger |
+| `haiku_model` | `claude-haiku-4-5-20251001` | Model for summarization |
+| `exclude_slugs` | `[]` | Project slugs to skip in `--all` mode |
+
 ### `/claude-reviewer` - Claude Code Configuration Auditor
 
 Review any project's `.claude/` folder setup against [best practices](https://x.com/akshay_pachaar/status/2035341800739877091). Scores 8 dimensions (24-point rubric), detects anti-patterns, and produces an actionable improvement report.

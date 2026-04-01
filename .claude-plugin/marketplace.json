@@ -5,8 +5,7 @@
     "email": "omri.ariav@gmail.com"
   },
   "metadata": {
-    "description": "Personal Claude Code commands and utilities. Copy formatting, tweet posting, and more.",
-    "version": "2.4.0"
+    "description": "Personal Claude Code commands and utilities. Copy formatting, tweet posting, and more."
   },
   "plugins": [
     {
@@ -86,6 +85,27 @@
       ],
       "skills": [
         "./skills/skill-reviewer"
+      ]
+    },
+    {
+      "name": "find-session",
+      "source": "./plugins/find-session",
+      "description": "Search past Claude Code conversations by keyword and get session IDs for claude --resume.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Omri Ariav",
+        "email": "omri.ariav@gmail.com"
+      },
+      "category": "utilities",
+      "keywords": [
+        "session",
+        "search",
+        "resume",
+        "history",
+        "conversations"
+      ],
+      "skills": [
+        "./skills/find-session"
       ]
     },
     {
