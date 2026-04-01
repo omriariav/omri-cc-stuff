@@ -80,7 +80,9 @@ def parse_session(content: str) -> tuple:
         if isinstance(c, list):
             for item in c:
                 if isinstance(item, dict) and item.get("type") == "text":
-                    text = item["text"]
+                    text = item.get("text", "")
+                    if not text:
+                        continue
                     user_parts.append(text)
                     if first_msg == "(no message)":
                         first_msg = " ".join(text.split())[:130]
@@ -231,6 +233,7 @@ def main():
                     print(json.dumps({"error": msg, "sessions": [], "total": 0}))
                 else:
                     print(msg)
+                return
             continue
         results.extend(search_project_dir(project_dir, query, display))
 
