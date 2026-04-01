@@ -106,9 +106,9 @@ def search_project_dir(project_dir: Path, query: str, display: str) -> list:
 def main():
     args = sys.argv[1:]
 
-    search_all = "--all" in args
+    search_all = "--all" in args or "-all" in args
     if search_all:
-        args = [a for a in args if a != "--all"]
+        args = [a for a in args if a not in ("--all", "-all")]
 
     query = " ".join(args).lower()
     config = load_config()
