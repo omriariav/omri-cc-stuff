@@ -3,6 +3,7 @@
 
 import json
 import os
+import re
 import sys
 from datetime import datetime
 from pathlib import Path
@@ -55,6 +56,36 @@ def parse_session(content: str) -> tuple:
     return custom_title, first_msg
 
 
+def extract_user_text(content: str) -> str:
+    """Extract only user message text and custom titles from a session."""
+    parts = []
+    for line in content.splitlines():
+        try:
+            d = json.loads(line)
+            if d.get("type") == "custom-title":
+                parts.append(d.get("customTitle", ""))
+            msg = d.get("message") or {}
+            if msg.get("role") == "user":
+                c = msg.get("content", "")
+                if isinstance(c, list):
+                    for item in c:
+                        if isinstance(item, dict) and item.get("type") == "text":
+                            parts.append(item["text"])
+                elif isinstance(c, str):
+                    parts.append(c)
+        except Exception:
+            pass
+    return "\n".join(parts).lower()
+
+
+def matches_query(text: str, query: str) -> bool:
+    """Word-boundary exact match for each query term."""
+    for term in query.split():
+        if not re.search(r'\b' + re.escape(term) + r'\b', text):
+            return False
+    return True
+
+
 def search_project_dir(project_dir: Path, query: str, display: str) -> list:
     results = []
     for fpath in project_dir.glob("*.jsonl"):
@@ -62,8 +93,10 @@ def search_project_dir(project_dir: Path, query: str, display: str) -> list:
             content = fpath.read_text(errors="ignore")
         except Exception:
             continue
-        if query and query not in content.lower():
-            continue
+        if query:
+            user_text = extract_user_text(content)
+            if not matches_query(user_text, query):
+                continue
         dt = datetime.fromtimestamp(fpath.stat().st_mtime)
         custom_title, first_msg = parse_session(content)
         results.append((dt, display, fpath.stem, custom_title, first_msg))
