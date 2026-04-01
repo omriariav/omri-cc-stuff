@@ -67,7 +67,8 @@ def parse_session(content: str) -> tuple:
 
         # Track latest custom-title (not first — user may /rename multiple times)
         if d.get("type") == "custom-title":
-            title = d.get("customTitle", "").strip()
+            raw_title = d.get("customTitle", "")
+            title = str(raw_title).strip() if raw_title else ""
             if title:
                 custom_title = title
                 user_parts.append(title)
@@ -80,7 +81,8 @@ def parse_session(content: str) -> tuple:
         if isinstance(c, list):
             for item in c:
                 if isinstance(item, dict) and item.get("type") == "text":
-                    text = item.get("text", "")
+                    raw_text = item.get("text", "")
+                    text = str(raw_text) if raw_text else ""
                     if not text:
                         continue
                     user_parts.append(text)
@@ -113,6 +115,7 @@ def search_project_dir(project_dir: Path, query: str, display: str) -> list:
     for fpath in project_dir.glob("*.jsonl"):
         try:
             content = fpath.read_text(errors="replace")
+            mtime = fpath.stat().st_mtime
         except Exception:
             continue
 
@@ -121,7 +124,7 @@ def search_project_dir(project_dir: Path, query: str, display: str) -> list:
         if query and not matches_query(user_text, query):
             continue
 
-        dt = datetime.fromtimestamp(fpath.stat().st_mtime)
+        dt = datetime.fromtimestamp(mtime)
         results.append({
             "date": dt,
             "project": display,
