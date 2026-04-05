@@ -1,5 +1,5 @@
 ---
-description: Copy to clipboard for Gmail/email (HTML). Specify what to copy, or auto-detects from context.
+description: Copy to clipboard for Gmail/email (rich text). Specify what to copy, or auto-detects from context.
 argument-hint: [what to copy]
 ---
 
@@ -13,7 +13,11 @@ Copy data/tables/text to clipboard, formatted as HTML for Gmail.
 
 1. **Find content**: If specified in arguments, find that content. Otherwise, find most recent table/data/output.
 2. **Format as HTML for email**
-3. **Copy to clipboard**: `pbcopy`
+3. **Copy to clipboard as rich text** (Gmail pastes raw HTML as text if you use `pbcopy`):
+   1. Write HTML to a temp file (e.g., `/tmp/claude-email.html`)
+   2. Convert to RTF: `textutil -convert rtf -inputencoding UTF-8 /tmp/claude-email.html -output /tmp/claude-email.rtf`
+   3. Copy RTF to clipboard: `osascript -e 'set the clipboard to (read (POSIX file "/tmp/claude-email.rtf") as «class RTF »)'`
+   - **Do NOT use `pbcopy`** — it copies plain text only
 4. **Confirm**: Show preview
 
 ## Email/Gmail Formatting Rules
@@ -59,7 +63,7 @@ Embed as: `<img src="[chart url]" alt="Chart">`
 
 After copying, show:
 ```
-✓ Copied to clipboard (format: HTML for Email)
+✓ Copied to clipboard (format: Gmail rich text)
 
 Preview:
 [first 5-10 lines of copied content]

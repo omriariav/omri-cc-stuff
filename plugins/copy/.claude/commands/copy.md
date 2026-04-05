@@ -1,5 +1,5 @@
 ---
-description: Format and copy output to clipboard. Guesses what to copy from context. Optional destination (slack/email/gchat/jira/gdocs) and what to copy.
+description: Format and copy output to clipboard. Guesses what to copy from context. Optional destination (slack/gmail/gchat/jira/gdocs/md/richformat/cleartext) and what to copy.
 argument-hint: "[destination] [what to copy]"
 ---
 
@@ -11,12 +11,14 @@ Copy data/tables/text to clipboard, formatted for the destination.
 
 ```
 /copy                     → Clear text, guess what to copy
+/copy cleartext           → Explicit clear text (same as no destination)
 /copy slack               → Format for Slack
-/copy email               → Format for Gmail/email
+/copy gmail               → Format for Gmail/email (rich text)
 /copy gchat               → Format for Google Chat
 /copy gdocs               → Format for Google Docs
-/copy jira                → Format for Jira
+/copy jira                → Format for Jira Cloud (Markdown)
 /copy md                  → Format as Markdown
+/copy richformat          → Format as Rich Text (RTF)
 /copy slack the summary   → Format specific content for Slack
 /copy the findings        → Clear text, copy specific content
 ```
@@ -34,7 +36,8 @@ Copy data/tables/text to clipboard, formatted for the destination.
    - If not specified → find most recent table, data, or significant output
 3. **Format for destination** (or clear text if none specified)
 4. **Copy to clipboard**:
-   - **Email**: Write HTML to temp file → `textutil` convert to RTF → `osascript` to copy RTF (rich text paste)
+   - **Gmail**: Write HTML to temp file → `textutil` convert to RTF → `osascript` to copy RTF (rich text paste)
+   - **Richformat**: Write RTF markup → copy with RTF content type (see richformat section)
    - **All others**: `pbcopy` (plain text)
 5. **Confirm**: Show preview of what was copied
 
@@ -68,10 +71,12 @@ Copy data/tables/text to clipboard, formatted for the destination.
   3. Copy RTF to clipboard: `osascript -e 'set the clipboard to (read (POSIX file "/tmp/claude-email.rtf") as «class RTF »)'`
 - Do NOT use `pbcopy` for email — it copies plain text only
 
-### Jira
-- Tables: `||header||` and `|cell|`
-- Bold: `*text*`
-- Image: `!url!`
+### Jira (Jira Cloud — Markdown)
+- Tables: Standard Markdown `| col |` syntax
+- Bold: `**text**`
+- Links: `[text](url)`
+- Headers: `# H1`, `## H2`, etc.
+- Code: `` `code` `` or triple backticks
 
 ### Markdown (md)
 - Standard Markdown syntax
@@ -86,6 +91,15 @@ Copy data/tables/text to clipboard, formatted for the destination.
 - Tables as Markdown `| col |` syntax
 - Bold: `**text**`
 - Links: `[text](url)`
+
+### Rich Text (richformat)
+- RTF markup for Word, Pages, etc.
+- Bold: `\b text\b0`
+- Tables: `\trowd`, `\cell`, `\row`
+- **IMPORTANT: RTF clipboard copy** — plain `pbcopy` won't preserve formatting:
+  ```bash
+  echo '{\rtf1\ansi ...}' | pbcopy -Prefer rtf
+  ```
 
 ## ASCII Table Format (Slack & GChat)
 
@@ -145,8 +159,11 @@ Find last output, format as Markdown. User pastes via Edit → Paste from Markdo
 ### `/copy the summary`
 Find "summary" in conversation, copy as clear text.
 
-### `/copy email the comparison`
-Find "comparison", format as HTML table for email.
+### `/copy gmail the comparison`
+Find "comparison", format as HTML table for email (rich text copy).
+
+### `/copy richformat`
+Find last output, format as Rich Text (RTF) for Word, Pages, etc.
 
 ## Output
 

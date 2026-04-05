@@ -21,7 +21,7 @@ Copy data/tables/text to clipboard, formatted for your destination.
 |---------|-------------|
 | `/copy:slack` | Format for Slack (ASCII tables, `*bold*`) |
 | `/copy:gchat` | Format for Google Chat (same as Slack) |
-| `/copy:gmail` | Format for Gmail/email (HTML tables) |
+| `/copy:gmail` | Format for Gmail/email (rich text paste) |
 | `/copy:gdocs` | Format for Google Docs (Markdown, paste via Edit → Paste from Markdown) |
 | `/copy:jira` | Format for Jira Cloud (Markdown) |
 | `/copy:md` | Markdown (standard syntax) |
@@ -32,7 +32,7 @@ Copy data/tables/text to clipboard, formatted for your destination.
 ```
 /copy:slack                    → Auto-detect what to copy, format for Slack
 /copy:slack the summary table  → Copy specific content for Slack
-/copy:gmail                    → Auto-detect, format as HTML for email
+/copy:gmail                    → Auto-detect, format as rich text for email
 ```
 
 **Features:**
