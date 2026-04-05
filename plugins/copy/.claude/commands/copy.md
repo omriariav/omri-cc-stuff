@@ -92,6 +92,15 @@ Copy data/tables/text to clipboard, formatted for the destination.
 - Bold: `**text**`
 - Links: `[text](url)`
 
+### Rich Text (richformat)
+- RTF markup for Word, Pages, etc.
+- Bold: `\b text\b0`
+- Tables: `\trowd`, `\cell`, `\row`
+- **IMPORTANT: RTF clipboard copy** — plain `pbcopy` won't preserve formatting:
+  ```bash
+  echo '{\rtf1\ansi ...}' | pbcopy -Prefer rtf
+  ```
+
 ## ASCII Table Format (Slack & GChat)
 
 ```
