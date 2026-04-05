@@ -1,5 +1,5 @@
 ---
-description: Format and copy output to clipboard. Guesses what to copy from context. Optional destination (slack/gmail/gchat/jira/gdocs/md/richformat) and what to copy.
+description: Format and copy output to clipboard. Guesses what to copy from context. Optional destination (slack/gmail/gchat/jira/gdocs/md/richformat/cleartext) and what to copy.
 argument-hint: "[destination] [what to copy]"
 ---
 
@@ -11,6 +11,7 @@ Copy data/tables/text to clipboard, formatted for the destination.
 
 ```
 /copy                     → Clear text, guess what to copy
+/copy cleartext           → Explicit clear text (same as no destination)
 /copy slack               → Format for Slack
 /copy gmail               → Format for Gmail/email (rich text)
 /copy gchat               → Format for Google Chat
@@ -36,6 +37,7 @@ Copy data/tables/text to clipboard, formatted for the destination.
 3. **Format for destination** (or clear text if none specified)
 4. **Copy to clipboard**:
    - **Gmail**: Write HTML to temp file → `textutil` convert to RTF → `osascript` to copy RTF (rich text paste)
+   - **Richformat**: Write RTF markup → copy with RTF content type (see richformat section)
    - **All others**: `pbcopy` (plain text)
 5. **Confirm**: Show preview of what was copied
 
