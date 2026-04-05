@@ -1,5 +1,5 @@
 ---
-description: Copy to clipboard for Gmail/email (HTML). Specify what to copy, or auto-detects from context.
+description: Copy to clipboard for Gmail/email (rich text). Specify what to copy, or auto-detects from context.
 argument-hint: [what to copy]
 ---
 
@@ -63,7 +63,7 @@ Embed as: `<img src="[chart url]" alt="Chart">`
 
 After copying, show:
 ```
-✓ Copied to clipboard (format: HTML for Email)
+✓ Copied to clipboard (format: Gmail rich text)
 
 Preview:
 [first 5-10 lines of copied content]
