@@ -15,6 +15,16 @@ Voice learning and skill structure improvements.
 - Trimmed SKILL.md from 134 to 92 lines via progressive disclosure
 - Removed duplicate credential setup and verbose script output sections
 
+## copy v2.2.1 (2026-04-05)
+
+Bugfix: resolve format inconsistencies between router and subcommands.
+
+### Fixed
+- **Jira**: Router had stale wiki markup (`||header||`, `*bold*`); now matches `jira.md` Markdown syntax
+- **Gmail**: `gmail.md` incorrectly used `pbcopy`; now uses `textutil` → RTF → `osascript` for rich text paste
+- **Router**: Added `richformat` and `cleartext` to argument list, examples, and clipboard rules
+- **Router**: Renamed `/copy email` → `/copy gmail` for consistency with actual command name
+
 ## copy v2.2.0 (2026-03-30)
 
 ### New
