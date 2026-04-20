@@ -129,6 +129,28 @@
       "skills": [
         "./skills/claude-reviewer"
       ]
+    },
+    {
+      "name": "coacher",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/omriariav/claude-coacher.git"
+      },
+      "description": "Primes Claude with a peer-collaborator frame at SessionStart (based on Amanda Askell's prompting philosophy via https://x.com/itsolelehmann/status/2045578185950040390). Provides /coacher:status, /coacher:audit, /coacher:reset, and /coacher:rant for mid-session integrity checks, CLAUDE.md conflict detection, re-anchoring, and raw-vent-to-productive translation.",
+      "version": "0.2.0",
+      "author": {
+        "name": "Omri Ariav",
+        "email": "omri.ariav@gmail.com"
+      },
+      "category": "utilities",
+      "keywords": [
+        "prompting",
+        "collaboration",
+        "frame",
+        "tone",
+        "askell",
+        "coach"
+      ]
     }
   ]
 }
