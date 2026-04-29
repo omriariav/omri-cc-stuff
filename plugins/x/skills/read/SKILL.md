@@ -4,7 +4,9 @@ description: |
   Read a tweet from X (Twitter) by URL or ID and load it into the conversation.
   Use when user says "/x:read <url>", "read this tweet", "what does this tweet say", or pastes an x.com / twitter.com status link and wants to discuss, summarize, or reply to it.
   NOT for posting (use /x:tweet), timelines, search, analytics, or DMs.
+argument-hint: '<x.com URL or numeric tweet ID> [--json]'
 allowed-tools: Bash(python3*), Read
+user-invocable: true
 ---
 
 # Read - Fetch a Tweet via X API

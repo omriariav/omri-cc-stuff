@@ -4,7 +4,9 @@ description: |
   Post tweets to X (Twitter) from Claude Code. Supports single tweets, threads (auto-split or manual), and replies.
   Use when user says "/x:tweet", "post a tweet", "tweet this", "post a thread", "reply to this tweet".
   NOT for reading tweets, analytics, scheduling, or DMs.
+argument-hint: '<text or topic to tweet>'
 allowed-tools: Bash(python3*), Bash(bash scripts/*), Read, AskUserQuestion
+user-invocable: true
 ---
 
 # Tweet - Post to X (Twitter)
