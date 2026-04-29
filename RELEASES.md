@@ -44,7 +44,7 @@ Voice learning and skill structure improvements.
 Bugfix: `/copy:slack` now emits Markdown `[text](url)` links instead of Slack's `<url|text>` Block Kit syntax.
 
 ### Fixed
-- **Slack**: Links use `[text](url)` (auto-converted by the Slack composer on paste). The `<url|text>` form is valid in API/Block Kit payloads but renders as literal text when pasted into the composer. (#6)
+- **Slack**: Links use Markdown `[text](url)` — renders as a hyperlink in the composer when "Format messages with markup" is enabled in Slack preferences. The previous `<url|text>` form is API/`mrkdwn` syntax and renders literally in the composer. Raw URLs remain a safe fallback (Slack auto-unfurls them). (#6)
 - Router (`/copy slack`) updated to match.
 
 ## copy v2.2.1 (2026-04-05)
