@@ -8,7 +8,7 @@ Post a tweet from Claude Code via the X API v2. Supports single tweets, threads 
 
 ## Workflow
 
-0. **Setup check**: Run `bash ${CLAUDE_PLUGIN_ROOT}/skills/tweet/scripts/verify-setup.sh`. If credentials are missing, run `bash ${CLAUDE_PLUGIN_ROOT}/skills/tweet/scripts/setup.sh` (native macOS dialogs — values never pass through the conversation), then re-verify.
+0. **Setup check**: Run `bash "${CLAUDE_PLUGIN_ROOT}/skills/tweet/scripts/verify-setup.sh"`. If credentials are missing, run `bash "${CLAUDE_PLUGIN_ROOT}/skills/tweet/scripts/setup.sh"` (native macOS dialogs — values never pass through the conversation), then re-verify.
 
 1. **Draft**: Take `$ARGUMENTS` as the tweet prompt. If it's a direct tweet (clear, short text), use as-is. If it's a description/topic, draft tweet text. Read `${CLAUDE_PLUGIN_ROOT}/skills/tweet/SKILL.md`, `${CLAUDE_PLUGIN_ROOT}/skills/tweet/references/drafting-guidelines.md`, `${CLAUDE_PLUGIN_ROOT}/skills/tweet/config.json`, and `${CLAUDE_PLUGIN_ROOT}/skills/tweet/LEARNINGS.json` for voice and operational defaults. No length restriction at draft stage.
 
@@ -19,10 +19,10 @@ Post a tweet from Claude Code via the X API v2. Supports single tweets, threads 
 2b. **Thread preview** (if user chose "Post as thread"): show every part with per-part char counts (`1/N: text... (278/280)`), then `AskUserQuestion`: `Post it` / `Edit` / `Cancel`.
 
 3. **Post**: Run from the plugin root:
-   - **Single**: `python3 ${CLAUDE_PLUGIN_ROOT}/skills/tweet/scripts/post.py "the tweet text"`
+   - **Single**: `python3 "${CLAUDE_PLUGIN_ROOT}/skills/tweet/scripts/post.py" "the tweet text"`
    - **Thread (pre-split)**: post each part with `--reply-to <previous_id>` chaining, capturing each tweet_id from output
-   - **Thread (auto-split, fallback only)**: `python3 ${CLAUDE_PLUGIN_ROOT}/skills/tweet/scripts/post.py --thread "long text"`
-   - **Reply**: `python3 ${CLAUDE_PLUGIN_ROOT}/skills/tweet/scripts/post.py --reply-to TWEET_ID "reply text"`
+   - **Thread (auto-split, fallback only)**: `python3 "${CLAUDE_PLUGIN_ROOT}/skills/tweet/scripts/post.py" --thread "long text"`
+   - **Reply**: `python3 "${CLAUDE_PLUGIN_ROOT}/skills/tweet/scripts/post.py" --reply-to TWEET_ID "reply text"`
 
 4. **Confirm**: Show the tweet URL(s) from the script output.
 

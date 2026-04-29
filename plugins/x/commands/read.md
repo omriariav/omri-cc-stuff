@@ -12,7 +12,7 @@ Fetch a single tweet via the X API v2 `GET /2/tweets/:id` endpoint and render it
 
 2. **Fetch**: Run from the plugin root:
    ```
-   python3 ${CLAUDE_PLUGIN_ROOT}/skills/read/scripts/read.py <target>
+   python3 "${CLAUDE_PLUGIN_ROOT}/skills/read/scripts/read.py" <target>
    ```
    Append `--json` as a separate argument when the user asked for raw JSON. The script reuses the same Keychain credentials as `/x:tweet` (service `x-api`).
 
