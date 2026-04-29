@@ -5,14 +5,13 @@
     "email": "omri.ariav@gmail.com"
   },
   "metadata": {
-    "description": "Personal Claude Code commands and utilities. Copy formatting, tweet posting, and more."
+    "description": "Personal Claude Code commands and utilities. Copy formatting, X posting and reading, and more."
   },
   "plugins": [
     {
       "name": "copy",
       "source": "./plugins/copy",
       "description": "Format and copy Claude output to clipboard for Slack, Email, Google Chat, Google Docs, or Jira.",
-      "version": "2.1.0",
       "author": {
         "name": "Omri Ariav",
         "email": "omri.ariav@gmail.com"
@@ -30,7 +29,6 @@
       "name": "setup-pulse",
       "source": "./plugins/setup-pulse",
       "description": "Install claude-pulse statusline for real-time token usage monitoring.",
-      "version": "1.0.1",
       "author": {
         "name": "Omri Ariav",
         "email": "omri.ariav@gmail.com"
@@ -47,10 +45,9 @@
       ]
     },
     {
-      "name": "tweet",
-      "source": "./plugins/tweet",
-      "description": "Post tweets to X (Twitter) from Claude Code. Drafts, previews, posts with approval. Supports threads and replies.",
-      "version": "1.2.0",
+      "name": "x",
+      "source": "./plugins/x",
+      "description": "Post and read tweets on X (Twitter) from Claude Code. /x:tweet drafts, previews, and posts (single, threads, replies). /x:read fetches a tweet by URL or ID into context.",
       "author": {
         "name": "Omri Ariav",
         "email": "omri.ariav@gmail.com"
@@ -61,17 +58,18 @@
         "twitter",
         "x",
         "social",
-        "posting"
+        "posting",
+        "reading"
       ],
       "skills": [
-        "./skills/tweet"
+        "./skills/tweet",
+        "./skills/read"
       ]
     },
     {
       "name": "skill-reviewer",
       "source": "./plugins/skill-reviewer",
       "description": "Evaluate any skill's design quality against best practices (based on https://x.com/trq212/status/2033949937936085378). Scores 10 dimensions (29-point rubric), detects anti-patterns, and optionally applies safe fixes.",
-      "version": "1.0.0",
       "author": {
         "name": "Omri Ariav",
         "email": "omri.ariav@gmail.com"
@@ -91,7 +89,6 @@
       "name": "find-session",
       "source": "./plugins/find-session",
       "description": "Search past Claude Code conversations by keyword and get session IDs for claude --resume.",
-      "version": "1.0.0",
       "author": {
         "name": "Omri Ariav",
         "email": "omri.ariav@gmail.com"
@@ -112,7 +109,6 @@
       "name": "claude-reviewer",
       "source": "./plugins/claude-reviewer",
       "description": "Review any project's .claude/ folder setup against best practices (based on https://x.com/akshay_pachaar/status/2035341800739877091). Scores 8 dimensions (24-point rubric) covering CLAUDE.md quality, permissions, rules, commands, skills, agents, git hygiene, and progressive disclosure.",
-      "version": "1.1.0",
       "author": {
         "name": "Omri Ariav",
         "email": "omri.ariav@gmail.com"
@@ -137,7 +133,6 @@
         "url": "https://github.com/omriariav/claude-coacher.git"
       },
       "description": "Primes Claude with a peer-collaborator frame at SessionStart (based on Amanda Askell's prompting philosophy via https://x.com/itsolelehmann/status/2045578185950040390). Provides /coacher:status, /coacher:audit, /coacher:reset, and /coacher:rant for mid-session integrity checks, CLAUDE.md conflict detection, re-anchoring, and raw-vent-to-productive translation.",
-      "version": "0.2.0",
       "author": {
         "name": "Omri Ariav",
         "email": "omri.ariav@gmail.com"

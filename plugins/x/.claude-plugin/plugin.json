@@ -1,0 +1,9 @@
+{
+  "name": "x",
+  "version": "2.0.0",
+  "description": "Post and read tweets on X (Twitter) from Claude Code. /x:tweet drafts, previews, and posts (single, threads, replies). /x:read fetches a tweet by URL or ID into context.",
+  "author": {
+    "name": "Omri Ariav",
+    "email": "omri.ariav@gmail.com"
+  }
+}
