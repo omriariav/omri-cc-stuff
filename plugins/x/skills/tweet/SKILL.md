@@ -2,7 +2,7 @@
 name: tweet
 description: |
   Post tweets to X (Twitter) from Claude Code. Supports single tweets, threads (auto-split or manual), and replies.
-  Use when user says "/tweet", "post a tweet", "tweet this", "post a thread", "reply to this tweet".
+  Use when user says "/x:tweet", "post a tweet", "tweet this", "post a thread", "reply to this tweet".
   NOT for reading tweets, analytics, scheduling, or DMs.
 allowed-tools: Bash(python3*), Bash(bash scripts/*), Read, AskUserQuestion
 ---

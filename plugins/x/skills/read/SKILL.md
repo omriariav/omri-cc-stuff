@@ -14,7 +14,7 @@ Fetch a single tweet via the X API v2 `GET /2/tweets/:id` endpoint and render it
 ## Workflow
 
 1. **Parse target**: Take `$ARGUMENTS`. Accept either a full URL (`https://x.com/<user>/status/<id>` or `twitter.com/...`) or a bare numeric tweet ID. The script handles both — pass `$ARGUMENTS` straight through.
-2. **Fetch**: Run `python3 scripts/read.py "$ARGUMENTS"` from this skill's directory. The script reuses the same Keychain credentials as `/x:tweet` (service `x-api`).
+2. **Fetch**: From this skill's directory, run `python3 scripts/read.py <target>` where `<target>` is the URL or numeric ID extracted from `$ARGUMENTS`. If the user asked for raw JSON (e.g. "raw", "as JSON", "--json"), append `--json` as a separate argument: `python3 scripts/read.py <target> --json`. Do NOT pass `"$ARGUMENTS"` as a single quoted string — that prevents flags from being parsed. The script reuses the same Keychain credentials as `/x:tweet` (service `x-api`).
 3. **Present**: The script prints markdown with the tweet's text, author, timestamp, public metrics, any referenced tweets (replied-to / quoted), and media URLs. Show this output to the user verbatim or summarize it depending on what they asked for.
 4. **Follow-up**: If the user wants to reply, hand off to `/x:tweet` with the tweet ID for `--reply-to`. The fetched tweet's URL contains the ID after `/status/`.
 

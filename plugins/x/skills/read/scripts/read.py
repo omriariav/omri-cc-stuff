@@ -76,7 +76,7 @@ def make_oauth_session(creds):
 
 def fetch_tweet(oauth, tweet_id):
     params = {
-        "tweet.fields": "created_at,author_id,public_metrics,conversation_id,referenced_tweets,lang,entities",
+        "tweet.fields": "created_at,author_id,public_metrics,conversation_id,referenced_tweets,lang,entities,attachments",
         "expansions": "author_id,referenced_tweets.id,referenced_tweets.id.author_id,attachments.media_keys",
         "user.fields": "username,name,verified",
         "media.fields": "type,url,preview_image_url,alt_text",
