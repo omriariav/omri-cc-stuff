@@ -6,7 +6,7 @@ description: |
   NOT for reading tweets, analytics, scheduling, or DMs.
 argument-hint: '<text or topic to tweet>'
 allowed-tools: Bash(python3*), Bash(bash scripts/*), Read, AskUserQuestion
-user-invocable: true
+user-invocable: false
 ---
 
 # Tweet - Post to X (Twitter)
