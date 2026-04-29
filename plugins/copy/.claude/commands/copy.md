@@ -52,7 +52,7 @@ Copy data/tables/text to clipboard, formatted for the destination.
 ### Slack
 - Tables in triple backticks (```) with ASCII art (│ and ─)
 - Bold: single `*text*`
-- Links: `<url|text>`
+- Links: Markdown `[text](url)` — Slack's composer auto-converts on paste. Do NOT use `<url|text>` (that's API/Block Kit syntax and won't render in the composer).
 - Generate QuickChart URL for numeric comparisons
 
 ### GChat (Google Chat)
