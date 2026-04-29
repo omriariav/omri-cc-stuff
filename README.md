@@ -60,6 +60,8 @@ Claude: ✓ Copied to clipboard (format: Slack)
 
 Two skills under one plugin, sharing the same X API credentials.
 
+> **⚠️ Migrating from the old `tweet` plugin?** This release renames the plugin (`tweet` → `x`) and moves its directory (`plugins/tweet/` → `plugins/x/`). Claude Code's plugin cache still points at the old path, so `/plugin update` will fail with `Plugin source not found at .../plugins/tweet`. Uninstall the old `tweet` plugin via `/plugin`, then install `x` fresh. Your Keychain credentials (service `x-api`) are untouched and will be picked up automatically. See `RELEASES.md` for the full migration path.
+
 #### `/x:tweet` - Post
 
 Post tweets directly from Claude Code. Drafts the text, shows a preview with character count, and asks for approval before posting. Learns your voice over time from editing patterns and feedback.

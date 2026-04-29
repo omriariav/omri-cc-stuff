@@ -14,7 +14,15 @@
 - `marketplace.json` plugin entry renamed and now lists both `./skills/tweet` and `./skills/read`.
 
 ### Migration
-No config migration needed — Keychain credentials live under service `x-api`, untouched. Just update slash command muscle memory: `/tweet` → `/x:tweet`.
+
+**If you had the old `tweet` plugin installed**, Claude Code's plugin cache still points at `plugins/tweet/` and `/plugin update` will fail with `Plugin source not found at .../plugins/tweet`. The directory and entry name both moved, so this is a fresh install, not an upgrade.
+
+To migrate:
+1. `/plugin` → select `tweet` → **Uninstall**
+2. `/plugin` → install `x` from this marketplace
+3. Restart Claude Code so the new commands register
+
+Keychain credentials live under service `x-api` and are untouched — `/x:tweet` will pick them up immediately. Just update muscle memory: `/tweet` → `/x:tweet`, and you get `/x:read` for free.
 
 ## tweet v1.3.0 (2026-03-30)
 
