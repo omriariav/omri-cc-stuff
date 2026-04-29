@@ -44,6 +44,6 @@ if [ $errors -eq 0 ]; then
     echo "Ready to tweet!"
 else
     echo ""
-    echo "$errors issue(s) found. Fix them before using /tweet."
+    echo "$errors issue(s) found. Fix them before using /x:tweet."
     exit 1
 fi

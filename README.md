@@ -56,13 +56,19 @@ You: /copy:slack
 Claude: ✓ Copied to clipboard (format: Slack)
 ```
 
-### `/tweet` - Post to X (Twitter)
+### `/x` - Post and Read on X (Twitter)
+
+Two skills under one plugin, sharing the same X API credentials.
+
+> **⚠️ Migrating from the old `tweet` plugin?** This release renames the plugin (`tweet` → `x`) and moves its directory (`plugins/tweet/` → `plugins/x/`). Claude Code's plugin cache still points at the old path, so `/plugin update` will fail with `Plugin source not found at .../plugins/tweet`. Uninstall the old `tweet` plugin via `/plugin`, then install `x` fresh. Your Keychain credentials (service `x-api`) are untouched and will be picked up automatically. See `RELEASES.md` for the full migration path.
+
+#### `/x:tweet` - Post
 
 Post tweets directly from Claude Code. Drafts the text, shows a preview with character count, and asks for approval before posting. Learns your voice over time from editing patterns and feedback.
 
 ```
-/tweet Testing my new tweet skill from Claude Code
-/tweet Announce the launch of our new attribution feature
+/x:tweet Testing my new tweet skill from Claude Code
+/x:tweet Announce the launch of our new attribution feature
 ```
 
 **Workflow:**
@@ -71,11 +77,22 @@ Post tweets directly from Claude Code. Drafts the text, shows a preview with cha
 3. Approve / Edit / Cancel
 4. Posts via X API v2, returns tweet URL
 
+#### `/x:read` - Read
+
+Fetch a tweet by URL or ID via the X API v2 and load it into the conversation as markdown — with author, timestamp, metrics, replied-to / quoted context, and media. Useful for "summarize this thread", "draft a reply to this", or quoting a tweet in another piece of writing.
+
+```
+/x:read https://x.com/jack/status/20
+/x:read 20
+```
+
+Hand the resulting tweet ID to `/x:tweet --reply-to <id>` to chain a reply. Note: each read is metered by X (~$0.005 / post read on the standard tier).
+
 **Setup (one-time):**
 ```bash
 pip3 install requests-oauthlib
 ```
-On first run, `/tweet` will pop up native macOS dialogs to store your X API credentials securely in Keychain. Get keys from [developer.x.com](https://developer.x.com) → your app → Keys and Tokens (Consumer Key/Secret + Access Token/Secret with Read+Write permissions).
+On first run, `/x:tweet` will pop up native macOS dialogs to store your X API credentials securely in Keychain (`/x:read` reuses the same credentials). Get keys from [developer.x.com](https://developer.x.com) → your app → Keys and Tokens (Consumer Key/Secret + Access Token/Secret with Read+Write permissions).
 
 Alternatively, set env vars in `~/.zshrc`: `X_API_KEY`, `X_API_SECRET`, `X_ACCESS_TOKEN`, `X_ACCESS_TOKEN_SECRET`.
 

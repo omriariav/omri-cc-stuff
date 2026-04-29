@@ -1,0 +1,16 @@
+{
+  "description": "User voice preferences learned from tweet drafting and editing. Read before drafting, append after posting.",
+  "entries": [
+    {"date": "2026-03-30", "category": "tone", "observation": "Prefers direct, factual tone. No fluff, no hype."},
+    {"date": "2026-03-30", "category": "phrasing", "observation": "Avoids em dashes and dashes as punctuation. Use commas, periods, or restructure instead."},
+    {"date": "2026-03-30", "category": "structure", "observation": "Likes data-driven posts with visual elements (bar charts, lists, structured numbers)."},
+    {"date": "2026-03-30", "category": "structure", "observation": "Prefers threads over single tweets for complex topics."},
+    {"date": "2026-03-30", "category": "structure", "observation": "Wants sources credited at the end of a tweet or thread."},
+    {"date": "2026-03-30", "category": "tone", "observation": "Tone: informative, not preachy or political."},
+    {"date": "2026-04-01", "category": "phrasing", "observation": "When describing a pain point, use the user's actual experience, not a technical description. E.g., 'stuck browsing JSONL files' was wrong, the real issue was 'can't find it in the /resume list because sessions are untitled'."},
+    {"date": "2026-04-01", "category": "structure", "observation": "For announcement threads about personal projects, user wants to explain the 'why' (pain point) before the 'what' (solution), and give credit/context for tools used."},
+    {"date": "2026-04-26", "category": "structure", "observation": "When asked to draft a thread about a debugging story, user countered with 'one tweet, no thread' and accepted a single-tweet condensed version. When the story can plausibly fit in one tweet (<270 chars), draft single-tweet first and offer thread as an alternative, rather than defaulting to thread for technical/multi-act stories."},
+    {"date": "2026-04-28", "category": "phrasing", "observation": "For announcements about gws, the user wants to introduce it as 'gws (my unofficial Google Workspace CLI)' so unfamiliar readers immediately know what it is. Don't assume audience knows the project name."},
+    {"date": "2026-04-29", "category": "structure", "observation": "For gws release announcements, the user accepts a tight bullet-list single tweet: header line ('gws vX.Y.Z (my unofficial Google Workspace CLI):'), one bullet per shipped feature with key flag/behavior names inlined as `code`, then the GitHub release URL on its own line. Approved on v1.37.0."}
+  ]
+}
