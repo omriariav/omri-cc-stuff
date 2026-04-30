@@ -39,6 +39,14 @@ Voice learning and skill structure improvements.
 - Trimmed SKILL.md from 134 to 92 lines via progressive disclosure
 - Removed duplicate credential setup and verbose script output sections
 
+## copy v2.2.2 (2026-04-29)
+
+Bugfix: `/copy:slack` now emits Markdown `[text](url)` links instead of Slack's `<url|text>` Block Kit syntax.
+
+### Fixed
+- **Slack**: Links use Markdown `[text](url)` — renders as a hyperlink in the composer when "Format messages with markup" is enabled in Slack preferences. The previous `<url|text>` form is API/`mrkdwn` syntax and renders literally in the composer. Raw URLs remain a safe fallback (Slack auto-unfurls them). (#6)
+- Router (`/copy slack`) updated to match.
+
 ## copy v2.2.1 (2026-04-05)
 
 Bugfix: resolve format inconsistencies between router and subcommands.

@@ -20,7 +20,7 @@ Copy data/tables/text to clipboard, formatted for Slack.
 
 - Tables in triple backticks (```) with ASCII art (│ and ─)
 - Bold: single `*text*`
-- Links: `<url|text>`
+- Links: Markdown `[text](url)` (renders as a hyperlink in the composer when "Format messages with markup" is enabled in Slack preferences). Do NOT use `<url|text>` — that's API/`mrkdwn` syntax and renders literally in the composer. If link text isn't important, raw URLs are the most compatible fallback (Slack auto-unfurls them).
 - Generate QuickChart URL for numeric comparisons
 
 ## ASCII Table Format
