@@ -50,7 +50,9 @@ Copy data/tables/text to clipboard, formatted for the destination.
 - Universal - works anywhere
 
 ### Slack
-- Tables in triple backticks (```) with ASCII art (│ and ─)
+Branches on content shape (see `commands/slack.md` for full details):
+- **Table-only content** → emit Sheets-flavored clipboard (TSV plain text + HTML with `<google-sheets-html-origin>` and `data-sheets-root="1"`) so paste renders as a **native Slack table**. Use the JXA `NSPasteboard` recipe in `slack.md`; `pbcopy` alone is not enough.
+- **Mixed content (table + prose) or prose only** → fall back to ASCII tables in triple-backtick code blocks. Slack does not render native tables when the paste contains anything besides a single table, so don't pretend.
 - Bold: single `*text*`
 - Links: Markdown `[text](url)` (renders as a hyperlink in the composer when "Format messages with markup" is enabled in Slack preferences). Do NOT use `<url|text>` — that's API/`mrkdwn` syntax and renders literally in the composer. If link text isn't important, raw URLs are the most compatible fallback (Slack auto-unfurls them).
 - Generate QuickChart URL for numeric comparisons
