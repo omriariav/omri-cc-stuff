@@ -38,7 +38,8 @@ Copy data/tables/text to clipboard, formatted for the destination.
 4. **Copy to clipboard**:
    - **Gmail**: Write HTML to temp file → `textutil` convert to RTF → `osascript` to copy RTF (rich text paste)
    - **Richformat**: Write RTF markup → copy with RTF content type (see richformat section)
-   - **All others**: `pbcopy` (plain text)
+   - **Slack with table-only content**: Set both `public.utf8-plain-text` (TSV) and `public.html` (Sheets-flavored `<table>` with `<google-sheets-html-origin>` + `data-sheets-root="1"`) on the macOS pasteboard via JXA `NSPasteboard` — see the recipe in `commands/slack.md`. Plain `pbcopy` will NOT produce a native Slack table.
+   - **Slack with mixed/prose content** *(or any other destination not listed above)*: `pbcopy` (plain text).
 5. **Confirm**: Show preview of what was copied
 
 ## Destination Formatting Rules
