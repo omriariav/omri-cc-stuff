@@ -38,7 +38,8 @@ Copy data/tables/text to clipboard, formatted for the destination.
 4. **Copy to clipboard**:
    - **Gmail**: Write HTML to temp file → `textutil` convert to RTF → `osascript` to copy RTF (rich text paste)
    - **Richformat**: Write RTF markup → copy with RTF content type (see richformat section)
-   - **All others**: `pbcopy` (plain text)
+   - **Slack with table-only content**: Set both `public.utf8-plain-text` (TSV) and `public.html` (Sheets-flavored `<table>` with `<google-sheets-html-origin>` + `data-sheets-root="1"`) on the macOS pasteboard via JXA `NSPasteboard` — see the recipe in `commands/slack.md`. Plain `pbcopy` will NOT produce a native Slack table.
+   - **Slack with mixed/prose content** *(or any other destination not listed above)*: `pbcopy` (plain text).
 5. **Confirm**: Show preview of what was copied
 
 ## Destination Formatting Rules
@@ -50,10 +51,12 @@ Copy data/tables/text to clipboard, formatted for the destination.
 - Universal - works anywhere
 
 ### Slack
-- Tables in triple backticks (```) with ASCII art (│ and ─)
-- Bold: single `*text*`
-- Links: Markdown `[text](url)` (renders as a hyperlink in the composer when "Format messages with markup" is enabled in Slack preferences). Do NOT use `<url|text>` — that's API/`mrkdwn` syntax and renders literally in the composer. If link text isn't important, raw URLs are the most compatible fallback (Slack auto-unfurls them).
-- Generate QuickChart URL for numeric comparisons
+Branches on content shape (see `commands/slack.md` for full details):
+- **Table-only content** → emit Sheets-flavored clipboard (TSV plain text + HTML with `<google-sheets-html-origin>` and `data-sheets-root="1"`) so paste renders as a **native Slack table**. Use the JXA `NSPasteboard` recipe in `slack.md`; `pbcopy` alone is not enough.
+- **Mixed content (table + prose) or prose only** → fall back to ASCII tables in triple-backtick code blocks. Slack does not render native tables when the paste contains anything besides a single table, so don't pretend.
+- Bold (mixed/prose path only): single `*text*`
+- Links (mixed/prose path only): Markdown `[text](url)` (renders as a hyperlink in the composer when "Format messages with markup" is enabled in Slack preferences). Do NOT use `<url|text>` — that's API/`mrkdwn` syntax and renders literally in the composer. If link text isn't important, raw URLs are the most compatible fallback (Slack auto-unfurls them).
+- QuickChart URLs for numeric comparisons (mixed/prose path only) — never append a chart URL or any prose to the table-only path; doing so makes the paste mixed and Slack drops native rendering.
 
 ### GChat (Google Chat)
 - **Same as Slack** - GChat doesn't render markdown tables
@@ -130,7 +133,10 @@ Always format numbers for readability:
 - `15.7894` → `15.8%`
 - `1247` → `1,247`
 
-## QuickChart (for Slack/Email only)
+## QuickChart (for Slack mixed-path / Email only)
+
+Skip QuickChart entirely on the Slack table-only path — adding a chart URL alongside the table converts the paste into mixed content and Slack will not render the native table.
+
 
 Generate chart URL when data has numeric comparisons:
 ```python
@@ -145,7 +151,9 @@ url = f"https://quickchart.io/chart?c={urllib.parse.quote(json.dumps(config))}&w
 Find last output, copy as clear text.
 
 ### `/copy slack`
-Find last output, format for Slack with ASCII table + chart URL.
+Find last output and branch:
+- If the resolved content is **just a table** → emit Sheets-flavored TSV+HTML on the pasteboard (JXA recipe in `commands/slack.md`); paste produces a native Slack table. No prose, no chart URL.
+- If the content is **prose / table+prose / no table** → ASCII table in a code block; QuickChart URL allowed for numeric comparisons.
 
 ### `/copy gchat`
 Find last output, format same as Slack (ASCII table in code block).
