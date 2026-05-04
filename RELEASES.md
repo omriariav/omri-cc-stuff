@@ -1,5 +1,24 @@
 # Releases
 
+## copy v2.3.0 (2026-05-04)
+
+`/copy:slack` now produces a **native Slack table** on paste when the resolved content is just a table.
+
+### New
+- **Native Slack table paste (table-only path)** — When the content is a bare table, `/copy:slack` puts a Google-Sheets-flavored payload on the macOS pasteboard: `public.utf8-plain-text` carries TSV, and `public.html` carries a `<table>` wrapped with `<google-sheets-html-origin>` and `data-sheets-root="1"`. Slack's composer recognizes that exact shape and converts the paste into a real native table block — same render as a bot posting via the Block Kit `table` API.
+- New `## Native Table Paste` section in `commands/slack.md` with the full TSV + HTML + JXA `NSPasteboard` recipe (plain `pbcopy` is not enough for this path).
+
+### Changed
+- **Router** (`/copy slack`): step 4 of the workflow now branches Slack into table-only (JXA path) vs mixed/prose (`pbcopy`); the destination rules and the example explicitly call out the same branch so a model following either prompt can't fall back to plain text and silently break native rendering.
+- Mixed/prose Slack guidance (bold, links, QuickChart) is now scoped to the mixed path. Adding any prose or chart URL to the table-only path would convert the paste into mixed content and Slack would drop the native render — the docs spell this out.
+
+### Why "table-only"?
+Slack's composer recognizes the Sheets-flavored clipboard only when the paste is a table. Add prose around the table and Slack falls back to plain text. For prose + native table together, the realistic options are:
+- Two pastes (prose first, table-only second), or
+- Use a Slack MCP / webhook that posts via `chat.postMessage` with a Block Kit `table` block.
+
+End users still cannot construct a native table block in the composer manually — that's a Slack platform constraint, not a plugin gap.
+
 ## x v2.0.0 (2026-04-29)
 
 **Breaking change:** plugin renamed `tweet` → `x`. Command `/tweet` is now `/x:tweet`. Update any scripts or muscle memory.
