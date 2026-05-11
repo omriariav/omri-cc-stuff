@@ -272,8 +272,8 @@ if __name__ == "__main__":
         except OSError as e:
             print(json.dumps({"error": f"Could not read --from-file {args.from_file!r}: {e}"}))
             sys.exit(1)
-        # Trailing newlines from editors/heredocs are almost never intentional in tweet bodies.
-        text = text.rstrip("\n")
+        # Trailing newlines (incl. CRLF) from editors/heredocs are almost never intentional in tweet bodies.
+        text = text.rstrip("\r\n")
     else:
         if not args.text:
             print(json.dumps({"error": "Missing tweet text. Pass as positional arg, or use --from-file PATH, or --delete TWEET_ID."}))

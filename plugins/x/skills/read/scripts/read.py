@@ -177,12 +177,17 @@ def render_markdown(payload):
             lines.append(body)
             lines.append("")
         else:
-            fallback = (
-                "_Article body is not exposed by the X API v2 — only the title is returned. "
-                "Open the Article URL above to read the full body."
-                + (f" The wrapping tweet links to it via {article_url}." if article_url else "")
-                + "_"
-            )
+            if article_url:
+                fallback = (
+                    "_Article body is not exposed by the X API v2 — only the title is returned. "
+                    "Open the Article URL above to read the full body._"
+                )
+            else:
+                fallback = (
+                    "_Article body is not exposed by the X API v2 — only the title is returned. "
+                    "The wrapping tweet does not include the article's expanded URL; "
+                    f"open https://x.com/{handle}/status/{data['id']} on the web to follow the article link._"
+                )
             lines.append(fallback)
             lines.append("")
         # Still surface the tweet's own text (typically just the t.co wrapper).
