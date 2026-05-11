@@ -76,7 +76,7 @@ def make_oauth_session(creds):
 
 def fetch_tweet(oauth, tweet_id):
     params = {
-        "tweet.fields": "created_at,author_id,public_metrics,conversation_id,referenced_tweets,lang,entities,attachments",
+        "tweet.fields": "created_at,author_id,public_metrics,conversation_id,referenced_tweets,lang,entities,attachments,article,note_tweet",
         "expansions": "author_id,referenced_tweets.id,referenced_tweets.id.author_id,attachments.media_keys",
         "user.fields": "username,name,verified",
         "media.fields": "type,url,preview_image_url,alt_text",
@@ -123,6 +123,15 @@ def index_media(payload):
     return media
 
 
+def find_article_url(data):
+    """Pull the expanded article URL out of entities.urls if the tweet links to one."""
+    for u in (data.get("entities") or {}).get("urls", []) or []:
+        expanded = u.get("expanded_url") or u.get("unwound_url") or ""
+        if "/i/article/" in expanded:
+            return expanded
+    return None
+
+
 def render_markdown(payload):
     data = payload["data"]
     users = index_users(payload)
@@ -133,10 +142,18 @@ def render_markdown(payload):
     handle = author.get("username", "unknown")
     name = author.get("name", handle)
 
+    article = data.get("article") or {}
+    note_tweet = data.get("note_tweet") or {}
+    is_article = bool(article)
+    article_url = find_article_url(data) if is_article else None
+
     lines = []
-    lines.append(f"# Tweet by {name} (@{handle})")
+    header_kind = "Article" if is_article else "Tweet"
+    lines.append(f"# {header_kind} by {name} (@{handle})")
     lines.append("")
     lines.append(f"**URL:** https://x.com/{handle}/status/{data['id']}")
+    if is_article and article_url:
+        lines.append(f"**Article URL:** {article_url}")
     if data.get("created_at"):
         lines.append(f"**Posted:** {data['created_at']}")
     metrics = data.get("public_metrics") or {}
@@ -148,10 +165,44 @@ def render_markdown(payload):
             f"{metrics.get('quote_count', 0)} quotes"
         )
     lines.append("")
-    lines.append("## Text")
-    lines.append("")
-    lines.append("> " + data.get("text", "").replace("\n", "\n> "))
-    lines.append("")
+
+    if is_article:
+        title = article.get("title") or "(untitled article)"
+        lines.append(f"## Article: {title}")
+        lines.append("")
+        # The v2 API exposes the article title but not the body. Some payloads
+        # carry the long-form body under note_tweet.text — surface it when present.
+        body = note_tweet.get("text")
+        if body:
+            lines.append(body)
+            lines.append("")
+        else:
+            if article_url:
+                fallback = (
+                    "_Article body is not exposed by the X API v2 — only the title is returned. "
+                    "Open the Article URL above to read the full body._"
+                )
+            else:
+                fallback = (
+                    "_Article body is not exposed by the X API v2 — only the title is returned. "
+                    "The wrapping tweet does not include the article's expanded URL; "
+                    f"open https://x.com/{handle}/status/{data['id']} on the web to follow the article link._"
+                )
+            lines.append(fallback)
+            lines.append("")
+        # Still surface the tweet's own text (typically just the t.co wrapper).
+        wrapper_text = data.get("text", "").strip()
+        if wrapper_text:
+            lines.append("### Wrapping tweet text")
+            lines.append("")
+            lines.append("> " + wrapper_text.replace("\n", "\n> "))
+            lines.append("")
+    else:
+        lines.append("## Text")
+        lines.append("")
+        body = note_tweet.get("text") or data.get("text", "")
+        lines.append("> " + body.replace("\n", "\n> "))
+        lines.append("")
 
     # Referenced tweets (replied-to / quoted)
     for ref in data.get("referenced_tweets", []) or []:

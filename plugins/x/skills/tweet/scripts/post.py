@@ -60,6 +60,36 @@ def make_oauth_session(creds):
     )
 
 
+def delete_tweet(tweet_id):
+    """Delete a tweet by ID. Prints JSON result and exits non-zero on failure."""
+    creds = load_credentials()
+    oauth = make_oauth_session(creds)
+    resp = oauth.delete(f"https://api.x.com/2/tweets/{tweet_id}")
+
+    if resp.status_code == 200:
+        body = resp.json()
+        deleted = body.get("data", {}).get("deleted", False)
+        print(json.dumps({"deleted": deleted, "id": tweet_id}))
+        if not deleted:
+            sys.exit(1)
+        return
+    if resp.status_code == 404:
+        print(json.dumps({"error": f"Tweet {tweet_id} not found (404). Already deleted or never existed."}))
+        sys.exit(1)
+    if resp.status_code in (401, 403):
+        try:
+            detail = resp.json().get("detail", resp.text)
+        except Exception:
+            detail = resp.text
+        print(json.dumps({"error": f"Auth error ({resp.status_code}): {detail}. The tweet must belong to the authenticated account."}))
+        sys.exit(1)
+    if resp.status_code == 429:
+        print(json.dumps({"error": "Rate limited by X API. Wait and try again."}))
+        sys.exit(1)
+    print(json.dumps({"error": f"X API error ({resp.status_code}): {resp.text}"}))
+    sys.exit(1)
+
+
 def post_single_tweet(oauth, text, reply_to=None):
     """Post a single tweet, optionally as a reply. Returns (tweet_id, response_data) or exits on error."""
     payload = {"text": text}
@@ -216,13 +246,41 @@ def post_tweet_thread(text, reply_to=None):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Post tweets via X API v2")
-    parser.add_argument("text", help="Tweet text to post")
+    parser.add_argument("text", nargs="?", help="Tweet text to post (omit when using --from-file or --delete)")
     parser.add_argument("--reply-to", dest="reply_to", help="Tweet ID to reply to")
     parser.add_argument("--thread", action="store_true", help="Auto-split into numbered thread")
+    parser.add_argument("--from-file", dest="from_file", help="Read tweet text from a file path instead of the positional arg. Avoids shell-escape bugs (apostrophes, quotes, newlines).")
+    parser.add_argument("--delete", dest="delete_id", metavar="TWEET_ID", help="Delete the tweet with this ID and exit.")
 
     args = parser.parse_args()
 
-    if args.thread:
-        post_tweet_thread(args.text, reply_to=args.reply_to)
+    if args.delete_id:
+        if args.text or args.from_file or args.thread or args.reply_to:
+            print(json.dumps({"error": "--delete is exclusive; do not combine with text, --from-file, --thread, or --reply-to."}))
+            sys.exit(2)
+        delete_tweet(args.delete_id)
+        sys.exit(0)
+
+    if args.from_file and args.text:
+        print(json.dumps({"error": "Pass tweet text either as the positional argument or via --from-file, not both."}))
+        sys.exit(2)
+
+    if args.from_file:
+        try:
+            with open(args.from_file, "r", encoding="utf-8") as f:
+                text = f.read()
+        except OSError as e:
+            print(json.dumps({"error": f"Could not read --from-file {args.from_file!r}: {e}"}))
+            sys.exit(1)
+        # Trailing newlines (incl. CRLF) from editors/heredocs are almost never intentional in tweet bodies.
+        text = text.rstrip("\r\n")
     else:
-        post_tweet(args.text, reply_to=args.reply_to)
+        if not args.text:
+            print(json.dumps({"error": "Missing tweet text. Pass as positional arg, or use --from-file PATH, or --delete TWEET_ID."}))
+            sys.exit(2)
+        text = args.text
+
+    if args.thread:
+        post_tweet_thread(text, reply_to=args.reply_to)
+    else:
+        post_tweet(text, reply_to=args.reply_to)

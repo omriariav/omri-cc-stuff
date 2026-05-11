@@ -20,6 +20,18 @@ Fetch a single tweet via the X API v2 `GET /2/tweets/:id` endpoint and render it
 3. **Present**: The script prints markdown with the tweet's text, author, timestamp, public metrics, any referenced tweets (replied-to / quoted), and media URLs. Show this output to the user verbatim or summarize it depending on what they asked for.
 4. **Follow-up**: If the user wants to reply, hand off to `/x:tweet` with the tweet ID for `--reply-to`. The fetched tweet's URL contains the ID after `/status/`.
 
+## Long-form articles
+
+When a tweet is an X long-form article (the body is a `t.co` link wrapping `x.com/i/article/...`), the script:
+
+- Renders the header as `# Article by ...` instead of `# Tweet by ...`
+- Surfaces the article title under `## Article: <title>`
+- Adds an `**Article URL:**` line pointing at the expanded `x.com/i/article/:id`
+- Emits a clear fallback note that the API exposes only the title, not the body — the user must open the URL to read the full piece. If `data.note_tweet.text` is populated by the API (rare), that body is rendered inline.
+- Still surfaces the wrapping tweet's own text under `### Wrapping tweet text`
+
+If the user needs the body content for downstream work, hand off to a browser tool (e.g., `mcp__chrome-devtools__*`) to navigate the article URL and extract — `/x:read` itself stops at the API layer.
+
 ## Flags
 
 - `--json` — print the raw API payload instead of markdown. Use when the user asks for raw data, full entities, or fields the markdown view drops.

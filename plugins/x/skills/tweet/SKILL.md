@@ -41,17 +41,19 @@ Post tweets from Claude Code via the X API v2. Supports single tweets, threads (
    - "Post it" — post the thread using `--reply-to` chaining (see "Thread (pre-split)" in Step 3)
    - "Edit" — user revises, loop back to step 2
    - "Cancel" — abort
-3. **Post**: Execute the appropriate command based on mode:
-   - **Single tweet**: `python3 scripts/post.py "the tweet text here"`
-   - **Thread (pre-split)**: Post each tweet individually using `--reply-to` chaining. This preserves your exact tweet boundaries from the preview:
+3. **Post**: Execute the appropriate command based on mode. **For any tweet text containing apostrophes, quotes, or newlines, write each part to a tempfile and post with `--from-file` — never build tweet bodies inline via `python3 -c` inside `$(...)`** (see Known Issues).
+   - **Single tweet**: `python3 scripts/post.py --from-file /tmp/tweet.txt` (or `python3 scripts/post.py "short safe text"` for short ASCII bodies)
+   - **Thread (pre-split)**: Write each part to its own tempfile, then post with `--reply-to` chaining. This preserves your exact tweet boundaries from the preview *and* preserves apostrophes:
      ```
-     python3 scripts/post.py "1/N: first tweet text"
+     # Use the Write tool to put each part in /tmp/tweet_1.txt, /tmp/tweet_2.txt, ...
+     python3 scripts/post.py --from-file /tmp/tweet_1.txt
      # capture tweet_id from output
-     python3 scripts/post.py --reply-to TWEET_ID "2/N: second tweet text"
+     python3 scripts/post.py --reply-to TWEET_ID --from-file /tmp/tweet_2.txt
      # repeat for each part
      ```
-   - **Thread (auto-split)**: `python3 scripts/post.py --thread "the full long text here"` — WARNING: this splits on word boundaries by character count, ignoring paragraph breaks. Only use for unstructured text where split points don't matter.
-   - **Reply**: `python3 scripts/post.py --reply-to TWEET_ID "reply text here"`
+   - **Thread (auto-split)**: `python3 scripts/post.py --thread --from-file /tmp/tweet_full.txt` — WARNING: this splits on word boundaries by character count, ignoring paragraph breaks. Only use for unstructured text where split points don't matter.
+   - **Reply**: `python3 scripts/post.py --reply-to TWEET_ID --from-file /tmp/reply.txt`
+   - **Delete (recovery)**: `python3 scripts/post.py --delete TWEET_ID` — for undoing a bad post. Only the authenticated account's own tweets can be deleted.
 4. **Confirm**: Show the tweet URL(s) from the script output.
 
 ## Tweet Drafting Guidelines
@@ -91,3 +93,4 @@ Scripts output JSON with `id`, `url`, `text` fields. Threads return an array wit
 
 - `--thread` auto-splitter collapses all whitespace (including `\n\n`) and re-splits on word count, not paragraph boundaries. A previewed 7-tweet thread may become 6 tweets with mid-sentence breaks. Fix: use `--reply-to` chaining for pre-split threads. (2026-02-20)
 - **Char count mismatch between preview and post.py**: Claude's estimated char count in preview often differs from `post.py`'s actual count by 5-30 chars, causing "Tweet too long" errors and retry loops. Root cause: URL length, special chars, newlines counted differently. Fix: use `python3 -c "print(len(...))"` for exact count, or aim for 270 chars. (2026-02-22)
+- **Apostrophe / quote corruption from nested shell escapes**: building tweet text via `python3 -c '...'` inside `$(...)` and passing it as the positional arg to `post.py` collides the outer shell's `'\''` quoting with Python's `'''` triple-quoted strings, publishing literal `'''` in place of every apostrophe (e.g., `yesterday's` → `yesterday'''s`). **Fix: always use `--from-file PATH`** — write each tweet body to a tempfile with the Write tool, then `python3 scripts/post.py --from-file /tmp/tweet_N.txt`. Tempfiles preserve apostrophes, quotes, and newlines verbatim. (2026-04-29)
