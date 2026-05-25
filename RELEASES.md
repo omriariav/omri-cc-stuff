@@ -1,5 +1,12 @@
 # Releases
 
+## gdoc-math v1.0.1 (2026-05-25)
+
+Docs/example only — no pipeline changes.
+
+- **Bundled example swapped** to a general math showcase: `examples/math-demo.md` (quadratic formula, Euler's identity, finite + geometric series, the derivative limit, the Gaussian integral, Pythagoras). Replaces the ML-specific `laplace-smoothing.md` sample so the demo reads as broadly recognizable math.
+- `SKILL.md` and `README.md` updated to point at the new sample.
+
 ## gdoc-math v1.0.0 (2026-05-25)
 
 New plugin. `/gdoc-math` converts a Markdown file containing LaTeX math into a **native Google Doc whose equations are real, editable equation objects** — solving the gap that `/copy:gdocs` (Paste from Markdown) and Google's own "Export to Docs" can't: both leave `$...$` / `$$...$$` as literal text.

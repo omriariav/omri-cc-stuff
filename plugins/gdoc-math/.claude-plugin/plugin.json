@@ -1,6 +1,6 @@
 {
   "name": "gdoc-math",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Convert Markdown with LaTeX math into a native Google Doc whose equations are real, editable Google Docs equation objects. Uses pandoc (OMML) + gws Drive upload/convert. /gdoc-math takes a .md file, inline content, or the last math content in the conversation.",
   "author": {
     "name": "Omri Ariav",

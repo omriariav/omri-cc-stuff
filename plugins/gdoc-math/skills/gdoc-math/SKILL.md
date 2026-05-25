@@ -75,14 +75,14 @@ Present `DOC_URL` to the user as a clickable link with the title. Any other stdo
 
 ## Example
 
-A ready-to-run sample ships at `examples/laplace-smoothing.md` (inline + display math, fractions, subscripts, Greek, `\text{}`). A typical run:
+A ready-to-run sample ships at `examples/math-demo.md` (inline + display math, fractions, roots, summations, integrals, limits, Greek). A typical run:
 
 ```
-User: /gdoc-math examples/laplace-smoothing.md
-→ bash .../md2gdoc.sh examples/laplace-smoothing.md
-→ DOC_URL=https://docs.google.com/document/d/1Or.../edit
-Claude: Done — "Laplace Smoothing" is in your Drive with native, editable
-        equations: <link>. Fractions and subscripts came through clean.
+User: /gdoc-math examples/math-demo.md
+→ bash .../md2gdoc.sh examples/math-demo.md
+→ DOC_URL=https://docs.google.com/document/d/1t_.../edit
+Claude: Done — "Math, rendered properly" is in your Drive with native,
+        editable equations: <link>. Fractions and integrals came through clean.
 ```
 
 ## Common mistakes
