@@ -70,8 +70,9 @@ markdown+LaTeX  →[pandoc]→  .docx (OMML)  →[gws upload + convert]→  Goog
 /gdoc-math                                    → use the last math content in the conversation
 ```
 
-**Requirements** (the skill verifies both up front):
+**Requirements** (the skill verifies all up front):
 - [`pandoc`](https://pandoc.org) — `brew install pandoc`
+- `python3` — parses `gws` output (default on macOS)
 - [`gws`](https://github.com/omriariav/workspace-cli) (Google Workspace CLI), authenticated for Drive — `go install github.com/omriariav/workspace-cli/cmd/gws@latest` then `gws auth login`
 
 **Features:**

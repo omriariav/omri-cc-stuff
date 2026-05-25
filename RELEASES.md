@@ -20,6 +20,7 @@ pandoc renders LaTeX into Office MathML; Google Drive imports OMML as native, ed
 
 ### Requirements (verified by `verify-setup.sh` at Step 0)
 - `pandoc` — `brew install pandoc`
+- `python3` — parses `gws` output (default on macOS)
 - `gws` ([Google Workspace CLI](https://github.com/omriariav/workspace-cli)), authenticated for Drive — `go install github.com/omriariav/workspace-cli/cmd/gws@latest`, then `gws auth login`
 
 ### Notes

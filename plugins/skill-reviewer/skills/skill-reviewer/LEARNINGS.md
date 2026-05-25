@@ -20,7 +20,7 @@ Initial rubric penalized stateless skills. score.py correctly assigns D7=0 for s
 First version of score.py scored D10=1 for any skill that mentioned "hook" (including in gotchas or documentation sections). Fixed to require actual `pretooluse`/`posttooluse` config or a `hooks.json` file.
 
 **D3 false-negative: gotchas under a non-"Gotchas" heading**
-score.py scored `gdoc-math` D3=0 (no gotchas), but the SKILL.md had a `## Notes & limitations` section documenting real failure modes (gfm reader won't parse `$` math, complex-LaTeX fidelity loss, the Drive-write side-effect). score.py keys on `Gotchas`/`Common Mistakes`/error keywords and misses limitation-framed sections. When the body documents failures under a differently-named heading, adjust D3 up semantically (partial = 1, full error→cause→fix from real usage = 3) and note the reason.
+score.py initially scored `gdoc-math` D3=0 (no gotchas) because its failure modes (gfm reader won't parse `$` math, complex-LaTeX fidelity loss, the Drive-write side-effect) were documented under a limitations-framed heading rather than `Gotchas`/`Common Mistakes`. score.py keys on those heading names plus error keywords, so it misses failure docs filed under a differently-named section. When the body documents real failures under any heading, adjust D3 up semantically (partial = 1, full error→cause→fix from real usage = 3) and note the reason. (The skill was later given an explicit `## Common mistakes` section, which score.py then detected.)
 
 ## Patterns That Work
 
