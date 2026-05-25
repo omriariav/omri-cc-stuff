@@ -25,6 +25,7 @@ pandoc renders LaTeX into Office MathML (OMML); Google Drive imports OMML as nat
 Two hard dependencies — the skill cannot work without both, so verify them before doing anything else (Step 0 below):
 
 - **pandoc** — `brew install pandoc`. Renders LaTeX into the OMML equations Google imports.
+- **python3** — used to parse `gws` JSON output (present by default on macOS).
 - **gws** (the Google Workspace CLI), **authenticated for Drive** — the pipeline uploads + converts a file in the user's Drive.
   - Install: `go install github.com/omriariav/workspace-cli/cmd/gws@latest` (repo: https://github.com/omriariav/workspace-cli)
   - Authenticate: `gws auth login` (or the `/gws:auth` skill). Verify with `gws auth status`.

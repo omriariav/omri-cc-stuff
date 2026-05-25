@@ -12,11 +12,19 @@ else
     errors=$((errors + 1))
 fi
 
-# 2) gws — the Google Workspace CLI that uploads + converts the .docx to a Google Doc.
+# 2) python3 — md2gdoc.sh uses it to parse gws JSON output.
+if command -v python3 >/dev/null 2>&1; then
+    echo "  python3: installed ($(python3 --version 2>&1))"
+else
+    echo "  python3: MISSING — required to parse gws output (install Python 3)"
+    errors=$((errors + 1))
+fi
+
+# 3) gws — the Google Workspace CLI that uploads + converts the .docx to a Google Doc.
 if command -v gws >/dev/null 2>&1; then
     echo "  gws: installed ($(command -v gws))"
 
-    # 3) gws Drive auth — the pipeline writes to Google Drive, so a live token is required.
+    # 3b) gws Drive auth — the pipeline writes to Google Drive, so a live token is required.
     if gws drive about --quiet >/dev/null 2>&1; then
         who="$(gws drive about --format json 2>/dev/null | python3 -c 'import sys,json;print(json.load(sys.stdin).get("user",{}).get("email",""))' 2>/dev/null)"
         echo "  gws auth: OK${who:+ ($who)}"

@@ -30,8 +30,8 @@ KEEP_DOCX=0
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    --name)      DOC_NAME="${2:-}"; shift 2 ;;
-    --folder)    FOLDER="${2:-}";   shift 2 ;;
+    --name)      [[ $# -ge 2 && "$2" != --* ]] || err "--name requires a value";   DOC_NAME="$2"; shift 2 ;;
+    --folder)    [[ $# -ge 2 && "$2" != --* ]] || err "--folder requires a value"; FOLDER="$2";   shift 2 ;;
     --keep-docx) KEEP_DOCX=1;       shift ;;
     -h|--help)
       sed -n '2,20p' "$0"; exit 0 ;;
@@ -57,7 +57,9 @@ gws drive about --quiet >/dev/null 2>&1 \
 if [[ -z "$FOLDER" ]]; then
   CONFIG_FILE="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/config.json"
   if [[ -f "$CONFIG_FILE" ]]; then
-    FOLDER="$(python3 -c 'import sys,json;print(json.load(open(sys.argv[1])).get("default_folder_id","") or "")' "$CONFIG_FILE" 2>/dev/null || true)"
+    # A missing config is fine (My Drive root); a present-but-unparseable one is a real error.
+    FOLDER="$(python3 -c 'import sys,json;print(json.load(open(sys.argv[1])).get("default_folder_id","") or "")' "$CONFIG_FILE")" \
+      || err "config.json exists but is not valid JSON: $CONFIG_FILE"
   fi
 fi
 
@@ -76,11 +78,12 @@ TMPDIR_RUN="$(mktemp -d "${TMPDIR:-/tmp}/md2gdoc.XXXXXX")"
 DOCX="$TMPDIR_RUN/out.docx"
 RAW_ID=""
 cleanup() {
-  rm -rf "$TMPDIR_RUN"
-  # Best-effort: trash the intermediate raw .docx left in Drive (convert makes a NEW file).
+  # Trash the intermediate raw .docx FIRST (convert makes a NEW file) — do it before
+  # the local rm so a failing rm under `set -e` can't skip the Drive cleanup.
   if [[ "$KEEP_DOCX" -eq 0 && -n "$RAW_ID" ]]; then
     gws drive delete "$RAW_ID" --quiet >/dev/null 2>&1 || true
   fi
+  rm -rf "$TMPDIR_RUN" || true
 }
 trap cleanup EXIT
 
@@ -96,16 +99,18 @@ pandoc "$INPUT" \
 # ---- 2) upload the .docx to Drive -------------------------------------------
 UPLOAD_ARGS=(drive upload "$DOCX" --name "${DOC_NAME}.docx" --format json)
 [[ -n "$FOLDER" ]] && UPLOAD_ARGS+=(--folder "$FOLDER")
-UPLOAD_JSON="$(gws "${UPLOAD_ARGS[@]}" 2>&1)" \
-  || err "gws drive upload failed: $UPLOAD_JSON"
+# Keep stderr out of the captured JSON — a stray warning on stdout-mixed-stderr
+# would break parsing only *after* the Drive file was created.
+UPLOAD_JSON="$(gws "${UPLOAD_ARGS[@]}" 2>"$TMPDIR_RUN/upload.err")" \
+  || err "gws drive upload failed: $(cat "$TMPDIR_RUN/upload.err" 2>/dev/null)"
 RAW_ID="$(printf '%s' "$UPLOAD_JSON" | python3 -c 'import sys,json;print(json.load(sys.stdin).get("id",""))' 2>/dev/null || true)"
-[[ -n "$RAW_ID" ]] || err "could not parse uploaded file id from: $UPLOAD_JSON"
+[[ -n "$RAW_ID" ]] || err "could not parse uploaded file id from gws output: $UPLOAD_JSON"
 
 # ---- 3) convert the .docx into a native Google Doc --------------------------
 CONVERT_ARGS=(drive convert "$RAW_ID" --to docs --name "$DOC_NAME" --format json)
 [[ -n "$FOLDER" ]] && CONVERT_ARGS+=(--folder "$FOLDER")
-CONVERT_JSON="$(gws "${CONVERT_ARGS[@]}" 2>&1)" \
-  || err "gws drive convert failed: $CONVERT_JSON"
+CONVERT_JSON="$(gws "${CONVERT_ARGS[@]}" 2>"$TMPDIR_RUN/convert.err")" \
+  || err "gws drive convert failed: $(cat "$TMPDIR_RUN/convert.err" 2>/dev/null)"
 
 DOC_URL="$(printf '%s' "$CONVERT_JSON" | python3 -c 'import sys,json;d=json.load(sys.stdin);print(d.get("web_link") or d.get("webViewLink") or "")' 2>/dev/null || true)"
 DOC_ID="$(printf '%s' "$CONVERT_JSON" | python3 -c 'import sys,json;print(json.load(sys.stdin).get("id",""))' 2>/dev/null || true)"
