@@ -19,6 +19,9 @@ Initial rubric penalized stateless skills. score.py correctly assigns D7=0 for s
 **D10 keyword detection false positive on "hook"**
 First version of score.py scored D10=1 for any skill that mentioned "hook" (including in gotchas or documentation sections). Fixed to require actual `pretooluse`/`posttooluse` config or a `hooks.json` file.
 
+**D3 false-negative: gotchas under a non-"Gotchas" heading**
+score.py scored `gdoc-math` D3=0 (no gotchas), but the SKILL.md had a `## Notes & limitations` section documenting real failure modes (gfm reader won't parse `$` math, complex-LaTeX fidelity loss, the Drive-write side-effect). score.py keys on `Gotchas`/`Common Mistakes`/error keywords and misses limitation-framed sections. When the body documents failures under a differently-named heading, adjust D3 up semantically (partial = 1, full error→cause→fix from real usage = 3) and note the reason.
+
 ## Patterns That Work
 
 **Pre-scoring with score.py before semantic evaluation**: Running `python3 scripts/score.py <dir>` first gives the structural baseline in seconds. Claude then only needs to add D4 and D5 judgments, not re-derive all 10 dimensions from scratch.
