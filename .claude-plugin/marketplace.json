@@ -106,6 +106,28 @@
       ]
     },
     {
+      "name": "gdoc-math",
+      "source": "./plugins/gdoc-math",
+      "description": "Convert Markdown with LaTeX math into a native Google Doc with real, editable equations (pandoc OMML + gws Drive). /gdoc-math takes a .md file, inline content, or the last math content in the conversation.",
+      "author": {
+        "name": "Omri Ariav",
+        "email": "omri.ariav@gmail.com"
+      },
+      "category": "utilities",
+      "keywords": [
+        "markdown",
+        "latex",
+        "google-docs",
+        "equations",
+        "math",
+        "pandoc",
+        "gws"
+      ],
+      "skills": [
+        "./skills/gdoc-math"
+      ]
+    },
+    {
       "name": "claude-reviewer",
       "source": "./plugins/claude-reviewer",
       "description": "Review any project's .claude/ folder setup against best practices (based on https://x.com/akshay_pachaar/status/2035341800739877091). Scores 8 dimensions (24-point rubric) covering CLAUDE.md quality, permissions, rules, commands, skills, agents, git hygiene, and progressive disclosure.",

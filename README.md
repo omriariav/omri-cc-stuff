@@ -56,6 +56,33 @@ You: /copy:slack
 Claude: ✓ Copied to clipboard (format: Slack)
 ```
 
+### `/gdoc-math` - Markdown + LaTeX → Google Doc with editable equations
+
+Convert a Markdown file containing LaTeX math into a **native Google Doc whose equations are real, editable equation objects** — not images, not literal `$$` text. This is the gap `/copy:gdocs` can't fill: Google Docs' "Paste from Markdown" silently drops `$...$` math, and there's no Docs API to insert equations. The pipeline routes through `.docx` instead:
+
+```
+markdown+LaTeX  →[pandoc]→  .docx (OMML)  →[gws upload + convert]→  Google Doc
+```
+
+```
+/gdoc-math ~/notes/laplace.md                 → convert a file
+/gdoc-math ~/notes/laplace.md --name "Notes"  → set the Doc title
+/gdoc-math                                    → use the last math content in the conversation
+```
+
+**Requirements** (the skill verifies both up front):
+- [`pandoc`](https://pandoc.org) — `brew install pandoc`
+- [`gws`](https://github.com/omriariav/workspace-cli) (Google Workspace CLI), authenticated for Drive — `go install github.com/omriariav/workspace-cli/cmd/gws@latest` then `gws auth login`
+
+**Features:**
+- Inline (`$…$`) and display (`$$…$$`) math, plus `\(…\)` / `\[…\]` delimiters
+- Equations land as native, clickable, editable Google Docs equation objects (verified via OMML round-trip)
+- Auto-trashes the intermediate `.docx` — only the Google Doc remains
+- Optional `default_folder_id` in `config.json` to drop Docs in a specific Drive folder
+- Ships a runnable sample at `examples/laplace-smoothing.md`
+
+> Use `/copy:gdocs` for plain prose/tables with no math (clipboard, instant). Use `/gdoc-math` when the content has formulas that must stay editable.
+
 ### `/x` - Post and Read on X (Twitter)
 
 Two skills under one plugin, sharing the same X API credentials.
