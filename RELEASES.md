@@ -1,5 +1,32 @@
 # Releases
 
+## gdoc-math v1.0.0 (2026-05-25)
+
+New plugin. `/gdoc-math` converts a Markdown file containing LaTeX math into a **native Google Doc whose equations are real, editable equation objects** — solving the gap that `/copy:gdocs` (Paste from Markdown) and Google's own "Export to Docs" can't: both leave `$...$` / `$$...$$` as literal text.
+
+### How it works
+```
+markdown+LaTeX  →[pandoc]→  .docx (OMML)  →[gws drive upload + convert --to docs]→  Google Doc
+                                                                └─ intermediate .docx auto-trashed
+```
+pandoc renders LaTeX into Office MathML; Google Drive imports OMML as native, editable equations. Verified by round-tripping the converted Doc back to `.docx` — equations return as `m:oMath` objects with zero embedded images.
+
+### Features
+- Inline (`$…$`), display (`$$…$$`), and `\(…\)` / `\[…\]` math.
+- Input modes: a `.md` file path, inline content, or the last math-bearing content in the conversation.
+- `--name` (Doc title), `--folder` (target Drive folder), `--keep-docx` (debug).
+- Optional `default_folder_id` in `config.json`; empty by default (My Drive root), never required.
+- Ships a runnable sample at `examples/laplace-smoothing.md`.
+
+### Requirements (verified by `verify-setup.sh` at Step 0)
+- `pandoc` — `brew install pandoc`
+- `python3` — parses `gws` output (default on macOS)
+- `gws` ([Google Workspace CLI](https://github.com/omriariav/workspace-cli)), authenticated for Drive — `go install github.com/omriariav/workspace-cli/cmd/gws@latest`, then `gws auth login`
+
+### Notes
+- Simple fractions/subscripts/Greek round-trip cleanly; complex LaTeX (stacked fractions, matrices, large operators) can lose fidelity on Google's import and may need a touch-up.
+- Kept standalone (not folded into `copy`) on purpose: it writes to Google Drive over the network with external dependencies — a different contract from `copy`'s instant, offline, clipboard-only commands.
+
 ## copy v2.3.0 (2026-05-04)
 
 `/copy:slack` now produces a **native Slack table** on paste when the resolved content is just a table.

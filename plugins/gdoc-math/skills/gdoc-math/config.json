@@ -1,0 +1,4 @@
+{
+  "default_folder_id": "",
+  "_default_folder_id": "Optional. A Google Drive folder ID where converted Docs land by default. Empty = My Drive root. The --folder flag always overrides this. Not required."
+}
