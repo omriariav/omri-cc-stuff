@@ -22,7 +22,7 @@ pandoc renders LaTeX into Office MathML (OMML); Google Drive imports OMML as nat
 
 ## Prerequisites
 
-Two hard dependencies — the skill cannot work without both, so verify them before doing anything else (Step 0 below):
+Three hard dependencies — the skill cannot work without them, so verify them before doing anything else (Step 0 below):
 
 - **pandoc** — `brew install pandoc`. Renders LaTeX into the OMML equations Google imports.
 - **python3** — used to parse `gws` JSON output (present by default on macOS).

@@ -57,9 +57,12 @@ gws drive about --quiet >/dev/null 2>&1 \
 if [[ -z "$FOLDER" ]]; then
   CONFIG_FILE="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/config.json"
   if [[ -f "$CONFIG_FILE" ]]; then
-    # A missing config is fine (My Drive root); a present-but-unparseable one is a real error.
-    FOLDER="$(python3 -c 'import sys,json;print(json.load(open(sys.argv[1])).get("default_folder_id","") or "")' "$CONFIG_FILE")" \
-      || err "config.json exists but is not valid JSON: $CONFIG_FILE"
+    # A missing config is fine (My Drive root). A present file must be a JSON object;
+    # malformed JSON or a non-object (e.g. a list) is a real error, not a silent fallback.
+    FOLDER="$(python3 -c 'import sys,json
+d=json.load(open(sys.argv[1]))
+sys.exit("not a JSON object") if not isinstance(d,dict) else print(d.get("default_folder_id","") or "")' "$CONFIG_FILE")" \
+      || err "config.json must be a JSON object with an optional \"default_folder_id\": $CONFIG_FILE"
   fi
 fi
 
