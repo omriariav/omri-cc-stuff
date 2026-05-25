@@ -80,7 +80,7 @@ markdown+LaTeX  →[pandoc]→  .docx (OMML)  →[gws upload + convert]→  Goog
 - Equations land as native, clickable, editable Google Docs equation objects (verified via OMML round-trip)
 - Auto-trashes the intermediate `.docx` — only the Google Doc remains
 - Optional `default_folder_id` in `config.json` to drop Docs in a specific Drive folder
-- Ships a runnable sample at `examples/laplace-smoothing.md`
+- Ships a runnable sample at `examples/math-demo.md`
 
 > Use `/copy:gdocs` for plain prose/tables with no math (clipboard, instant). Use `/gdoc-math` when the content has formulas that must stay editable.
 
