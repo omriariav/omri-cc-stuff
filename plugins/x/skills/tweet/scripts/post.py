@@ -14,16 +14,30 @@ import re
 # that X scores as 23 but len() scores at 55+).
 TCO_URL_LEN = 23
 _URL_RE = re.compile(r"https?://\S+")
+# Sentence/wrapping punctuation X leaves outside the t.co link, so it must be
+# counted literally rather than absorbed into the 23-char URL weight.
+_URL_TRAILING = ".,;:!?)]}\"'>"
+
+
+def _url_replacement(match):
+    """Weight the URL portion of a match as TCO_URL_LEN, but keep any trailing
+    punctuation (X does not fold it into the t.co link)."""
+    token = match.group(0)
+    url = token.rstrip(_URL_TRAILING)
+    return "x" * TCO_URL_LEN + token[len(url):]
 
 
 def tweet_len(text):
-    """Length as X counts it: each http(s) URL weighted as 23 chars."""
-    return len(_URL_RE.sub("x" * TCO_URL_LEN, text))
+    """Length as X counts it: each http(s) URL weighted as 23 chars, trailing
+    punctuation counted literally."""
+    return len(_URL_RE.sub(_url_replacement, text))
 
 
 def word_len(word):
-    """Per-word weighted length for thread splitting (a URL word counts as 23)."""
-    return TCO_URL_LEN if _URL_RE.fullmatch(word) else len(word)
+    """Per-word weighted length for thread splitting. Delegates to tweet_len so a
+    URL token is measured identically whether or not it is wrapped in
+    punctuation (e.g. `(https://x/y)`)."""
+    return tweet_len(word)
 
 
 def load_credentials():
