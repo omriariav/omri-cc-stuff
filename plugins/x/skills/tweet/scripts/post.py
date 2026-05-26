@@ -5,6 +5,39 @@ import json
 import os
 import sys
 import argparse
+import re
+
+
+# X wraps every URL in a t.co shortlink, so a URL counts as a fixed 23 chars
+# toward the 280 limit regardless of its real length. Counting raw len() here
+# over-rejects tweets X would happily accept (e.g. a long GitHub release URL
+# that X scores as 23 but len() scores at 55+).
+TCO_URL_LEN = 23
+_URL_RE = re.compile(r"https?://\S+", re.IGNORECASE)
+# Sentence/wrapping punctuation X leaves outside the t.co link, so it must be
+# counted literally rather than absorbed into the 23-char URL weight.
+_URL_TRAILING = ".,;:!?)]}\"'>"
+
+
+def _url_replacement(match):
+    """Weight the URL portion of a match as TCO_URL_LEN, but keep any trailing
+    punctuation (X does not fold it into the t.co link)."""
+    token = match.group(0)
+    url = token.rstrip(_URL_TRAILING)
+    return "x" * TCO_URL_LEN + token[len(url):]
+
+
+def tweet_len(text):
+    """Length as X counts it: each http(s) URL weighted as 23 chars, trailing
+    punctuation counted literally."""
+    return len(_URL_RE.sub(_url_replacement, text))
+
+
+def word_len(word):
+    """Per-word weighted length for thread splitting. Delegates to tweet_len so a
+    URL token is measured identically whether or not it is wrapped in
+    punctuation (e.g. `(https://x/y)`)."""
+    return tweet_len(word)
 
 
 def load_credentials():
@@ -131,9 +164,9 @@ def split_into_thread(text):
     max_prefix_len = len("99/99: ")
     max_word_len = 280 - max_prefix_len
     for word in words:
-        if len(word) > max_word_len:
+        if word_len(word) > max_word_len:
             raise ValueError(
-                f"Word is {len(word)} chars (max {max_word_len} per chunk after thread prefix). "
+                f"Word is {word_len(word)} chars (max {max_word_len} per chunk after thread prefix). "
                 f"Shorten or break up: '{word[:50]}...'"
             )
 
@@ -147,11 +180,11 @@ def split_into_thread(text):
         current_len = 0
 
         for word in words:
-            word_addition = len(word) + (1 if current_chunk_words else 0)
+            word_addition = word_len(word) + (1 if current_chunk_words else 0)
             if current_len + word_addition > max_text_len and current_chunk_words:
                 chunks.append(" ".join(current_chunk_words))
                 current_chunk_words = [word]
-                current_len = len(word)
+                current_len = word_len(word)
             else:
                 current_chunk_words.append(word)
                 current_len += word_addition
@@ -196,8 +229,8 @@ def post_thread(chunks, oauth, reply_to=None):
 
 def post_tweet(text, reply_to=None):
     """Post a single tweet and print result JSON."""
-    if len(text) > 280:
-        print(json.dumps({"error": f"Tweet too long: {len(text)} chars (max 280). Use --thread for auto-splitting."}))
+    if tweet_len(text) > 280:
+        print(json.dumps({"error": f"Tweet too long: {tweet_len(text)} chars (max 280, URLs counted as {TCO_URL_LEN}). Use --thread for auto-splitting."}))
         sys.exit(1)
 
     if not text.strip():
