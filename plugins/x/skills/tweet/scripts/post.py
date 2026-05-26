@@ -13,7 +13,7 @@ import re
 # over-rejects tweets X would happily accept (e.g. a long GitHub release URL
 # that X scores as 23 but len() scores at 55+).
 TCO_URL_LEN = 23
-_URL_RE = re.compile(r"https?://\S+")
+_URL_RE = re.compile(r"https?://\S+", re.IGNORECASE)
 # Sentence/wrapping punctuation X leaves outside the t.co link, so it must be
 # counted literally rather than absorbed into the 23-char URL weight.
 _URL_TRAILING = ".,;:!?)]}\"'>"
