@@ -14,9 +14,10 @@ Maintenance — no behavior change.
 
 ## skill-reviewer v1.0.1 (2026-05-27)
 
-Maintenance — no behavior change.
+Maintenance.
 
 - Trimmed the `SKILL.md` frontmatter `description` (dropped the inline dimension list — documentation, not a trigger) to reduce always-loaded prompt-budget cost.
+- Fixed broken YAML in the `SKILL.md` frontmatter: `argument-hint` was unquoted and began with `[`, which a strict YAML parser reads as a flow sequence and rejects. Now single-quoted (matching the sibling reviewer skills). Surfaced by Codex review of this PR.
 
 ## claude-reviewer v1.1.1 (2026-05-27)
 

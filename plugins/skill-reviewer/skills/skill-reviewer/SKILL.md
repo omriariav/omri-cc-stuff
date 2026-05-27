@@ -5,7 +5,7 @@ description: |
   Use when: "/skill-reviewer", "review this skill", "evaluate skill quality", "audit skill", "how good is this skill", "rate this skill".
   NOT for: conversation-level reflection (use /reflect), code review, or PR review.
 user-invocable: true
-argument-hint: [--fix] <skill-path-or-name> | --compare <left-skill> <right-skill>
+argument-hint: '[--fix] <skill-path-or-name> | --compare <left-skill> <right-skill>'
 allowed-tools: Read, Glob, Grep, Edit, Write, Bash(python3*)
 ---
 
