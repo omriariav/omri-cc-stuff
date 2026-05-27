@@ -1,7 +1,7 @@
 ---
 name: claude-reviewer
 description: |
-  Review any project's .claude/ folder setup against Claude Code best practices. Scores 8 dimensions (24-point rubric), detects anti-patterns, and produces an actionable improvement report.
+  Review any project's .claude/ setup against Claude Code best practices and produce an actionable improvement report.
   Use when: "/claude-reviewer", "review my claude config", "audit .claude setup", "check my CLAUDE.md", "how good is my claude config", "rate this project's claude setup".
   NOT for: reviewing individual skill quality (use /skill-reviewer), code review, PR review.
 user-invocable: true
