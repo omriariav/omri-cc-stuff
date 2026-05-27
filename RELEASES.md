@@ -10,7 +10,7 @@ Maintenance — no behavior change.
 
 Maintenance — no behavior change.
 
-- Trimmed the `SKILL.md` frontmatter `description` (dropped redundant trigger examples and verbose NOT-for clauses) to cut always-loaded prompt-budget cost. All trigger phrases preserved.
+- Trimmed the `SKILL.md` frontmatter `description` (tightened the opening line and compressed the NOT-for clauses) to cut always-loaded prompt-budget cost. All trigger phrases preserved.
 
 ## skill-reviewer v1.0.1 (2026-05-27)
 

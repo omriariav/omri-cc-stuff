@@ -2,7 +2,7 @@
 name: gdoc-math
 description: |
   Convert Markdown with LaTeX math into a native Google Doc whose equations are real, editable equation objects (not images, not literal $$ text).
-  Use when: "/gdoc-math", "turn this markdown/LaTeX into a Google Doc with editable equations", "make a gdoc from this .md with math", or converting an LLM/Gemini answer full of $...$ formulas into a proper editable Doc.
+  Use when: "/gdoc-math", "turn this markdown into a Google Doc with editable equations", "convert this LaTeX/formulas to a Google Doc", "make a gdoc from this .md with math", or converting an LLM/Gemini answer full of $...$ formulas into a proper editable Doc.
   NOT for: plain Markdown with no math (use /copy:gdocs), clipboard copy, Sheets/Slides, or editing an existing Doc's body.
 argument-hint: '[path/to/file.md] [--name "Doc title"] [--folder DRIVE_FOLDER_ID]'
 allowed-tools: Bash(bash:*), Bash(gws:*), Bash(pandoc:*), Read, Write, AskUserQuestion
