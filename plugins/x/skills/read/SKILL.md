@@ -45,4 +45,4 @@ If the user needs the body content for downstream work, hand off to a browser to
 
 ## Cost
 
-X API v2 Posts read tier is billed per resource ($0.005 / post read on the metered tier as of 2026). One `/x:read` call = one post read + (typically) one user read for the author.
+X API v2 Posts read tier is billed per resource (~$0.005 / post read + ~$0.010 / user read on the standard tier as of 2026). One `/x:read` call = one post read + (typically) one user read for the author.

@@ -1,11 +1,11 @@
 ---
 name: skill-reviewer
 description: |
-  Evaluate any skill against best practices - structure, progressive disclosure, gotchas, description quality, scripts, memory, and anti-patterns.
+  Evaluate any skill's design quality against best practices and flag anti-patterns.
   Use when: "/skill-reviewer", "review this skill", "evaluate skill quality", "audit skill", "how good is this skill", "rate this skill".
   NOT for: conversation-level reflection (use /reflect), code review, or PR review.
 user-invocable: true
-argument-hint: [--fix] <skill-path-or-name> | --compare <left-skill> <right-skill>
+argument-hint: '[--fix] <skill-path-or-name> | --compare <left-skill> <right-skill>'
 allowed-tools: Read, Glob, Grep, Edit, Write, Bash(python3*)
 ---
 

@@ -1,5 +1,36 @@
 # Releases
 
+## x v2.1.2 (2026-05-27)
+
+Maintenance — no behavior change.
+
+- `/x:read` and `/x:tweet` command files collapsed into **thin pointers** to their respective `skills/<name>/SKILL.md`. The skills are now the single source of truth for both commands; the previously duplicated workflow prose (which had to be hand-synced on every change, e.g. the v2.1.1 URL-counting fix) is gone. Commands instruct the model to resolve `scripts/...` paths relative to the skill directory.
+
+## gdoc-math v1.0.2 (2026-05-27)
+
+Maintenance — no behavior change.
+
+- Trimmed the `SKILL.md` frontmatter `description` (tightened the opening line and compressed the NOT-for clauses) to cut always-loaded prompt-budget cost. All trigger phrases preserved.
+
+## skill-reviewer v1.0.1 (2026-05-27)
+
+Maintenance.
+
+- Trimmed the `SKILL.md` frontmatter `description` (dropped the inline dimension list — documentation, not a trigger) to reduce always-loaded prompt-budget cost.
+- Fixed broken YAML in the `SKILL.md` frontmatter: `argument-hint` was unquoted and began with `[`, which a strict YAML parser reads as a flow sequence and rejects. Now single-quoted (matching the sibling reviewer skills). Surfaced by Codex review of this PR.
+
+## claude-reviewer v1.1.1 (2026-05-27)
+
+Maintenance — no behavior change.
+
+- Trimmed the `SKILL.md` frontmatter `description` (dropped the rubric-stats clause) to reduce always-loaded prompt-budget cost. Trigger phrases unchanged.
+
+## copy v2.3.1 (2026-05-27)
+
+Maintenance — no behavior change.
+
+- Removed an orphaned legacy unified-router command (`.claude/commands/copy.md`) that sat in a non-loading location and duplicated the eight split `/copy:*` commands. No effect on the active command surface.
+
 ## gdoc-math v1.0.1 (2026-05-25)
 
 Docs/example only — no pipeline changes.
