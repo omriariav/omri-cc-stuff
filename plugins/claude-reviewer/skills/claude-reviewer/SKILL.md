@@ -5,7 +5,7 @@ description: |
   Use when: "/claude-reviewer", "review my claude config", "audit .claude setup", "check my CLAUDE.md", "how good is my claude config", "rate this project's claude setup".
   NOT for: reviewing individual skill quality (use /skill-reviewer), code review, PR review.
 user-invocable: true
-argument-hint: "[--global] [--verbose] [project-path]"
+argument-hint: "[--global] [--verbose] [--with-logs] [project-path]"
 allowed-tools: Read, Glob, Grep, Bash(python3*), Bash(git*)
 ---
 
@@ -29,13 +29,15 @@ Review any project's `.claude/` folder against best practices from Anthropic's C
 /claude-reviewer ~/Code/myproject     -> Review specific project
 /claude-reviewer --global             -> Review ONLY ~/.claude/ global config
 /claude-reviewer --verbose            -> Include evidence quotes in report
+/claude-reviewer --with-logs          -> Add transcript-based "unused skills" detection
 ```
 
-**$ARGUMENTS** = `[--global] [--verbose] [project-path]`
+**$ARGUMENTS** = `[--global] [--verbose] [--with-logs] [project-path]`
 
 Parse the argument before starting:
 - Extract `--global` flag if present.
 - Extract `--verbose` flag if present. When set, include evidence quotes.
+- Extract `--with-logs` flag if present. Forward it to `scripts/fleet_audit.py` in Phase 4 Step 1 for opt-in transcript scanning (unused-skill detection).
 - Remaining token is the project path.
 - **Routing logic:**
   - `--global` → **Global mode**: audit only `~/.claude/`. Score 5 applicable dimensions (D1, D2, D4, D5, D6 — max 15). Ignore any project path. Use the Global Configuration report template only.
@@ -92,7 +94,9 @@ The scanner auto-detects structural anti-patterns. Add semantic ones:
 
 ### Phase 4: Generate Report
 
-Read `references/report-template.md` and fill the appropriate sections.
+**Step 1 — Fleet skill-cleaner audit.** Run `python3 scripts/fleet_audit.py <project-path>` (or `--global` in global mode; append `--with-logs` if the user passed it). Include the script's output verbatim under `## Skill Fleet Audit`, placed between Inventory and Scores in the report. The four signals — fleet budget, description trim candidates, duplicates across roots, opt-in unused — are **informational**; they do not affect the rubric score, but heavy/duplicate findings should surface in Top 3 Improvements where actionable, and per-skill trims flow through `/skill-reviewer --fix <skill>`. Methodology: [skill-cleaner by @steipete](https://github.com/steipete/agent-scripts/blob/main/skills/skill-cleaner/SKILL.md).
+
+**Step 2 — Fill the report template.** Read `references/report-template.md` and fill the appropriate sections.
 
 **Project mode**: Score all 8 dimensions (D1-D8, max 24). Grade: 21-24=A, 16-20=B, 11-15=C, 6-10=D, 0-5=F.
 
@@ -122,6 +126,7 @@ Always include Quick Wins — concrete items achievable in under 5 minutes.
 - `references/best-practices.md` — 8-dimension scoring rubric with anchors
 - `references/report-template.md` — output format template
 - `scripts/scan.py` — structural scanner (D1-D4, D7 full; D5, D6, D8 partial)
+- `scripts/fleet_audit.py` — fleet-level skill-cleaner signals (Phase 4 Step 1): budget, trim candidates, duplicates, optional unused detection
 - `examples/sample-review.md` — complete example report for calibration
 
 ## Gotchas

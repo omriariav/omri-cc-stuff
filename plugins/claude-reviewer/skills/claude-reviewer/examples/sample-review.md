@@ -18,6 +18,28 @@
 | skills/ | 0 skills | |
 | agents/ | 0 agents | |
 
+## Skill Fleet Audit
+
+_Methodology: [skill-cleaner by @steipete](https://github.com/steipete/agent-scripts/blob/main/skills/skill-cleaner/SKILL.md), fleet-level. Informational — not part of the rubric score._
+
+**Scope**: project (/Users/example/Code/sample-project) — 3 skill(s) across 2 root(s)
+
+**1. Fleet budget** — 412 tok / 4,000 cap (10.3% of budget)  **OK**
+   Cap = 2.0% of 200,000-tok context. Token cost = ceil(utf8_bytes / 4).
+
+**2. Description trim candidates (>= 120 tok)**
+   - `data-loader`  148 tok  [repo]  `./.claude/skills/data-loader/SKILL.md`
+
+**3. Duplicates across roots**
+   (none — all skill names unique across 2 root(s))
+
+**4. Unused candidates**
+   (skipped — pass --with-logs to enable)
+
+**Roots scanned**:
+   - `./.claude/skills`  (2 skill(s))
+   - `./plugins/internal/skills`  (1 skill(s))
+
 ## Scores
 
 | Dimension | Score | Notes |

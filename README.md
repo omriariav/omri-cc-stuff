@@ -176,7 +176,10 @@ Review any project's `.claude/` folder setup against [best practices](https://x.
 /claude-reviewer                       → Review current project
 /claude-reviewer ~/Code/myproject      → Review specific project
 /claude-reviewer --global              → Review only ~/.claude/ global config
+/claude-reviewer --with-logs           → Add transcript-based unused-skill detection
 ```
+
+**Skill fleet audit (v1.2.0):** Every report now includes a `## Skill Fleet Audit` section adapting the [skill-cleaner methodology by @steipete](https://github.com/steipete/agent-scripts/blob/main/skills/skill-cleaner/SKILL.md) at fleet level — total budget, trim candidates, duplicates across roots, and opt-in unused detection. Companion to `skill-reviewer v1.1.0`'s per-skill signals.
 
 **Dimensions scored:** CLAUDE.md Quality, Permission Hygiene, Modular Instructions, Custom Commands, Skills Setup, Agent Configuration, Git Hygiene, Progressive Disclosure.
 
