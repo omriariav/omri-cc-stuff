@@ -24,6 +24,7 @@ Usage:
 import argparse
 import json
 import math
+import os
 import re
 import sys
 from datetime import datetime, timedelta
@@ -59,11 +60,12 @@ def default_roots():
 
 
 def find_skill_files(root: Path):
+    """os.walk with directory pruning — skips noise dirs during traversal."""
     out = []
-    for path in root.rglob("SKILL.md"):
-        if any(part in SKIP_DIR_PARTS for part in path.parts):
-            continue
-        out.append(path)
+    for dirpath, dirnames, filenames in os.walk(root):
+        dirnames[:] = [d for d in dirnames if d not in SKIP_DIR_PARTS]
+        if "SKILL.md" in filenames:
+            out.append(Path(dirpath) / "SKILL.md")
     return out
 
 
@@ -79,6 +81,9 @@ def parse_frontmatter(text: str):
     desc = None
     if desc_m:
         d = desc_m.group(1).strip()
+        # Strip YAML block-scalar header (`|`, `>`, with optional chomping `+`/`-`)
+        # so the content — not the marker — is what gets measured.
+        d = re.sub(r"^[|>][+-]?\s*\n", "", d)
         if d[:1] in ('"', "'") and d[-1:] == d[:1]:
             d = d[1:-1]
         d = re.sub(r"\s+", " ", d).strip()
@@ -132,13 +137,18 @@ def scan_logs_for(skill_name: str, months: int):
 
 
 def find_duplicates(name: str, target: Path, roots):
-    """Return list of OTHER SKILL.md paths (besides target) whose frontmatter name == name."""
+    """
+    Return list of OTHER SKILL.md paths (besides target) whose frontmatter name == name.
+    Realpath-deduped so a skill reachable via multiple symlinked roots is reported once.
+    """
     matches = []
-    target_real = target.resolve()
+    seen_real = {target.resolve()}
     for r in roots:
         for skill_md in find_skill_files(r):
-            if skill_md.resolve() == target_real:
+            real = skill_md.resolve()
+            if real in seen_real:
                 continue
+            seen_real.add(real)
             try:
                 txt = skill_md.read_text(encoding="utf-8", errors="ignore")
             except Exception:
@@ -240,8 +250,9 @@ def main():
         print(json.dumps(report, indent=2))
         return
 
-    print("## Skill Cleanliness Signals")
-    print()
+    # NOTE: the `## Skill Cleanliness Signals` heading is supplied by
+    # references/report-template.md; this script emits the section CONTENT only,
+    # which Claude pastes in place of the placeholder. Avoids a duplicate H2.
     print(f"_Methodology: [skill-cleaner by @steipete](https://github.com/steipete/agent-scripts/blob/main/skills/skill-cleaner/SKILL.md), per-skill subset. Informational — not part of the rubric score._")
     print()
     print(f"**Target**: `{name}` at `{target}` [{target_origin}]")
