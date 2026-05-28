@@ -26,7 +26,7 @@ Fill every section. Never omit a section.
 
 ## Skill Fleet Audit
 
-_Insert verbatim output from `python3 scripts/fleet_audit.py <project-path>` (or `--global` in global mode), per Phase 4 Step 1. The four signals — fleet budget, description trim candidates, duplicates across roots, opt-in unused — are informational; they do not affect the rubric score, but heavy/duplicate findings should surface in Top 3 Improvements where actionable._
+_Insert verbatim output from `python3 scripts/fleet_audit.py <project-path>` (or `--global` in global mode), per Phase 4 Step 1. The four signals — fleet budget, description trim candidates, duplicates across roots, opt-in unused — are informational; they do not affect the rubric score, but heavy/duplicate findings should surface in Top 3 Improvements where actionable. Methodology: [skill-cleaner by @steipete](https://github.com/steipete/agent-scripts/blob/main/skills/skill-cleaner/SKILL.md)._
 
 ## Scores
 
@@ -94,7 +94,7 @@ step for this project's maturity level?]
 
 ## Skill Fleet Audit
 
-_Insert verbatim output from `python3 scripts/fleet_audit.py <project-path>` (or `--global` in global mode), per Phase 4 Step 1. The four signals — fleet budget, description trim candidates, duplicates across roots, opt-in unused — are informational; they do not affect the rubric score, but heavy/duplicate findings should surface in Top 3 Improvements where actionable._
+_Insert verbatim output from `python3 scripts/fleet_audit.py <project-path>` (or `--global` in global mode), per Phase 4 Step 1. The four signals — fleet budget, description trim candidates, duplicates across roots, opt-in unused — are informational; they do not affect the rubric score, but heavy/duplicate findings should surface in Top 3 Improvements where actionable. Methodology: [skill-cleaner by @steipete](https://github.com/steipete/agent-scripts/blob/main/skills/skill-cleaner/SKILL.md)._
 
 ## Scores
 

@@ -23,7 +23,7 @@ Use this template for Phase 5 output. Fill every field — never omit a section.
 
 ## Skill Cleanliness Signals
 
-_Insert verbatim output from `python3 scripts/cleaner_checks.py <skill-md-path>` (Phase 5, Step 1). The three signals — description budget, duplicates across roots, usage evidence — are informational; they do not affect the rubric score, but `CANDIDATE for trim` is a strong hint for D2 and any duplicates should surface in Top 3 Improvements._
+_Insert verbatim output from `python3 scripts/cleaner_checks.py <skill-md-path>` (Phase 5, Step 1). The three signals — description budget, duplicates across roots, usage evidence — are informational; they do not affect the rubric score, but `CANDIDATE for trim` is a strong hint for D2 and any duplicates should surface in Top 3 Improvements. Methodology: [skill-cleaner by @steipete](https://github.com/steipete/agent-scripts/blob/main/skills/skill-cleaner/SKILL.md)._
 
 ## Scores
 
