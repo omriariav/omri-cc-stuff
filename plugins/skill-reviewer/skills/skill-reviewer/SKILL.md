@@ -5,7 +5,7 @@ description: |
   Use when: "/skill-reviewer", "review this skill", "evaluate skill quality", "audit skill", "how good is this skill", "rate this skill".
   NOT for: conversation-level reflection (use /reflect), code review, or PR review.
 user-invocable: true
-argument-hint: '[--fix] <skill-path-or-name> | --compare <left-skill> <right-skill>'
+argument-hint: '[--fix] [--with-logs] <skill> | --compare <left> <right>'
 allowed-tools: Read, Glob, Grep, Edit, Write, Bash(python3*)
 ---
 
@@ -29,14 +29,16 @@ Evaluate a skill's design quality against best practices from Anthropic's skill-
 /skill-reviewer ./skills/my-skill/        → Review by path
 /skill-reviewer --fix publisher-lookup    → Review + apply quick fixes automatically
 /skill-reviewer --compare reflect taboolar → Side-by-side comparison of two skills
+/skill-reviewer --with-logs my-skill      → Review + include transcript usage evidence
 ```
 
-**$ARGUMENTS** = `[--fix] <skill-path-or-name>` OR `--compare <left-skill> <right-skill>`
+**$ARGUMENTS** = `[--fix] [--with-logs] <skill-path-or-name>` OR `--compare <left-skill> <right-skill>`
 
 Parse the argument before starting:
 - If first token is `--compare`, expect exactly two skill names following it. Run comparison mode (Phase 7).
-- If first token is `--fix`, the next token is the skill name. Run normal evaluation then apply fixes (Phase 6).
-- Otherwise, the first token is the skill name. Run normal evaluation only.
+- Recognize `--with-logs` anywhere in the args as an opt-in modifier; pass it through to `scripts/cleaner_checks.py` in Phase 5.
+- If `--fix` is present, the remaining positional token is the skill name. Run normal evaluation then apply fixes (Phase 6).
+- Otherwise, the positional token is the skill name. Run normal evaluation only.
 - If no argument is provided, ask: "Which skill should I review?"
 
 ## Workflow
@@ -154,7 +156,9 @@ The following three **require your semantic judgment** — score.py does not det
 
 ### Phase 5: Generate Report
 
-Read `references/report-template.md` and fill it completely. Every section is required except "Comparison to Gold Standard" (see benchmarks.md for when to include it).
+**Step 1 — Skill-cleaner signals.** Run `python3 scripts/cleaner_checks.py <skill-md-path>` (append `--with-logs` if the user passed it). Include the script's output verbatim under `## Skill Cleanliness Signals`, placed between Inventory and Scores in the report. The three signals — description budget, duplicates across roots, usage evidence — are **informational**; they do not affect the rubric score, but `CANDIDATE for trim` is a strong hint for D2 (Description Quality) and any duplicates found should be surfaced in Top 3 Improvements. Methodology: [skill-cleaner by @steipete](https://github.com/steipete/agent-scripts/blob/main/skills/skill-cleaner/SKILL.md).
+
+**Step 2 — Fill the report template.** Read `references/report-template.md` and fill it completely. Every section is required except "Comparison to Gold Standard" (see benchmarks.md for when to include it).
 
 Score total: D1+D2+D3+D4+D5+D6+D7+D8+D9 (each 0-3) + D10 (0-2) = max 29
 Grade: 25-29=A, 20-24=B, 15-19=C, 10-14=D, 0-9=F
@@ -260,6 +264,7 @@ See `examples/publisher-lookup-review.md` for a complete example output to calib
 - `references/benchmarks.md` — gold standard skills and their known paths
 - `scripts/score.py` — structural scoring script (D1-D3, D6-D10 + anti-patterns)
 - `scripts/history.py` — view and append to the evaluation history log
+- `scripts/cleaner_checks.py` — per-skill skill-cleaner signals (Phase 5 Step 1): budget, duplicates, optional usage evidence
 - `examples/publisher-lookup-review.md` — complete example report for calibration
 - `config.json` — configurable history path and behaviour settings
 - `LEARNINGS.md` — captured gotchas and patterns from real usage
