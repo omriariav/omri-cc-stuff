@@ -5,7 +5,7 @@ description: |
   Use when: "/skill-reviewer", "review this skill", "evaluate skill quality", "audit skill", "how good is this skill", "rate this skill".
   NOT for: conversation-level reflection (use /reflect), code review, or PR review.
 user-invocable: true
-argument-hint: '[--fix] <skill-path-or-name> | --compare <left-skill> <right-skill>'
+argument-hint: '[--fix] <skill> | --compare <left> <right> | --fleet [--with-logs]'
 allowed-tools: Read, Glob, Grep, Edit, Write, Bash(python3*)
 ---
 
@@ -29,11 +29,14 @@ Evaluate a skill's design quality against best practices from Anthropic's skill-
 /skill-reviewer ./skills/my-skill/        → Review by path
 /skill-reviewer --fix publisher-lookup    → Review + apply quick fixes automatically
 /skill-reviewer --compare reflect taboolar → Side-by-side comparison of two skills
+/skill-reviewer --fleet                   → Cross-skill audit (budget, duplicates, candidates)
+/skill-reviewer --fleet --with-logs       → Fleet audit + unused-candidate detection
 ```
 
-**$ARGUMENTS** = `[--fix] <skill-path-or-name>` OR `--compare <left-skill> <right-skill>`
+**$ARGUMENTS** = `[--fix] <skill-path-or-name>` OR `--compare <left-skill> <right-skill>` OR `--fleet [extra args]`
 
 Parse the argument before starting:
+- If first token is `--fleet`, run fleet audit (Phase 8). Forward any remaining tokens to `scripts/fleet.py` (e.g. `--root <path>`, `--with-logs`, `--months N`, `--json`).
 - If first token is `--compare`, expect exactly two skill names following it. Run comparison mode (Phase 7).
 - If first token is `--fix`, the next token is the skill name. Run normal evaluation then apply fixes (Phase 6).
 - Otherwise, the first token is the skill name. Run normal evaluation only.
@@ -199,6 +202,37 @@ Run Phase 1-4 for each skill independently. Then produce a side-by-side table:
 ...
 ```
 
+### Phase 8: Fleet Audit Mode (`--fleet`)
+
+Adapts the [skill-cleaner methodology by @steipete](https://github.com/steipete/agent-scripts/blob/main/skills/skill-cleaner/SKILL.md) for Claude Code. Where the rest of `/skill-reviewer` evaluates a single skill (or a pair) in depth, `--fleet` evaluates the **entire loaded set**: what's costing prompt budget, what's duplicated across roots, what looks unused.
+
+**Run it:**
+
+```bash
+python3 scripts/fleet.py
+python3 scripts/fleet.py --root ~/Code/myproject/plugins
+python3 scripts/fleet.py --with-logs --months 3
+python3 scripts/fleet.py --json
+```
+
+**Default roots scanned (existence-checked):**
+
+- `~/.claude/skills/`
+- `~/.claude/plugins/cache/*/plugins/*/skills/` (installed plugins)
+- Plus any `--root <path>` you add
+
+**Report sections (skill-cleaner's prescribed order):**
+
+1. **Skill Budget** — always-loaded description tokens vs the cap (default `2%` of a `200,000`-token context = `4,000` tokens). Pressure: `OK` / `WARN` (≥80%) / `OVER` (≥100%). Token cost is `ceil(utf8_bytes / 4)` per skill-cleaner.
+2. **Description Optimization Candidates** — skills with descriptions ≥ heavy-threshold (default 120 tok). Trim trigger-irrelevant prose; preserve every quoted trigger phrase. A trim that drops a trigger is a regression.
+3. **Duplicates** — same skill name across multiple roots. Keep-priority: `plugin` (installed) → `personal` (`~/.claude/skills`) → `repo` (project-local). The report names which copy to keep and which to remove.
+4. **Unused Candidates** — opt-in via `--with-logs`. Scans `~/.claude/projects/*.jsonl` for transcript paths like `skills/<name>/SKILL.md` over the last N months. **Conservative**: skills invoked by name without a path won't show as evidence. Treat as CANDIDATES — never auto-delete.
+5. **Roots** — what was actually scanned (and how many skills per root).
+
+**Output policy (skill-cleaner):** suggestions only — the script never edits. Apply changes in small, scoped commits per category. Before removing a duplicate, confirm the kept copy still loads. To trim a flagged description, use `/skill-reviewer --fix <skill>` or edit it directly.
+
+**Flags:** `--root <path>` (repeatable), `--with-logs`, `--months N`, `--context-tokens N`, `--budget-percent N`, `--heavy-threshold N`, `--json`. See `scripts/fleet.py --help` for the full list.
+
 ## Structural Pre-Score
 
 Run this **before Phase 3**, not after. It gives D1, D2, D3, D6, D7, D8, D9, D10 plus anti-pattern detection in seconds:
@@ -260,6 +294,7 @@ See `examples/publisher-lookup-review.md` for a complete example output to calib
 - `references/benchmarks.md` — gold standard skills and their known paths
 - `scripts/score.py` — structural scoring script (D1-D3, D6-D10 + anti-patterns)
 - `scripts/history.py` — view and append to the evaluation history log
+- `scripts/fleet.py` — fleet audit (Phase 8): budget, duplicates, candidates, optional unused detection
 - `examples/publisher-lookup-review.md` — complete example report for calibration
 - `config.json` — configurable history path and behaviour settings
 - `LEARNINGS.md` — captured gotchas and patterns from real usage

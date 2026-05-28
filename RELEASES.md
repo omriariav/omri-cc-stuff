@@ -1,5 +1,14 @@
 # Releases
 
+## skill-reviewer v1.1.0 (2026-05-28)
+
+New feature: fleet audit mode (`--fleet`).
+
+- Adapts the [skill-cleaner methodology by @steipete](https://github.com/steipete/agent-scripts/blob/main/skills/skill-cleaner/SKILL.md) for Claude Code. Where the rest of `/skill-reviewer` evaluates a single skill, `--fleet` audits the **entire loaded set** across all roots: always-loaded prompt-budget cost, description optimization candidates, duplicates across roots (with keep-priority suggestions), and opt-in unused detection via transcript scanning.
+- New script: `scripts/fleet.py`. Flags: `--root` (repeatable), `--with-logs`, `--months`, `--context-tokens`, `--budget-percent`, `--heavy-threshold`, `--json`.
+- Read-only — the script suggests changes, never applies them. Apply per-skill via `/skill-reviewer --fix <skill>` or edit manually.
+- `argument-hint` updated to surface the new mode; `SKILL.md` adds Phase 8 documenting the five report sections.
+
 ## x v2.1.2 (2026-05-27)
 
 Maintenance — no behavior change.
