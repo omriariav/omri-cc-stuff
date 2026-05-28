@@ -24,6 +24,10 @@ Fill every section. Never omit a section.
 | skills/ | [N skills] | [skill names] |
 | agents/ | [N agents] | [agent names] |
 
+## Skill Fleet Audit
+
+_Insert verbatim output from `python3 scripts/fleet_audit.py <project-path>` (or `--global` in global mode), per Phase 4 Step 1. The four signals — fleet budget, description trim candidates, duplicates across roots, opt-in unused — are informational; they do not affect the rubric score, but heavy/duplicate findings should surface in Top 3 Improvements where actionable._
+
 ## Scores
 
 | Dimension | Score | Notes |
@@ -87,6 +91,10 @@ step for this project's maturity level?]
 | commands/ | [N files] | [filenames] |
 | skills/ | [N skills] | [skill names] |
 | agents/ | [N agents] | [agent names] |
+
+## Skill Fleet Audit
+
+_Insert verbatim output from `python3 scripts/fleet_audit.py <project-path>` (or `--global` in global mode), per Phase 4 Step 1. The four signals — fleet budget, description trim candidates, duplicates across roots, opt-in unused — are informational; they do not affect the rubric score, but heavy/duplicate findings should surface in Top 3 Improvements where actionable._
 
 ## Scores
 

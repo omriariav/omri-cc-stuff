@@ -1,5 +1,19 @@
 # Releases
 
+## claude-reviewer v1.2.0 (2026-05-28)
+
+New feature: fleet-level skill-cleaner signals on every config audit.
+
+- Companion to `skill-reviewer v1.1.0`. Where `/skill-reviewer` surfaces skill-cleaner signals **per-skill**, `/claude-reviewer` now surfaces them **fleet-wide** across the audited scope. Every `/claude-reviewer [project]` or `/claude-reviewer --global` invocation now includes a `## Skill Fleet Audit` section in its report with:
+  - **Fleet budget** — total always-loaded description tokens across all skills in scope vs cap (default `2%` of `200,000`-tok context = `4,000` tok). Pressure: `OK` / `WARN` / `OVER`.
+  - **Description trim candidates** — every skill with description ≥ heavy threshold (default 120 tok), sorted by token cost.
+  - **Duplicates** — every skill name that appears in multiple roots, with keep-priority `plugin > personal > repo`.
+  - **Unused candidates** — opt-in via `--with-logs`. Conservative path-only scan of `~/.claude/projects/*.jsonl` for any skill in scope. Candidate signal only.
+- New script: `scripts/fleet_audit.py`. Flags: `--global`, `--root` (repeatable), `--with-logs`, `--months`, `--context-tokens`, `--budget-percent`, `--heavy-threshold`, `--json`.
+- Read-only — the script informs; per-skill trims flow through `/skill-reviewer --fix <skill>`.
+- `argument-hint` exposes `--with-logs`; `SKILL.md` adds Phase 4 Step 1 documenting the integration; `references/report-template.md` adds the `## Skill Fleet Audit` section between Inventory and Scores (in both project-mode and global-mode templates).
+- Same fixes applied as `cleaner_checks.py` from `skill-reviewer v1.1.0`: tolerant YAML block-scalar parsing, `os.walk` directory pruning, realpath-deduped scanning.
+
 ## skill-reviewer v1.1.0 (2026-05-28)
 
 New feature: every per-skill review now surfaces skill-cleaner signals.
