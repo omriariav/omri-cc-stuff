@@ -2,12 +2,16 @@
 
 ## skill-reviewer v1.1.0 (2026-05-28)
 
-New feature: fleet audit mode (`--fleet`).
+New feature: every per-skill review now surfaces skill-cleaner signals.
 
-- Adapts the [skill-cleaner methodology by @steipete](https://github.com/steipete/agent-scripts/blob/main/skills/skill-cleaner/SKILL.md) for Claude Code. Where the rest of `/skill-reviewer` evaluates a single skill, `--fleet` audits the **entire loaded set** across all roots: always-loaded prompt-budget cost, description optimization candidates, duplicates across roots (with keep-priority suggestions), and opt-in unused detection via transcript scanning.
-- New script: `scripts/fleet.py`. Flags: `--root` (repeatable), `--with-logs`, `--months`, `--context-tokens`, `--budget-percent`, `--heavy-threshold`, `--json`.
-- Read-only — the script suggests changes, never applies them. Apply per-skill via `/skill-reviewer --fix <skill>` or edit manually.
-- `argument-hint` updated to surface the new mode; `SKILL.md` adds Phase 8 documenting the five report sections.
+- Adapts the [skill-cleaner methodology by @steipete](https://github.com/steipete/agent-scripts/blob/main/skills/skill-cleaner/SKILL.md) for Claude Code as **per-skill checks**, not a separate audit mode. Every `/skill-reviewer <skill>` invocation now includes a "Skill Cleanliness Signals" section in its report with:
+  - **Description budget** — token cost for the target skill (`ceil(utf8_bytes/4)`) vs cap (default `2%` of a `200,000`-token context). Flags `CANDIDATE for trim` above the heavy threshold (default 120 tok).
+  - **Duplicates** — scans all skill roots for other copies of the same skill name; suggests which to keep via `plugin > personal > repo` priority.
+  - **Usage evidence** — opt-in via `--with-logs`. Conservative path-only scan of `~/.claude/projects/*.jsonl` for transcript paths like `skills/<name>/SKILL.md`. Candidate signal only.
+- New script: `scripts/cleaner_checks.py`. Flags: `--root` (repeatable), `--with-logs`, `--months`, `--context-tokens`, `--budget-percent`, `--heavy-threshold`, `--json`.
+- Read-only — the script informs; fixes still flow through `/skill-reviewer --fix <skill>`.
+- `argument-hint` exposes `--with-logs`; `SKILL.md` adds the integration step as Phase 5, Step 1; `references/report-template.md` adds the section between Inventory and Scores.
+- **Fleet-level audits** (totals across all skills, all-duplicates-at-once, all-unused) will land separately as an addition to `/claude-reviewer`, whose scope already covers the whole `.claude/` setup.
 
 ## x v2.1.2 (2026-05-27)
 

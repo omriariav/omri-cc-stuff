@@ -132,14 +132,14 @@ Evaluate any skill's design quality against [best practices](https://x.com/trq21
 /skill-reviewer publisher-lookup          → Review by skill name
 /skill-reviewer --fix my-skill            → Review + auto-apply safe fixes
 /skill-reviewer --compare skill-a skill-b → Side-by-side comparison
-/skill-reviewer --fleet                   → Cross-skill audit (budget, duplicates, candidates)
+/skill-reviewer --with-logs my-skill      → Review + include transcript usage evidence
 ```
 
 **Dimensions scored:** Progressive Disclosure, Description Quality, Gotchas, Non-Obvious Content, Flexibility, Setup & Config, Memory, Scripts, Frontmatter, Hooks Integration.
 
 **Grades:** A (25-29), B (20-24), C (15-19), D (10-14), F (0-9)
 
-**`--fleet` mode (v1.1.0):** Adapts the [skill-cleaner methodology by @steipete](https://github.com/steipete/agent-scripts/blob/main/skills/skill-cleaner/SKILL.md) for cross-skill audits — prompt-budget totals, description-trim candidates, duplicates across roots (with keep-priority), and opt-in unused detection via transcript scanning. Read-only.
+**Skill cleanliness signals (v1.1.0):** Every per-skill review now includes a "Skill Cleanliness Signals" section adapting the [skill-cleaner methodology by @steipete](https://github.com/steipete/agent-scripts/blob/main/skills/skill-cleaner/SKILL.md) — description budget cost, duplicates across roots (with keep-priority), and opt-in usage evidence via `--with-logs`. Read-only; informs the rubric, doesn't replace it.
 
 ### `/find-session` - Search Past Conversations
 
