@@ -1,0 +1,31 @@
+{
+  "name": "claude-coacher",
+  "metadata": {
+    "description": "Single-plugin marketplace for coacher — a Claude Code plugin that primes Claude with a collaborator frame at session start.",
+    "version": "0.2.0"
+  },
+  "plugins": [
+    {
+      "name": "coacher",
+      "source": "./",
+      "description": "Primes Claude with a peer-collaborator frame at SessionStart and provides /coacher:status, /coacher:audit, /coacher:reset, and /coacher:rant for mid-session integrity checks, CLAUDE.md conflict detection, re-anchoring, and raw-vent-to-productive translation.",
+      "version": "0.2.0",
+      "author": {
+        "name": "Omri Ariav",
+        "email": "omri.ariav@gmail.com"
+      },
+      "category": "utilities",
+      "keywords": [
+        "prompting",
+        "collaboration",
+        "frame",
+        "tone",
+        "askell"
+      ]
+    }
+  ],
+  "owner": {
+    "name": "Omri Ariav",
+    "email": "omri.ariav@gmail.com"
+  }
+}

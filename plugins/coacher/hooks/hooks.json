@@ -1,0 +1,17 @@
+{
+  "description": "Injects the claude-coacher collaborator frame at SessionStart.",
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/session-coach.sh",
+            "timeout": 5,
+            "statusMessage": "Loading coaching frame..."
+          }
+        ]
+      }
+    ]
+  }
+}
