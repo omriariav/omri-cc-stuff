@@ -1,0 +1,11 @@
+{
+  "name": "coacher",
+  "version": "0.2.0",
+  "description": "Primes Claude with a collaborator frame at session start (based on Amanda Askell's prompting philosophy — positive framing, permission to push back, no apology spirals). Provides /coacher:status, /coacher:audit, /coacher:reset, and /coacher:rant for mid-session integrity checks, CLAUDE.md conflict detection, re-anchoring, and frustration-to-productive translation.",
+  "author": {
+    "name": "Omri Ariav",
+    "email": "omri.ariav@gmail.com"
+  },
+  "homepage": "https://github.com/omriariav/claude-coacher",
+  "license": "MIT"
+}

@@ -1,0 +1,10 @@
+.DS_Store
+*.swp
+*.swo
+*.bak
+*~
+.vscode/
+.idea/
+node_modules/
+__pycache__/
+*.pyc

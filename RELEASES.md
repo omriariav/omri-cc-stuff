@@ -1,5 +1,14 @@
 # Releases
 
+## omri-cc-stuff v2.4.0 (2026-06-03)
+
+Migration: folded two standalone single-plugin repos into this marketplace.
+
+- **`natbag` added** — Ben Gurion Airport (TLV) live flight data, destination weather, and historical delay analysis. Imported from `omriariav/natbag-skill` (plugin v1.2.1) via `git subtree`, preserving full commit history, into `plugins/natbag/`. New entry in the root `marketplace.json` (`source: ./plugins/natbag`). This is the marketplace's first plugin with hooks (SessionStart snapshot + PreToolUse freshness guard); both use `${CLAUDE_PLUGIN_ROOT}` and resolve correctly under the monorepo layout.
+- **`coacher` moved from external `url` source to local `./plugins/coacher`** — previously referenced in `marketplace.json` as a git URL pointing at `omriariav/claude-coacher`; now vendored locally (plugin v0.2.0) via `git subtree`, preserving history. Provides the SessionStart collaborator frame plus `/coacher:status`, `/coacher:audit`, `/coacher:reset`, `/coacher:rant`.
+- Removed each imported plugin's redundant nested `.claude-plugin/marketplace.json` (the monorepo reads only the root manifest).
+- The standalone repos now carry deprecation notices pointing here; install both from `omriariav/omri-cc-stuff` going forward. If you had the standalone `natbag` / `claude-coacher` plugins installed, uninstall them to avoid double-firing the SessionStart hooks.
+
 ## claude-reviewer v1.2.0 (2026-05-28)
 
 New feature: fleet-level skill-cleaner signals on every config audit.

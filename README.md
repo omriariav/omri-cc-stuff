@@ -185,6 +185,39 @@ Review any project's `.claude/` folder setup against [best practices](https://x.
 
 **Grades:** A (21-24), B (16-20), C (11-15), D (6-10), F (0-5)
 
+### `/natbag` - Ben Gurion Airport (TLV) Flight Data
+
+Live flight data, destination weather, and historical delay analysis for Ben Gurion Airport (TLV), pulling from [data.gov.il](https://data.gov.il/datasets/airport_authority/flydata) (flights) and [Open-Meteo](https://open-meteo.com/) (weather). A SessionStart hook quietly snapshots flight data so the historical database accumulates over time.
+
+```
+/natbag departures            → Departures board (status, gate, terminal)
+/natbag arrivals              → Arrivals board
+/natbag LY001                 → Status of a specific flight
+/natbag delayed               → Only delayed / canceled flights
+/natbag weather Paris         → Current weather at a destination city
+/natbag history El Al         → On-time / delay history for an airline
+```
+
+**Features:**
+- Bilingual (Hebrew + English) input and output
+- Rolling ~3-day live window; gates, terminals, check-in zones
+- Local SQLite history accrues daily snapshots → on-time performance, delay/cancellation rates, per-flight change tracking
+- Ships IATA reference data (999 airlines, 9,240 airports); user history lives in `~/.natbag/`
+- Pure Python 3 stdlib + `sqlite3` + `curl` — no API keys, no pip installs
+
+### `coacher` - Peer-Collaborator Frame at Session Start
+
+Primes Claude with a peer-collaborator stance at SessionStart (based on Amanda Askell's prompting philosophy — positive framing, permission to push back, no apology spirals). A SessionStart hook injects the frame from `frame.md`; edit that file to tune the stance.
+
+| Command | Description |
+|---------|-------------|
+| `/coacher:status` | Integrity check — verify the frame is in the current context |
+| `/coacher:audit` | Cross-check `frame.md` against your CLAUDE.md and flag stance conflicts |
+| `/coacher:reset` | Re-anchor the frame mid-session if Claude drifts into hedging |
+| `/coacher:rant <text>` | Vent raw frustration → Claude extracts the intent and acts on it |
+
+Requires `python3` (stdlib only). The hook degrades gracefully — if python3 is missing or the frame is empty, it exits cleanly with no failure.
+
 ## Other Commands
 
 | Command | Description |
