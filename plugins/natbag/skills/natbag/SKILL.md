@@ -1,0 +1,241 @@
+---
+name: natbag
+description: >
+  This skill should be used when the user asks about "Ben Gurion airport",
+  "TLV flights", "flight status", "departures from Tel Aviv", "arrivals at TLV",
+  "is my flight on time", "flight to Amsterdam", "airport delays", "cancelled flights",
+  "gate info", "terminal 3", "pickup from airport", "weather at destination",
+  "flight delay history", "נתב״ג", "טיסות", "לוח טיסות", "מצב טיסה".
+  Provides live flight data from Ben Gurion Airport (TLV), destination weather
+  via Open-Meteo, and historical delay analysis via local SQLite database.
+  Do NOT use for booking flights, non-TLV airports, or general travel planning.
+user-invocable: true
+argument-hint: "[departures|arrivals|LY001|delayed|weather <city>|history <airline>]"
+allowed-tools:
+  - Bash(curl)
+  - Bash(python3)
+  - Bash(sqlite3)
+  - Read
+  - Write
+---
+
+# Natbag — Ben Gurion Airport Flights
+
+Live flight data, destination weather, and historical analysis for Ben Gurion Airport (TLV/LLBG). Data from Israel's open data portal (data.gov.il), covering a rolling ~3-day window.
+
+## Query Workflow
+
+Show step progress to the user as each step runs:
+
+1. **Step 1: Fetching flights** — run `query_flights.py` with appropriate filters
+2. **Step 2: Getting weather** — fetch destination weather (for single flight or when relevant)
+3. **Step 3: Checking history** — query historical stats (only if user asks about delays/patterns)
+
+Not all steps run every time. Skip steps that aren't relevant to the query:
+- Departure board → Step 1 only
+- "Is my flight on time?" → Step 1 + Step 2
+- "Are El Al flights usually delayed?" → Step 3 only
+- "Next flight to London with weather" → Step 1 + Step 2
+
+Display each step label before running it so the user sees progress.
+
+## Data Sources
+
+1. **Live flights**: data.gov.il API — departures, arrivals, status, gates
+2. **Weather**: Open-Meteo API — free, no API key — current conditions at destination
+3. **Historical**: Local SQLite DB at `~/.natbag/flights.db` — accumulated via daily snapshots
+
+## Daily Snapshot (Automatic)
+
+A PreToolUse hook runs `snapshot.py` automatically whenever this skill is invoked. On first run, it copies the shipped `data/db.db` (airlines + airports) to `~/.natbag/flights.db`, adds the flights table, and fetches live flights. On subsequent runs, it self-guards: skips if it already ran today or if the user disabled snapshots.
+
+After the first invocation, inform the user: "Natbag initialized. Flight data and IATA reference loaded. Historical data will accumulate automatically on each use. To disable daily snapshots, set `daily_snapshot: false` in `~/.natbag/config.json`."
+
+Replace `SKILL_DIR` with the resolved path to this skill's directory (where this SKILL.md lives).
+
+## Querying Live Flights
+
+Use the composable `query_flights.py` script for live API queries:
+
+```bash
+python3 SKILL_DIR/scripts/query_flights.py --departures --date YYYY-MM-DD
+python3 SKILL_DIR/scripts/query_flights.py --arrivals --date YYYY-MM-DD --upcoming
+python3 SKILL_DIR/scripts/query_flights.py --arrivals --airline LY --date YYYY-MM-DD
+python3 SKILL_DIR/scripts/query_flights.py --destination JFK --upcoming
+python3 SKILL_DIR/scripts/query_flights.py --flight LY001
+python3 SKILL_DIR/scripts/query_flights.py --status DELAYED
+python3 SKILL_DIR/scripts/query_flights.py --search "London"
+```
+
+Flags can be combined. All scripts return JSON — Claude handles formatting for the user.
+
+> **CRITICAL: Always use `--date YYYY-MM-DD` when counting or listing flights for a specific day.** Without it, the API returns a rolling ~3-day window, inflating counts. When `--date` is set, the script automatically pages through all API results before filtering, so counts are accurate. Replace `YYYY-MM-DD` with the actual date (e.g., `2026-04-03`).
+
+For raw API access, use `curl` directly — see [references/api.md](references/api.md) for filter patterns.
+
+### Resolving Ambiguous Queries
+
+The local DB at `~/.natbag/flights.db` includes `airlines` and `airports` tables (from [data/db.db](data/db.db)) for resolving user input:
+
+- **Airline name → code**: User says "El Al" or "Wizz Air" → look up IATA code:
+  ```bash
+  python3 SKILL_DIR/scripts/query_history.py --airline-lookup "El Al"
+  ```
+- **Multi-airport cities**: User says "flights to London" → find all London airports:
+  ```bash
+  python3 SKILL_DIR/scripts/query_history.py --airports London
+  ```
+  Then query each relevant code (LHR, LGW, STN, LTN, LCY) or use full-text search `--search London`.
+- **Partial flight numbers**: User says "flight 001" without airline → use `--search 001` to match across all airlines.
+- **Hebrew city names**: User types "לונדון" → use `--search לונדון`. Supports partial prefix matching (e.g., `--search לונ` finds לונדון).
+- **Empty results**: If a filtered query returns 0 results, try broadening: drop the direction filter, switch from exact filter to `--search`, or check if the city has multiple airport codes.
+
+### Output Fields
+
+`query_flights.py` returns clean JSON with these fields:
+
+| Field | Content |
+|-------|---------|
+| flight | Airline code + number (e.g., "LY 1008") |
+| airline | Airline full name |
+| date | Scheduled date (YYYY-MM-DD) |
+| time | Scheduled time (HH:MM) |
+| updated_time | Actual/updated time (compare with time to detect delays) |
+| direction | "departure" or "arrival" |
+| city / city_he | City name (English / Hebrew) |
+| country / country_he | Country (English / Hebrew) |
+| airport | IATA airport code |
+| terminal | Terminal number |
+| gate | Gate assignment (null if unassigned) |
+| checkin_zone | Check-in zone (null if N/A) |
+| status / status_he | Flight status (English / Hebrew) |
+
+Full field reference and curl examples: see [references/api.md](references/api.md).
+For complete output examples: see [examples/](examples/) (departure board, single flight, historical stats).
+
+## Destination Weather
+
+After showing flight info, offer weather at the destination. Uses Open-Meteo (free, no key).
+
+**Steps:**
+1. Get the `city` field from the flight JSON (e.g., "BERLIN")
+2. Geocode: `curl -s 'https://geocoding-api.open-meteo.com/v1/search?name={city}&count=1'`
+3. Extract `latitude` and `longitude` from `results[0]`
+4. Fetch weather: `curl -s 'https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&current_weather=true'`
+5. Display: temperature, weather description, wind speed
+
+Open-Meteo returns the most populated city match, so "Berlin" → Berlin Germany (not Berlin NH). Tested and correct for all TLV route cities.
+
+Weather codes: 0=Clear, 1-3=Partly cloudy, 45/48=Fog, 51-55=Drizzle, 61-65=Rain, 71-75=Snow, 80-82=Showers, 95=Thunderstorm.
+
+## Historical Analysis
+
+Use the composable `query_history.py` script for historical queries:
+
+```bash
+python3 SKILL_DIR/scripts/query_history.py --coverage                    # data range
+python3 SKILL_DIR/scripts/query_history.py --ontime                      # all airlines
+python3 SKILL_DIR/scripts/query_history.py --ontime --airline LY          # specific airline
+python3 SKILL_DIR/scripts/query_history.py --delays --route JFK           # delays by route
+python3 SKILL_DIR/scripts/query_history.py --cancellations                # cancellation rates
+python3 SKILL_DIR/scripts/query_history.py --airports London              # multi-airport lookup
+python3 SKILL_DIR/scripts/query_history.py --airline-lookup "Wizz"        # airline code lookup
+```
+
+Add `--days N` to change the lookback period (default: 30). All output is JSON.
+
+### Flight Change History
+
+Track how flights evolve over time — status changes, time updates, gate reassignments:
+
+```bash
+python3 SKILL_DIR/scripts/query_history.py --flight-history LY001         # all changes for a flight
+python3 SKILL_DIR/scripts/query_history.py --delay-patterns               # when are delays announced?
+python3 SKILL_DIR/scripts/query_history.py --delay-patterns --airline LY   # per-airline patterns
+python3 SKILL_DIR/scripts/query_history.py --status-transitions            # status paths (e.g., DELAYED -> CANCELED)
+```
+
+Change history accumulates from version 1.1.0 onward. Older flights (captured before the upgrade) will not have change records.
+
+Use `--flight-history` when the user asks about a specific flight's progression. Use `--delay-patterns` when they ask about how early delays are typically announced. Use `--status-transitions` when they ask about flights that were delayed then cancelled, or other status paths.
+
+If the database doesn't exist or is empty, inform the user: "Historical data accumulates from install date via daily snapshots. Run `python3 SKILL_DIR/scripts/snapshot.py --force` to start collecting now."
+
+For custom SQL queries, use `sqlite3 ~/.natbag/flights.db` directly. The DB also has `airlines`, `airports`, and `flight_changes` tables for JOINs. See [references/api.md](references/api.md) for query patterns.
+
+## Output Formatting
+
+### Departure/Arrival Board
+
+```
+Ben Gurion Departures — March 21, 2026
+
+Time    Flight    Airline     To               Gate     Status
+14:10   LY 001    El Al       London (LHR)     B2-B4    ON TIME
+14:30   IZ 1511   Arkia       Larnaca (LCA)    G11      DELAYED → 15:04
+15:00   6H 996    Israir      Amsterdam (AMS)   —       CANCELED
+```
+
+- Sort by `date` + `time`
+- For DELAYED flights, show `updated_time`
+- Use `—` for null `gate`/`checkin_zone` values
+- Omit past flights (status DEPARTED/LANDED) unless the user explicitly asks for all
+
+### Single Flight Detail
+
+```
+Flight LY 001 — El Al Israel Airlines
+Route:     Tel Aviv (TLV) → London Heathrow (LHR)
+Scheduled: 14:10  |  Updated: 14:10
+Terminal:  3      |  Gate: B2-B4  |  Check-in: B
+Status:    ON TIME
+
+London Weather: 12°C, Partly Cloudy, Wind 15 km/h
+```
+
+### Historical Stats
+
+```
+El Al to JFK — Last 30 Days (from local DB)
+Total: 28  |  On time: 19 (68%)  |  Avg delay: 22 min
+Cancellations: 1 (3.6%)
+```
+
+## Hebrew Support
+
+When the user writes in Hebrew, respond in Hebrew and use the Hebrew fields from the JSON:
+- City names: `city_he` instead of `city`
+- Country names: `country_he` instead of `country`
+- Status: `status_he` instead of `status`
+- Board header: `לוח טיסות נתב"ג — יציאות` / `הגעות`
+
+## Smart Behaviors
+
+- **"my flight"**: Ask for flight number or destination to narrow down
+- **Pickup planning**: Show arrival time + suggest arriving 30 min after expected landing. If DELAYED, use `updated_time` instead of `time`
+- **Delay detection**: When `updated_time` > `time`, calculate and show delay duration in minutes
+- **Weather proactively**: When showing a single flight detail, include destination weather automatically
+- **First use**: Mention that historical data accumulates over time via daily snapshots. The user can disable this in `~/.natbag/config.json` by setting `daily_snapshot: false`
+
+## Snapshot Management
+
+The `scripts/snapshot.py` script fetches current flights and stores them in SQLite:
+- Runs automatically via PreToolUse hook on each skill invocation (self-guards to once daily)
+- `python3 SKILL_DIR/scripts/snapshot.py --force` to run manually anytime
+- Opt-out: set `daily_snapshot: false` in `~/.natbag/config.json`
+- First run copies shipped `data/db.db` (airlines + airports) to `~/.natbag/flights.db`
+- Data deduplicates by airline+flight+scheduled time
+- Status and gate info are updated on each snapshot
+
+## Gotchas
+
+- **Field names are cryptic**: All fields start with CH (Hebrew abbreviation for "חברה"/company). Always refer to the field reference, never guess. Common mistake: using `STATUS` instead of `CHRMINE`.
+- **Rolling window inflates counts**: API returns ~3 days of data, NOT just today. When counting flights for a specific day, ALWAYS pass `--date YYYY-MM-DD` to filter. Without it, "how many flights today?" will return 3x the real number. This has caused wrong answers repeatedly.
+- **Uppercase values**: Filter values must be uppercase. `filters={"CHRMINE":"delayed"}` returns 0 results silently — use `"DELAYED"`. Same for airline codes: `"ly"` → no results, `"LY"` → works.
+- **API timeout**: data.gov.il can be slow (5-15s). If `curl` hangs, retry once. Error: `curl: (28) Operation timed out` — fix with `curl -s --max-time 30`.
+- **Bad resource ID**: Returns `{"success": false, "error": {"__type": "Not Found Error", "message": "לא נמצא: Resource was not found."}}`. Fix: verify the resource_id constant hasn't changed.
+- **Malformed filters JSON**: Returns `{"success": false, "error": {"filters": ["Cannot parse JSON"], "__type": "Validation Error"}}`. Fix: ensure filters value is valid JSON with properly escaped quotes in the URL.
+- **Empty result confusion**: `"total": 0` with `"success": true` means the filter matched nothing — not an error. Check: is the value uppercase? Is the field name correct? Is the flight within the 3-day window?
+- **Gate availability**: `CHCINT` and `CHCKZN` are often null for flights >24h away or for arrivals. Don't treat null gate as an error.
+- **"NOT FINAL"**: Many future flights show status "NOT FINAL" — this means the schedule isn't confirmed yet, not that the flight is cancelled. Don't alarm the user.
+- **No booking**: This skill provides information only. Cannot book, modify, or cancel flights. If asked, clearly say so.
