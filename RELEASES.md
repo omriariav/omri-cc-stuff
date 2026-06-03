@@ -1,13 +1,24 @@
 # Releases
 
-## omri-cc-stuff v2.4.0 (2026-06-03)
+## natbag v1.2.1 (2026-06-03)
 
-Migration: folded two standalone single-plugin repos into this marketplace.
+New plugin — added to the marketplace by migrating `omriariav/natbag-skill` in via `git subtree` (full commit history preserved).
 
-- **`natbag` added** — Ben Gurion Airport (TLV) live flight data, destination weather, and historical delay analysis. Imported from `omriariav/natbag-skill` (plugin v1.2.1) via `git subtree`, preserving full commit history, into `plugins/natbag/`. New entry in the root `marketplace.json` (`source: ./plugins/natbag`). This is the marketplace's first plugin with hooks (SessionStart snapshot + PreToolUse freshness guard); both use `${CLAUDE_PLUGIN_ROOT}` and resolve correctly under the monorepo layout.
-- **`coacher` moved from external `url` source to local `./plugins/coacher`** — previously referenced in `marketplace.json` as a git URL pointing at `omriariav/claude-coacher`; now vendored locally (plugin v0.2.0) via `git subtree`, preserving history. Provides the SessionStart collaborator frame plus `/coacher:status`, `/coacher:audit`, `/coacher:reset`, `/coacher:rant`.
-- Removed each imported plugin's redundant nested `.claude-plugin/marketplace.json` (the monorepo reads only the root manifest).
-- The standalone repos now carry deprecation notices pointing here; install both from `omriariav/omri-cc-stuff` going forward. If you had the standalone `natbag` / `claude-coacher` plugins installed, uninstall them to avoid double-firing the SessionStart hooks.
+- Ben Gurion Airport (TLV) live flight data, destination weather, and historical delay analysis. `/natbag` shows departures, arrivals, specific flights, status, destination weather, and accumulated on-time/delay history.
+- New entry in the root `marketplace.json` (`source: ./plugins/natbag`). The marketplace's first plugin with hooks (SessionStart snapshot + PreToolUse freshness guard); both use `${CLAUDE_PLUGIN_ROOT}` and resolve correctly under the monorepo layout.
+- Runtime history accrues in `~/.natbag/flights.db` (install-independent), so existing data carries over untouched.
+- Dropped the imported repo's redundant nested `.claude-plugin/marketplace.json` (the monorepo reads only the root manifest).
+- The standalone `omriariav/natbag-skill` repo is now deprecated and points here. If you had it installed, uninstall it to avoid double-firing the SessionStart hook.
+
+## coacher v0.2.0 (2026-06-03)
+
+Moved into the marketplace as a local plugin — was previously listed in `marketplace.json` as an external `url` source pointing at `omriariav/claude-coacher`; now vendored locally via `git subtree` (history preserved).
+
+- `marketplace.json` entry flipped from the git URL to `source: ./plugins/coacher`. No behavior change: still injects the SessionStart collaborator frame and provides `/coacher:status`, `/coacher:audit`, `/coacher:reset`, `/coacher:rant`.
+- Dropped the imported repo's redundant nested `.claude-plugin/marketplace.json`.
+- The standalone `omriariav/claude-coacher` repo is now deprecated and points here. If you had it installed from there, reinstall as `coacher@omri-cc-stuff` to avoid double-firing the SessionStart hook.
+
+> Marketplace housekeeping: the root `plugin.json` no longer carries a `version` field — versioning is strictly per-plugin (Claude Code keys installs on each plugin's own version, namespaced by marketplace; the root version drove nothing).
 
 ## claude-reviewer v1.2.0 (2026-05-28)
 
