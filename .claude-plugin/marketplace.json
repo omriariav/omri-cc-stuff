@@ -150,10 +150,7 @@
     },
     {
       "name": "coacher",
-      "source": {
-        "source": "url",
-        "url": "https://github.com/omriariav/claude-coacher.git"
-      },
+      "source": "./plugins/coacher",
       "description": "Primes Claude with a peer-collaborator frame at SessionStart (based on Amanda Askell's prompting philosophy via https://x.com/itsolelehmann/status/2045578185950040390). Provides /coacher:status, /coacher:audit, /coacher:reset, and /coacher:rant for mid-session integrity checks, CLAUDE.md conflict detection, re-anchoring, and raw-vent-to-productive translation.",
       "author": {
         "name": "Omri Ariav",
@@ -167,6 +164,27 @@
         "tone",
         "askell",
         "coach"
+      ]
+    },
+    {
+      "name": "natbag",
+      "source": "./plugins/natbag",
+      "description": "Ben Gurion Airport (TLV) live flight data, destination weather, and historical delay analysis. /natbag shows departures, arrivals, specific flights, status, destination weather, and accumulated on-time/delay history.",
+      "author": {
+        "name": "Omri Ariav",
+        "email": "omri.ariav@gmail.com"
+      },
+      "category": "utilities",
+      "keywords": [
+        "flights",
+        "airport",
+        "tlv",
+        "ben-gurion",
+        "weather",
+        "travel"
+      ],
+      "skills": [
+        "./skills/natbag"
       ]
     }
   ]
