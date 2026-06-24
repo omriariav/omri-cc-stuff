@@ -143,21 +143,25 @@ Evaluate any skill's design quality against [best practices](https://x.com/trq21
 
 ### `/find-session` - Search Past Conversations
 
-Search past Claude Code session history by keyword and get `claude --resume` commands to pick up where you left off.
+Search past **Claude Code and Codex** session history by keyword and get the right resume command (`claude --resume <id>` or `codex resume <id>`) to pick up where you left off. Results from both sources interleave by recency, each tagged with its source.
 
 ```
-/find-session deploy                → Search current project for "deploy"
+/find-session deploy                → Search current project (both sources) for "deploy"
 /find-session --all taboola         → Search across all projects
+/find-session --all --codex taboola → Codex sessions only
 /find-session --all --json auth     → Structured JSON output
 ```
 
 **Features:**
-- Searches user messages and custom titles (not assistant text)
+- Two sources in one search: Claude Code (`~/.claude/projects/`) and Codex (`~/.codex/sessions/`)
+- `--source claude|codex|both` (default `both`), with shorthand `--claude` / `--codex` / `--both`
+- Searches user messages and custom titles (not assistant text); Codex previews skip injected `role: user` boilerplate (`# AGENTS.md`, `<environment_context>`, etc.)
 - Word-boundary matching for clean terms, literal match for punctuation (`claude-mem`, `c++`)
-- Shows custom title (from `/rename`) when set, falls back to first message preview
+- Shows custom title (from `/rename`) when set, falls back to first message preview (Codex has no titles → always preview-based)
+- Codex subagent sessions (guardian judges, spawned children) excluded by default; `--include-subagents` to keep them
 - Optional Haiku summarization for untitled sessions (asks before running)
-- `--json` mode for programmatic use
-- Git-aware project root resolution (works from subdirectories)
+- `--json` mode for programmatic use (adds `source` + per-result `resume_cmd`)
+- Git-aware project root resolution (works from subdirectories); Codex sessions scoped by recorded `cwd`
 
 **Configuration** (`config.json`):
 | Setting | Default | Description |

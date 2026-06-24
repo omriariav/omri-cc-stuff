@@ -1,7 +1,7 @@
 {
   "name": "find-session",
-  "version": "1.1.0",
-  "description": "Search past Claude Code conversations by keyword and get session IDs for claude --resume.",
+  "version": "1.2.0",
+  "description": "Search past Claude Code and Codex conversations by keyword and get session IDs for claude --resume / codex resume.",
   "author": {
     "name": "Omri Ariav",
     "email": "omri.ariav@gmail.com"
