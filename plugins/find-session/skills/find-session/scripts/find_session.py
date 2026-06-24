@@ -396,12 +396,17 @@ def main():
     include_subagents = "--include-subagents" in args
     args = [a for a in args if a != "--include-subagents"]
 
-    # --source claude|codex|both  (also accepts --source=codex)
+    # Source selection: --source claude|codex|both (or --source=codex), plus
+    # the shorthand aliases --claude / --codex / --both.
     source = "both"
     cleaned = []
     i = 0
     while i < len(args):
         a = args[i]
+        if a in ("--both", "--claude", "--codex"):
+            source = a[2:]
+            i += 1
+            continue
         if a == "--source" and i + 1 < len(args):
             source = args[i + 1].lower()
             i += 2

@@ -23,7 +23,7 @@ python3 scripts/find_session.py [--all] [--json] [--source claude|codex|both] [-
 
 - Default: searches the current project's sessions only (fast, no noise), **both sources**
 - `--all` (or `-all`): searches across all projects and shows `[source · project]` labels
-- `--source claude|codex|both`: limit to one source (default `both`)
+- `--source claude|codex|both`: limit to one source (default `both`). Shorthand: `--claude`, `--codex`, `--both`
 - `--include-subagents`: include Codex subagent sessions (guardian auto-review judges, spawned children) — excluded by default as non-resumable noise
 - `--json`: outputs structured JSON (useful for programmatic follow-up); error paths also return JSON
 

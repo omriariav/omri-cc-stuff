@@ -5,7 +5,7 @@
 New feature: `/find-session` now searches **Codex** transcripts alongside Claude Code sessions.
 
 - Codex sessions (`~/.codex/sessions/<Y>/<M>/<D>/rollout-<ts>-<uuid>.jsonl`) are scanned in the same pass as Claude Code sessions. Results from both sources are interleaved by recency, each tagged with its source and the correct resume command (`codex resume <uuid>` vs `claude --resume <uuid>`).
-- New flags: `--source claude|codex|both` (default `both`) to scope by source, and `--include-subagents` to include Codex subagent sessions (guardian auto-review judges and spawned children) that are otherwise excluded as non-resumable noise.
+- New flags: `--source claude|codex|both` (default `both`, with shorthand `--claude` / `--codex` / `--both`) to scope by source, and `--include-subagents` to include Codex subagent sessions (guardian auto-review judges and spawned children) that are otherwise excluded as non-resumable noise.
 - Codex previews show the first genuine user message — injected `role: user` boilerplate (`# AGENTS.md`, `<environment_context>`, `<skill>`, `<turn_aborted>`, `<<ccr:`) is filtered from both the preview and keyword matching. Codex has no `/rename`, so Codex results are always preview-based.
 - Current-project scope resolves Codex sessions by the `cwd` recorded in each transcript's `session_meta`, skipping non-matching files after a single line read (the default path stays ~1s). Cross-project `--all` keyword search uses a `ripgrep`/`grep` pre-filter over Codex transcripts (graceful fallback to a full scan when neither tool is present).
 - `--json` output gains a `source` field and a per-result `resume_cmd`.
