@@ -176,12 +176,37 @@ def search_claude(query: str, search_all: bool, exclude_slugs: set) -> list:
 # Codex sessions: ~/.codex/sessions/<Y>/<M>/<D>/rollout-<ts>-<uuid>.jsonl
 # ---------------------------------------------------------------------------
 
-def codex_filename_uuid(fpath: Path) -> str:
+_CODEX_UUID_RE = re.compile(
+    r"([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-"
+    r"[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"
+)
+
+
+def codex_filename_uuid(fpath: Path):
     """rollout-2026-06-24T00-00-26-019ef648-... -> 019ef648-cd09-7f30-a4e6-...
 
-    The session UUID is the last five hyphen-delimited groups of the stem.
-    """
-    return "-".join(fpath.stem.split("-")[-5:])
+    Returns the trailing UUID of the rollout filename, or None when the stem
+    doesn't end in a well-formed UUID (malformed file)."""
+    m = _CODEX_UUID_RE.search(fpath.stem)
+    return m.group(1) if m else None
+
+
+def _cwd_in_project(cwd, project_root: str) -> bool:
+    """True when a Codex session's recorded cwd is the project root or a
+    subdirectory of it — Codex may be launched from a subdir of the repo."""
+    if not cwd:
+        return False
+    if cwd == project_root:
+        return True
+    return cwd.startswith(project_root.rstrip("/") + "/")
+
+
+def _prefilter_safe(query: str) -> bool:
+    """The raw-bytes prefilter is only a guaranteed superset of matches_query
+    for queries whose characters appear verbatim in the JSONL. JSON escapes
+    quotes, backslashes, and (when ensure_ascii) non-ASCII chars, so skip the
+    prefilter for those and fall back to a full scan."""
+    return query.isascii() and '"' not in query and "\\" not in query
 
 
 def parse_codex_session(fpath: Path, search_all: bool, project_root: str,
@@ -219,7 +244,7 @@ def parse_codex_session(fpath: Path, search_all: bool, project_root: str,
                 session_id = p.get("id")
                 if not include_subagents and p.get("thread_source") == "subagent":
                     return None
-                if not search_all and project_root and cwd != project_root:
+                if not search_all and project_root and not _cwd_in_project(cwd, project_root):
                     return None
                 continue
 
@@ -243,6 +268,17 @@ def parse_codex_session(fpath: Path, search_all: bool, project_root: str,
 
     if session_id is None:
         session_id = codex_filename_uuid(fpath)
+
+    # A scoped (current-project) search must match the recorded cwd. This also
+    # drops files that never carried a session_meta (cwd is None), which would
+    # otherwise bypass the inline filter above and leak in as "(unknown)".
+    if not search_all and project_root and not _cwd_in_project(cwd, project_root):
+        return None
+
+    # Unresumable without an id (no session_meta and a malformed filename).
+    if session_id is None:
+        return None
+
     return cwd, session_id, preview, "\n".join(user_parts).lower()
 
 
@@ -260,7 +296,9 @@ def codex_prefilter(root: Path, query: str):
     candidates = None
     for term in terms:
         if tool == "rg":
-            cmd = ["rg", "-l", "-i", "-F", "--", term, str(root)]
+            # --no-ignore/--hidden so rg doesn't silently skip files via a stray
+            # .gitignore or the hidden-dir heuristic (root lives under ~/.codex).
+            cmd = ["rg", "-l", "-i", "-F", "--no-ignore", "--hidden", "--", term, str(root)]
         else:
             cmd = ["grep", "-rliF", "--include=rollout-*.jsonl", "--", term, str(root)]
         try:
@@ -281,7 +319,9 @@ def search_codex(query: str, search_all: bool, include_subagents: bool) -> list:
 
     project_root = None if search_all else resolve_project_root()
 
-    candidates = codex_prefilter(sessions_root, query) if query else None
+    candidates = None
+    if query and _prefilter_safe(query):
+        candidates = codex_prefilter(sessions_root, query)
 
     results = []
     for fpath in sessions_root.glob("**/rollout-*.jsonl"):
