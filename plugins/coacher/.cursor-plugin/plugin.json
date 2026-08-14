@@ -7,5 +7,9 @@
     "email": "omri.ariav@gmail.com"
   },
   "homepage": "https://github.com/omriariav/claude-coacher",
-  "license": "MIT"
+  "license": "MIT",
+  "skills": "./skills/",
+  "commands": "./commands/",
+  "rules": "./.cursor-plugin/rules/",
+  "hooks": "./.cursor-plugin/hooks.json"
 }

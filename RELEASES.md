@@ -1,8 +1,19 @@
 # Releases
 
+## Native multi-CLI marketplace support (2026-08-14)
+
+The marketplace now ships first-class manifests for Claude Code, Codex, Grok, and Cursor:
+
+- Claude Code: `.claude-plugin/marketplace.json` and per-plugin `.claude-plugin/plugin.json`.
+- Codex: `.agents/plugins/marketplace.json` and per-plugin `.codex-plugin/plugin.json`.
+- Grok: `.grok-plugin/marketplace.json` and per-plugin `.grok-plugin/plugin.json`.
+- Cursor: `.cursor-plugin/marketplace.json` and per-plugin `.cursor-plugin/plugin.json`.
+
+`scripts/sync-native-manifests.py` discovers new Claude marketplace entries automatically, infers presentation metadata, generates the three additional catalogs, wraps command-only plugins as Codex skills, and offers `--check` for CI-style drift detection. `copy` v2.4.0 adds generated Agent Skill forms of its eight commands, `coacher` v0.3.0 adds a portable skill plus Cursor always-on rule, `natbag` v1.2.2 refreshes its daily snapshot from the invocation workflow when hooks are unavailable, and `find-session` v1.2.1 fixes strict YAML parsing for its argument hint.
+
 ## Marketplace rename (2026-08-14)
 
-The repository and root marketplace were renamed from `omri-cc-stuff` to `omri-marketplace` to reflect support for Claude Code, Codex, and Grok. Use `omriariav/omri-marketplace` for new installs; existing GitHub links redirect to the new repository. Individual plugin names and versions are unchanged.
+The repository and root marketplace were renamed from `omri-cc-stuff` to `omri-marketplace` to reflect support for multiple AI coding agents. Use `omriariav/omri-marketplace` for new installs; existing GitHub links redirect to the new repository. Individual plugin names and versions were unchanged by the rename.
 
 For Claude Code and Codex, this is an identity migration: a plugin installed as `x@omri-cc-stuff` is distinct from `x@omri-marketplace`. Existing users should migrate in this order:
 

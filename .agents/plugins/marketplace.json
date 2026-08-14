@@ -1,0 +1,116 @@
+{
+  "name": "omri-marketplace",
+  "interface": {
+    "displayName": "Omri's AI Agent Marketplace"
+  },
+  "plugins": [
+    {
+      "name": "copy",
+      "source": {
+        "source": "local",
+        "path": "./plugins/copy"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Utilities"
+    },
+    {
+      "name": "setup-pulse",
+      "source": {
+        "source": "local",
+        "path": "./plugins/setup-pulse"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Utilities"
+    },
+    {
+      "name": "x",
+      "source": {
+        "source": "local",
+        "path": "./plugins/x"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Social"
+    },
+    {
+      "name": "skill-reviewer",
+      "source": {
+        "source": "local",
+        "path": "./plugins/skill-reviewer"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Utilities"
+    },
+    {
+      "name": "find-session",
+      "source": {
+        "source": "local",
+        "path": "./plugins/find-session"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Utilities"
+    },
+    {
+      "name": "gdoc-math",
+      "source": {
+        "source": "local",
+        "path": "./plugins/gdoc-math"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Utilities"
+    },
+    {
+      "name": "claude-reviewer",
+      "source": {
+        "source": "local",
+        "path": "./plugins/claude-reviewer"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Utilities"
+    },
+    {
+      "name": "coacher",
+      "source": {
+        "source": "local",
+        "path": "./plugins/coacher"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Utilities"
+    },
+    {
+      "name": "natbag",
+      "source": {
+        "source": "local",
+        "path": "./plugins/natbag"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Utilities"
+    }
+  ]
+}

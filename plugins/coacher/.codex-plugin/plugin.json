@@ -1,0 +1,36 @@
+{
+  "name": "coacher",
+  "version": "0.3.0",
+  "description": "Primes AI coding agents with a collaborator frame (based on Amanda Askell's prompting philosophy — positive framing, permission to push back, no apology spirals). Provides native hook, rule, command, and skill entry points across supported CLIs.",
+  "author": {
+    "name": "Omri Ariav",
+    "email": "omri.ariav@gmail.com"
+  },
+  "homepage": "https://github.com/omriariav/claude-coacher",
+  "repository": "https://github.com/omriariav/omri-marketplace",
+  "license": "MIT",
+  "keywords": [
+    "prompting",
+    "collaboration",
+    "frame",
+    "tone",
+    "askell",
+    "coach"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Coacher",
+    "shortDescription": "Activate a direct peer-collaborator frame for AI coding agents.",
+    "longDescription": "Primes AI coding agents with a collaborator frame (based on Amanda Askell's prompting philosophy — positive framing, permission to push back, no apology spirals). Provides native hook, rule, command, and skill entry points across supported CLIs.",
+    "developerName": "Omri Ariav",
+    "category": "Utilities",
+    "capabilities": [
+      "Skills"
+    ],
+    "websiteURL": "https://github.com/omriariav/omri-marketplace/tree/main/plugins/coacher",
+    "defaultPrompt": [
+      "Activate the peer-collaborator coaching frame."
+    ],
+    "brandColor": "#111827"
+  }
+}

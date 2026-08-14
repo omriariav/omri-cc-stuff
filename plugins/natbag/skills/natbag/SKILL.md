@@ -27,6 +27,7 @@ Live flight data, destination weather, and historical analysis for Ben Gurion Ai
 
 Show step progress to the user as each step runs:
 
+0. **Step 0: Refreshing the local snapshot** — run `python3 SKILL_DIR/scripts/snapshot.py`; it self-guards to once daily
 1. **Step 1: Fetching flights** — run `query_flights.py` with appropriate filters
 2. **Step 2: Getting weather** — fetch destination weather (for single flight or when relevant)
 3. **Step 3: Checking history** — query historical stats (only if user asks about delays/patterns)
@@ -47,7 +48,7 @@ Display each step label before running it so the user sees progress.
 
 ## Daily Snapshot (Automatic)
 
-A PreToolUse hook runs `snapshot.py` automatically whenever this skill is invoked. On first run, it copies the shipped `data/db.db` (airlines + airports) to `~/.natbag/flights.db`, adds the flights table, and fetches live flights. On subsequent runs, it self-guards: skips if it already ran today or if the user disabled snapshots.
+The invocation workflow runs `snapshot.py` before querying, so the refresh works in Claude Code, Codex, Grok, and Cursor. Claude Code and Grok also use the bundled PreToolUse hook to prewarm the same snapshot; the script's once-daily guard makes both paths safe. On first run, it copies the shipped `data/db.db` (airlines + airports) to `~/.natbag/flights.db`, adds the flights table, and fetches live flights. On subsequent runs, it skips if it already ran today or if the user disabled snapshots.
 
 After the first invocation, inform the user: "Natbag initialized. Flight data and IATA reference loaded. Historical data will accumulate automatically on each use. To disable daily snapshots, set `daily_snapshot: false` in `~/.natbag/config.json`."
 
@@ -220,7 +221,7 @@ When the user writes in Hebrew, respond in Hebrew and use the Hebrew fields from
 ## Snapshot Management
 
 The `scripts/snapshot.py` script fetches current flights and stores them in SQLite:
-- Runs automatically via PreToolUse hook on each skill invocation (self-guards to once daily)
+- Runs from the skill workflow on every invocation and self-guards to once daily; Claude Code and Grok also prewarm it via PreToolUse hook
 - `python3 SKILL_DIR/scripts/snapshot.py --force` to run manually anytime
 - Opt-out: set `daily_snapshot: false` in `~/.natbag/config.json`
 - First run copies shipped `data/db.db` (airlines + airports) to `~/.natbag/flights.db`

@@ -1,0 +1,36 @@
+{
+  "name": "gdoc-math",
+  "version": "1.0.2",
+  "description": "Convert Markdown with LaTeX math into a native Google Doc whose equations are real, editable Google Docs equation objects. Uses pandoc (OMML) + gws Drive upload/convert. /gdoc-math takes a .md file, inline content, or the last math content in the conversation.",
+  "author": {
+    "name": "Omri Ariav",
+    "email": "omri.ariav@gmail.com"
+  },
+  "homepage": "https://github.com/omriariav/omri-marketplace/tree/main/plugins/gdoc-math",
+  "repository": "https://github.com/omriariav/omri-marketplace",
+  "keywords": [
+    "markdown",
+    "latex",
+    "google-docs",
+    "equations",
+    "math",
+    "pandoc",
+    "gws"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Google Docs Math",
+    "shortDescription": "Create Google Docs with native editable equations from Markdown and LaTeX.",
+    "longDescription": "Convert Markdown with LaTeX math into a native Google Doc whose equations are real, editable Google Docs equation objects. Uses pandoc (OMML) + gws Drive upload/convert. /gdoc-math takes a .md file, inline content, or the last math content in the conversation.",
+    "developerName": "Omri Ariav",
+    "category": "Utilities",
+    "capabilities": [
+      "Skills"
+    ],
+    "websiteURL": "https://github.com/omriariav/omri-marketplace/tree/main/plugins/gdoc-math",
+    "defaultPrompt": [
+      "Turn this Markdown with equations into a Google Doc."
+    ],
+    "brandColor": "#111827"
+  }
+}

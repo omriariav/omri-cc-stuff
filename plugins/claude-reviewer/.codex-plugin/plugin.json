@@ -1,0 +1,35 @@
+{
+  "name": "claude-reviewer",
+  "version": "1.2.0",
+  "description": "Review any project's .claude/ folder setup against best practices (based on https://x.com/akshay_pachaar/status/2035341800739877091). Scores 8 dimensions (24-point rubric).",
+  "author": {
+    "name": "Omri Ariav",
+    "email": "omri.ariav@gmail.com"
+  },
+  "homepage": "https://github.com/omriariav/omri-marketplace/tree/main/plugins/claude-reviewer",
+  "repository": "https://github.com/omriariav/omri-marketplace",
+  "keywords": [
+    "review",
+    "audit",
+    "configuration",
+    "best-practices",
+    "claude-md",
+    "settings"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Claude Reviewer",
+    "shortDescription": "Audit a project's Claude Code configuration against best practices.",
+    "longDescription": "Review any project's .claude/ folder setup against best practices (based on https://x.com/akshay_pachaar/status/2035341800739877091). Scores 8 dimensions (24-point rubric).",
+    "developerName": "Omri Ariav",
+    "category": "Utilities",
+    "capabilities": [
+      "Skills"
+    ],
+    "websiteURL": "https://github.com/omriariav/omri-marketplace/tree/main/plugins/claude-reviewer",
+    "defaultPrompt": [
+      "Audit this project's Claude configuration."
+    ],
+    "brandColor": "#111827"
+  }
+}

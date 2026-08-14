@@ -5,7 +5,7 @@
     "email": "omri.ariav@gmail.com"
   },
   "metadata": {
-    "description": "Personal AI-agent plugins, skills, commands, and utilities for Claude Code, Codex, Grok, and Cursor."
+    "description": "Personal plugins, skills, commands, and utilities for Grok."
   },
   "plugins": [
     {
