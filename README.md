@@ -1,10 +1,19 @@
 # Omri's AI Agent Marketplace
 
-Personal marketplace of plugins, skills, commands, and utilities for Claude Code, Codex, and Grok.
+Personal marketplace of plugins, skills, commands, and utilities for Claude Code, Codex, Grok, and Cursor.
 
 ## Installation
 
-The same marketplace can be registered with Claude Code, Codex, and Grok. The examples below install or discover the `x` plugin; replace `x` with another plugin name from the marketplace.
+Each CLI gets its own native manifest rather than relying on another vendor's compatibility layer:
+
+| Runtime | Marketplace manifest | Per-plugin manifest |
+|---------|----------------------|---------------------|
+| Claude Code | `.claude-plugin/marketplace.json` | `.claude-plugin/plugin.json` |
+| Codex | `.agents/plugins/marketplace.json` | `.codex-plugin/plugin.json` |
+| Grok | `.grok-plugin/marketplace.json` | `.grok-plugin/plugin.json` |
+| Cursor / `cursor-agent` | `.cursor-plugin/marketplace.json` | `.cursor-plugin/plugin.json` |
+
+The examples below install or discover the `x` plugin; replace `x` with another plugin name from the marketplace.
 
 ### Claude Code
 
@@ -38,7 +47,54 @@ grok plugin list --available --json
 
 Then open `/marketplace` or `/plugins` in Grok to install the desired plugin.
 
-> **Migrating from `omri-cc-stuff`?** GitHub redirects the old repository URL, but Claude Code and Codex plugin IDs include the marketplace name and do not migrate automatically. Register `omri-marketplace`, reinstall the same plugins under their new `plugin@omri-marketplace` IDs, verify them, and only then remove the old marketplace. Individual plugin names and versions are unchanged.
+### Cursor / `cursor-agent`
+
+Cursor currently manages plugins through **Customize** in the IDE or the team marketplace dashboard; `cursor-agent` does not expose a plugin-management subcommand. Once installed, the same plugin components are available to the IDE and CLI.
+
+For a team marketplace, import `https://github.com/omriariav/omri-marketplace` under **Dashboard → Plugins**. For local development, clone this repository and symlink the desired plugin:
+
+```bash
+mkdir -p ~/.cursor/plugins/local
+ln -s "$PWD/plugins/x" ~/.cursor/plugins/local/x
+cursor-agent
+```
+
+Restart Cursor (or run **Developer: Reload Window**) after adding the symlink.
+
+## Runtime behavior
+
+All marketplace entries have native manifests on all four runtimes. Component behavior differs only where the hosts expose different primitives:
+
+| Plugin type | Claude Code | Codex | Grok | Cursor |
+|-------------|-------------|-------|------|--------|
+| Skill-based plugins | Native skills | Native skills | Native skills | Native skills |
+| `copy` commands | Native commands + skills | Native skills | Native commands + skills | Native commands + skills |
+| `coacher` frame | Session-start hook + skill | Manual skill | Session-start hook + skill | Always-on rule + skill |
+| `natbag` snapshot | Hook + invocation fallback | Invocation fallback | Hook + invocation fallback | Invocation fallback |
+
+`setup-pulse` and `claude-reviewer` can be invoked from every runtime, but their purpose remains configuring or reviewing Claude Code.
+
+### Maintaining manifests
+
+Claude marketplace metadata is the source of truth. Adding a plugin does not require hand-maintaining four catalogs:
+
+1. Create `plugins/<name>/.claude-plugin/plugin.json` with a semantic version and add the plugin's components.
+2. Add one entry to `.claude-plugin/marketplace.json`. `name` and local `source` are required; description, author, and keywords fall back to the plugin manifest when omitted.
+3. Ensure the plugin has a Codex-compatible component: a skill, `.mcp.json`, or `.app.json`. For command-only plugins, the generator creates Codex skill wrappers automatically. Hook/rule/agent-only plugins need a hand-authored fallback skill because Codex does not ingest those Claude/Grok/Cursor primitives.
+4. Regenerate and verify:
+
+```bash
+python3 scripts/sync-native-manifests.py
+python3 scripts/sync-native-manifests.py --check
+```
+
+Display names, short descriptions, categories, and starter prompts are inferred for new plugins. Optional curated overrides live near the top of the generator; they are not required for onboarding.
+
+Pull requests run the same `--check` command, so a new or updated plugin cannot merge with stale native catalogs.
+
+For a plugin with Claude/Grok hooks, the generator creates an empty Cursor hook override to prevent incompatible hook discovery. Replace it with a non-empty Cursor-native `.cursor-plugin/hooks.json` when needed; regeneration preserves that hand-authored translation.
+
+> **Migrating from `omri-cc-stuff`?** GitHub redirects the old repository URL, but Claude Code and Codex plugin IDs include the marketplace name and do not migrate automatically. Register `omri-marketplace`, reinstall the same plugins under their new `plugin@omri-marketplace` IDs, verify them, and only then remove the old marketplace. Plugin names are unchanged; versions continue independently as features are added.
 
 ## Commands
 

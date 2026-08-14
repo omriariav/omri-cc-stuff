@@ -1,0 +1,35 @@
+{
+  "name": "x",
+  "version": "2.1.2",
+  "description": "Post and read tweets on X (Twitter) from an AI-agent workflow. /x:tweet drafts, previews, and posts (single, threads, replies). /x:read fetches a tweet by URL or ID into context.",
+  "author": {
+    "name": "Omri Ariav",
+    "email": "omri.ariav@gmail.com"
+  },
+  "homepage": "https://github.com/omriariav/omri-marketplace/tree/main/plugins/x",
+  "repository": "https://github.com/omriariav/omri-marketplace",
+  "keywords": [
+    "tweet",
+    "twitter",
+    "x",
+    "social",
+    "posting",
+    "reading"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "X",
+    "shortDescription": "Read and post X messages from an AI-agent workflow.",
+    "longDescription": "Post and read tweets on X (Twitter) from an AI-agent workflow. /x:tweet drafts, previews, and posts (single, threads, replies). /x:read fetches a tweet by URL or ID into context.",
+    "developerName": "Omri Ariav",
+    "category": "Social",
+    "capabilities": [
+      "Skills"
+    ],
+    "websiteURL": "https://github.com/omriariav/omri-marketplace/tree/main/plugins/x",
+    "defaultPrompt": [
+      "Read this X post and summarize it."
+    ],
+    "brandColor": "#111827"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "name": "skill-reviewer",
+  "version": "1.1.0",
+  "description": "Evaluate any skill's design quality against best practices (based on https://x.com/trq212/status/2033949937936085378). Scores 10 dimensions (29-point rubric), detects anti-patterns, and optionally applies safe fixes. Complements /reflect which covers conversation-level learnings.",
+  "author": {
+    "name": "Omri Ariav",
+    "email": "omri.ariav@gmail.com"
+  },
+  "homepage": "https://github.com/omriariav/omri-marketplace/tree/main/plugins/skill-reviewer",
+  "repository": "https://github.com/omriariav/omri-marketplace",
+  "keywords": [
+    "skill",
+    "review",
+    "evaluation",
+    "quality"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Skill Reviewer",
+    "shortDescription": "Review an Agent Skill against a practical quality rubric.",
+    "longDescription": "Evaluate any skill's design quality against best practices (based on https://x.com/trq212/status/2033949937936085378). Scores 10 dimensions (29-point rubric), detects anti-patterns, and optionally applies safe fixes. Complements /reflect which covers conversation-level learnings.",
+    "developerName": "Omri Ariav",
+    "category": "Utilities",
+    "capabilities": [
+      "Skills"
+    ],
+    "websiteURL": "https://github.com/omriariav/omri-marketplace/tree/main/plugins/skill-reviewer",
+    "defaultPrompt": [
+      "Review this skill against the quality rubric."
+    ],
+    "brandColor": "#111827"
+  }
+}

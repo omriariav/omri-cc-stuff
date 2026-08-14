@@ -1,7 +1,7 @@
 ---
 name: find-session
 description: Search past Claude Code AND Codex conversations by keyword and return session IDs for resuming. Use when the user asks to find, locate, or look for a past/previous conversation, or needs a session ID to resume a conversation with claude --resume or codex resume. NOT for searching within a conversation (use /reflect), NOT as a replacement for the resume command itself.
-argument-hint: [--all] [--json] [--source claude|codex|both] [--include-subagents] [keywords...]
+argument-hint: '[--all] [--json] [--source claude|codex|both] [--include-subagents] [keywords...]'
 allowed-tools: Bash(python3*), AskUserQuestion
 user-invocable: true
 ---

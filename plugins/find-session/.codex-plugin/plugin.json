@@ -1,0 +1,34 @@
+{
+  "name": "find-session",
+  "version": "1.2.1",
+  "description": "Search past Claude Code and Codex conversations by keyword and get session IDs for claude --resume / codex resume.",
+  "author": {
+    "name": "Omri Ariav",
+    "email": "omri.ariav@gmail.com"
+  },
+  "homepage": "https://github.com/omriariav/omri-marketplace/tree/main/plugins/find-session",
+  "repository": "https://github.com/omriariav/omri-marketplace",
+  "keywords": [
+    "session",
+    "search",
+    "resume",
+    "history",
+    "conversations"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Find Session",
+    "shortDescription": "Find and resume past Claude Code or Codex sessions.",
+    "longDescription": "Search past Claude Code and Codex conversations by keyword and get session IDs for claude --resume / codex resume.",
+    "developerName": "Omri Ariav",
+    "category": "Utilities",
+    "capabilities": [
+      "Skills"
+    ],
+    "websiteURL": "https://github.com/omriariav/omri-marketplace/tree/main/plugins/find-session",
+    "defaultPrompt": [
+      "Find my recent session about this topic."
+    ],
+    "brandColor": "#111827"
+  }
+}

@@ -5,5 +5,7 @@
   "author": {
     "name": "Omri Ariav",
     "email": "omri.ariav@gmail.com"
-  }
+  },
+  "skills": "./skills/",
+  "commands": "./commands/"
 }

@@ -1,0 +1,33 @@
+{
+  "name": "setup-pulse",
+  "version": "1.0.0",
+  "description": "Install claude-pulse statusline for real-time token usage monitoring.",
+  "author": {
+    "name": "Omri Ariav",
+    "email": "omri.ariav@gmail.com"
+  },
+  "homepage": "https://github.com/omriariav/omri-marketplace/tree/main/plugins/setup-pulse",
+  "repository": "https://github.com/omriariav/omri-marketplace",
+  "keywords": [
+    "statusline",
+    "pulse",
+    "context",
+    "tokens"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Setup Pulse",
+    "shortDescription": "Install the Claude Pulse token-usage statusline.",
+    "longDescription": "Install claude-pulse statusline for real-time token usage monitoring.",
+    "developerName": "Omri Ariav",
+    "category": "Utilities",
+    "capabilities": [
+      "Skills"
+    ],
+    "websiteURL": "https://github.com/omriariav/omri-marketplace/tree/main/plugins/setup-pulse",
+    "defaultPrompt": [
+      "Set up the Claude Pulse statusline."
+    ],
+    "brandColor": "#111827"
+  }
+}

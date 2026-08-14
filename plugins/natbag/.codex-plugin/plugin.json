@@ -1,0 +1,34 @@
+{
+  "name": "natbag",
+  "version": "1.2.2",
+  "description": "Ben Gurion Airport (TLV) live flight data, destination weather, and historical delay analysis",
+  "author": {
+    "name": "Omri Ariav"
+  },
+  "homepage": "https://github.com/omriariav/omri-marketplace/tree/main/plugins/natbag",
+  "repository": "https://github.com/omriariav/omri-marketplace",
+  "keywords": [
+    "flights",
+    "airport",
+    "tlv",
+    "ben-gurion",
+    "weather",
+    "travel"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Natbag",
+    "shortDescription": "Query live and historical Ben Gurion Airport flight data.",
+    "longDescription": "Ben Gurion Airport (TLV) live flight data, destination weather, and historical delay analysis",
+    "developerName": "Omri Ariav",
+    "category": "Utilities",
+    "capabilities": [
+      "Skills"
+    ],
+    "websiteURL": "https://github.com/omriariav/omri-marketplace/tree/main/plugins/natbag",
+    "defaultPrompt": [
+      "Show today's departures from Ben Gurion Airport."
+    ],
+    "brandColor": "#111827"
+  }
+}

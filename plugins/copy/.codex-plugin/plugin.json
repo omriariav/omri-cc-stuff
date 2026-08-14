@@ -1,0 +1,34 @@
+{
+  "name": "copy",
+  "version": "2.4.0",
+  "description": "Format and copy AI-assistant output to clipboard for Slack, Gmail, Google Chat, Google Docs, Jira, Markdown, Rich Text, or plain text.",
+  "author": {
+    "name": "Omri Ariav",
+    "email": "omri.ariav@gmail.com"
+  },
+  "homepage": "https://github.com/omriariav/omri-marketplace/tree/main/plugins/copy",
+  "repository": "https://github.com/omriariav/omri-marketplace",
+  "keywords": [
+    "copy",
+    "clipboard",
+    "slack",
+    "email",
+    "formatting"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Copy",
+    "shortDescription": "Format and copy output for Slack, email, Google Docs, Jira, Markdown, or rich text.",
+    "longDescription": "Format and copy AI-assistant output to clipboard for Slack, Gmail, Google Chat, Google Docs, Jira, Markdown, Rich Text, or plain text.",
+    "developerName": "Omri Ariav",
+    "category": "Utilities",
+    "capabilities": [
+      "Skills"
+    ],
+    "websiteURL": "https://github.com/omriariav/omri-marketplace/tree/main/plugins/copy",
+    "defaultPrompt": [
+      "Copy the latest table for Slack."
+    ],
+    "brandColor": "#111827"
+  }
+}

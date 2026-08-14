@@ -5,18 +5,19 @@
     "email": "omri.ariav@gmail.com"
   },
   "metadata": {
-    "description": "Personal AI-agent plugins, skills, commands, and utilities for Claude Code, Codex, Grok, and Cursor."
+    "description": "Personal plugins, skills, commands, and utilities for Cursor."
   },
   "plugins": [
     {
       "name": "copy",
-      "source": "./plugins/copy",
+      "source": "plugins/copy",
       "description": "Format and copy AI-assistant output to clipboard for Slack, Email, Google Chat, Google Docs, or Jira.",
+      "version": "2.4.0",
       "author": {
         "name": "Omri Ariav",
         "email": "omri.ariav@gmail.com"
       },
-      "category": "utilities",
+      "category": "Utilities",
       "keywords": [
         "copy",
         "clipboard",
@@ -27,32 +28,31 @@
     },
     {
       "name": "setup-pulse",
-      "source": "./plugins/setup-pulse",
+      "source": "plugins/setup-pulse",
       "description": "Install claude-pulse statusline for real-time token usage monitoring.",
+      "version": "1.0.0",
       "author": {
         "name": "Omri Ariav",
         "email": "omri.ariav@gmail.com"
       },
-      "category": "utilities",
+      "category": "Utilities",
       "keywords": [
         "statusline",
         "pulse",
         "context",
         "tokens"
-      ],
-      "skills": [
-        "./skills/setup-pulse"
       ]
     },
     {
       "name": "x",
-      "source": "./plugins/x",
+      "source": "plugins/x",
       "description": "Post and read tweets on X (Twitter) from an AI-agent workflow. /x:tweet drafts, previews, and posts (single, threads, replies). /x:read fetches a tweet by URL or ID into context.",
+      "version": "2.1.2",
       "author": {
         "name": "Omri Ariav",
         "email": "omri.ariav@gmail.com"
       },
-      "category": "social",
+      "category": "Social",
       "keywords": [
         "tweet",
         "twitter",
@@ -60,60 +60,53 @@
         "social",
         "posting",
         "reading"
-      ],
-      "skills": [
-        "./skills/tweet",
-        "./skills/read"
       ]
     },
     {
       "name": "skill-reviewer",
-      "source": "./plugins/skill-reviewer",
+      "source": "plugins/skill-reviewer",
       "description": "Evaluate any skill's design quality against best practices (based on https://x.com/trq212/status/2033949937936085378). Scores 10 dimensions (29-point rubric), detects anti-patterns, and optionally applies safe fixes.",
+      "version": "1.1.0",
       "author": {
         "name": "Omri Ariav",
         "email": "omri.ariav@gmail.com"
       },
-      "category": "utilities",
+      "category": "Utilities",
       "keywords": [
         "skill",
         "review",
         "evaluation",
         "quality"
-      ],
-      "skills": [
-        "./skills/skill-reviewer"
       ]
     },
     {
       "name": "find-session",
-      "source": "./plugins/find-session",
+      "source": "plugins/find-session",
       "description": "Search past Claude Code and Codex conversations by keyword and get the correct resume command.",
+      "version": "1.2.1",
       "author": {
         "name": "Omri Ariav",
         "email": "omri.ariav@gmail.com"
       },
-      "category": "utilities",
+      "category": "Utilities",
       "keywords": [
         "session",
         "search",
         "resume",
         "history",
         "conversations"
-      ],
-      "skills": [
-        "./skills/find-session"
       ]
     },
     {
       "name": "gdoc-math",
-      "source": "./plugins/gdoc-math",
+      "source": "plugins/gdoc-math",
       "description": "Convert Markdown with LaTeX math into a native Google Doc with real, editable equations (pandoc OMML + gws Drive). /gdoc-math takes a .md file, inline content, or the last math content in the conversation.",
+      "version": "1.0.2",
       "author": {
         "name": "Omri Ariav",
         "email": "omri.ariav@gmail.com"
       },
-      "category": "utilities",
+      "category": "Utilities",
       "keywords": [
         "markdown",
         "latex",
@@ -122,20 +115,18 @@
         "math",
         "pandoc",
         "gws"
-      ],
-      "skills": [
-        "./skills/gdoc-math"
       ]
     },
     {
       "name": "claude-reviewer",
-      "source": "./plugins/claude-reviewer",
+      "source": "plugins/claude-reviewer",
       "description": "Review any project's .claude/ folder setup against best practices (based on https://x.com/akshay_pachaar/status/2035341800739877091). Scores 8 dimensions (24-point rubric) covering CLAUDE.md quality, permissions, rules, commands, skills, agents, git hygiene, and progressive disclosure.",
+      "version": "1.2.0",
       "author": {
         "name": "Omri Ariav",
         "email": "omri.ariav@gmail.com"
       },
-      "category": "utilities",
+      "category": "Utilities",
       "keywords": [
         "review",
         "audit",
@@ -143,20 +134,18 @@
         "best-practices",
         "claude-md",
         "settings"
-      ],
-      "skills": [
-        "./skills/claude-reviewer"
       ]
     },
     {
       "name": "coacher",
-      "source": "./plugins/coacher",
+      "source": "plugins/coacher",
       "description": "Primes AI coding agents with a peer-collaborator frame using native hooks, rules, commands, or skills (based on Amanda Askell's prompting philosophy via https://x.com/itsolelehmann/status/2045578185950040390).",
+      "version": "0.3.0",
       "author": {
         "name": "Omri Ariav",
         "email": "omri.ariav@gmail.com"
       },
-      "category": "utilities",
+      "category": "Utilities",
       "keywords": [
         "prompting",
         "collaboration",
@@ -168,13 +157,14 @@
     },
     {
       "name": "natbag",
-      "source": "./plugins/natbag",
+      "source": "plugins/natbag",
       "description": "Ben Gurion Airport (TLV) live flight data, destination weather, and historical delay analysis. /natbag shows departures, arrivals, specific flights, status, destination weather, and accumulated on-time/delay history.",
+      "version": "1.2.2",
       "author": {
         "name": "Omri Ariav",
         "email": "omri.ariav@gmail.com"
       },
-      "category": "utilities",
+      "category": "Utilities",
       "keywords": [
         "flights",
         "airport",
@@ -182,9 +172,6 @@
         "ben-gurion",
         "weather",
         "travel"
-      ],
-      "skills": [
-        "./skills/natbag"
       ]
     }
   ]
