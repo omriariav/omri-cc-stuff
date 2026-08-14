@@ -4,12 +4,41 @@ Personal marketplace of plugins, skills, commands, and utilities for Claude Code
 
 ## Installation
 
-In Claude Code:
+The same marketplace can be registered with Claude Code, Codex, and Grok. The examples below install or discover the `x` plugin; replace `x` with another plugin name from the marketplace.
+
+### Claude Code
+
+From the plugin UI:
+
 ```
 /plugins → Marketplace → Add → omriariav/omri-marketplace
 ```
 
-Then install the `copy` plugin from the marketplace.
+Or from a terminal:
+
+```bash
+claude plugin marketplace add omriariav/omri-marketplace
+claude plugin install x@omri-marketplace
+```
+
+### Codex
+
+```bash
+codex plugin marketplace add omriariav/omri-marketplace
+codex plugin list --marketplace omri-marketplace --available --json
+codex plugin add x@omri-marketplace
+```
+
+### Grok
+
+```bash
+grok plugin marketplace add omriariav/omri-marketplace
+grok plugin list --available --json
+```
+
+Then open `/marketplace` or `/plugins` in Grok to install the desired plugin.
+
+> **Migrating from `omri-cc-stuff`?** GitHub redirects the old repository URL, but Claude Code and Codex plugin IDs include the marketplace name and do not migrate automatically. Register `omri-marketplace`, reinstall the same plugins under their new `plugin@omri-marketplace` IDs, verify them, and only then remove the old marketplace. Individual plugin names and versions are unchanged.
 
 ## Commands
 
