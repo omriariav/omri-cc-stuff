@@ -181,9 +181,30 @@ def codex_manifest(
     name = source["name"]
     description = neutral_description(source["description"])
     category = category_name(plugin.get("category", "utilities"))
-    if not (plugin_root / "skills").is_dir():
-        raise ValueError(f"{name} needs a skills directory for native Codex support")
-    return {
+    has_skills = (plugin_root / "skills").is_dir()
+    has_mcp = (plugin_root / ".mcp.json").is_file()
+    has_apps = (plugin_root / ".app.json").is_file()
+    if not any((has_skills, has_mcp, has_apps)):
+        raise ValueError(
+            f"{name} needs a skill, .mcp.json, or .app.json for native Codex support"
+        )
+    capabilities = [
+        label
+        for enabled, label in (
+            (has_skills, "Skills"),
+            (has_mcp, "MCP Servers"),
+            (has_apps, "Apps"),
+        )
+        if enabled
+    ]
+    components: dict[str, Any] = {}
+    if has_skills:
+        components["skills"] = "./skills/"
+    if has_mcp:
+        components["mcpServers"] = "./.mcp.json"
+    if has_apps:
+        components["apps"] = "./.app.json"
+    payload = {
         "name": name,
         "version": source["version"],
         "description": description,
@@ -192,19 +213,20 @@ def codex_manifest(
         "repository": source.get("repository", REPOSITORY_URL),
         **({"license": source["license"]} if "license" in source else {}),
         **({"keywords": plugin["keywords"]} if "keywords" in plugin else {}),
-        "skills": "./skills/",
+        **components,
         "interface": {
             "displayName": display_name(name),
             "shortDescription": short_description(name, description),
             "longDescription": description,
             "developerName": "Omri Ariav",
             "category": category,
-            "capabilities": ["Skills"],
+            "capabilities": capabilities,
             "websiteURL": f"{REPOSITORY_URL}/tree/main/plugins/{name}",
             "defaultPrompt": [default_prompt(name)],
             "brandColor": "#111827",
         },
     }
+    return payload
 
 
 def cursor_manifest(source: dict[str, Any], plugin_root: Path) -> dict[str, Any]:
@@ -212,6 +234,8 @@ def cursor_manifest(source: dict[str, Any], plugin_root: Path) -> dict[str, Any]
     payload["description"] = neutral_description(payload["description"])
     if (plugin_root / "skills").is_dir():
         payload["skills"] = "./skills/"
+    if (plugin_root / ".mcp.json").is_file():
+        payload["mcpServers"] = "./.mcp.json"
     command_paths = sorted((plugin_root / "commands").glob("*.md"))
     commands_are_portable = all(
         "CLAUDE_PLUGIN_ROOT" not in path.read_text(encoding="utf-8")

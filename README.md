@@ -80,7 +80,7 @@ Claude marketplace metadata is the source of truth. Adding a plugin does not req
 
 1. Create `plugins/<name>/.claude-plugin/plugin.json` with a semantic version and add the plugin's components.
 2. Add one entry to `.claude-plugin/marketplace.json`.
-3. Ensure the plugin has at least one portable skill. For command-only plugins, the generator creates Codex skill wrappers automatically. Hook-only plugins need a hand-authored fallback skill because Codex does not ingest Claude/Grok hooks.
+3. Ensure the plugin has a Codex-compatible component: a skill, `.mcp.json`, or `.app.json`. For command-only plugins, the generator creates Codex skill wrappers automatically. Hook/rule/agent-only plugins need a hand-authored fallback skill because Codex does not ingest those Claude/Grok/Cursor primitives.
 4. Regenerate and verify:
 
 ```bash
