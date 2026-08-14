@@ -1,0 +1,76 @@
+name: Release plugin
+
+on:
+  workflow_dispatch:
+    inputs:
+      plugin:
+        description: Plugin directory name, for example x or copy
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ inputs.plugin }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Release plugin
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require the main branch
+        env:
+          RELEASE_REF: ${{ github.ref }}
+        run: |
+          if [[ "$RELEASE_REF" != "refs/heads/main" ]]; then
+            echo "Releases must be dispatched from main, not $RELEASE_REF" >&2
+            exit 1
+          fi
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+      - name: Validate repository files
+        run: python3 scripts/validate_repository.py
+      - name: Test future-plugin onboarding
+        run: python3 scripts/test-native-generator.py
+      - name: Test release metadata
+        run: python3 scripts/test-release-plugin.py
+      - name: Check generated catalogs
+        run: python3 scripts/sync-native-manifests.py --check
+      - name: Prepare release
+        id: release
+        env:
+          PLUGIN_NAME: ${{ inputs.plugin }}
+        run: python3 scripts/release_plugin.py --plugin "$PLUGIN_NAME" --github-output "$GITHUB_OUTPUT"
+      - name: Ensure the release is new
+        env:
+          RELEASE_TAG: ${{ steps.release.outputs.tag }}
+        run: |
+          if git show-ref --verify --quiet "refs/tags/$RELEASE_TAG"; then
+            echo "Tag $RELEASE_TAG already exists" >&2
+            exit 1
+          fi
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PLUGIN_NAME: ${{ steps.release.outputs.plugin }}
+          PLUGIN_VERSION: ${{ steps.release.outputs.version }}
+          RELEASE_TAG: ${{ steps.release.outputs.tag }}
+        run: |
+          previous_tag="$(git tag --list "$PLUGIN_NAME-v*" --sort=-v:refname | head -n 1)"
+          release_args=(
+            release create "$RELEASE_TAG"
+            --target "$GITHUB_SHA"
+            --title "$PLUGIN_NAME v$PLUGIN_VERSION"
+            --generate-notes
+          )
+          if [[ -n "$previous_tag" ]]; then
+            release_args+=(--notes-start-tag "$previous_tag")
+          fi
+          gh "${release_args[@]}"

@@ -94,6 +94,19 @@ Pull requests run the same `--check` command, so a new or updated plugin cannot 
 
 For a plugin with Claude/Grok hooks, the generator creates an empty Cursor hook override to prevent incompatible hook discovery. Replace it with a non-empty Cursor-native `.cursor-plugin/hooks.json` when needed; regeneration preserves that hand-authored translation.
 
+### CI and releases
+
+Every pull request to `main` runs the required `CI` check. It validates JSON, Python, and shell syntax; exercises future-plugin generation and release fixtures; verifies generated marketplace catalogs; and confirms that every native manifest has the same plugin name and semantic version.
+
+Plugin releases are created from the source manifest, so adding a plugin does not require editing the release workflow:
+
+1. Update `plugins/<name>/.claude-plugin/plugin.json` with the next semantic version.
+2. Run `python3 scripts/sync-native-manifests.py` and commit all generated native manifests in the same pull request.
+3. Merge the pull request after `CI` passes.
+4. Open **Actions → Release plugin → Run workflow**, select `main`, and enter `<name>`.
+
+The workflow re-runs validation, rejects duplicate releases, creates the canonical `<name>-v<version>` tag from `main`, and publishes a GitHub release with generated notes. New marketplace entries are discovered automatically by both CI and the release helper.
+
 > **Migrating from `omri-cc-stuff`?** GitHub redirects the old repository URL, but Claude Code and Codex plugin IDs include the marketplace name and do not migrate automatically. Register `omri-marketplace`, reinstall the same plugins under their new `plugin@omri-marketplace` IDs, verify them, and only then remove the old marketplace. Plugin names are unchanged; versions continue independently as features are added.
 
 ## Commands
