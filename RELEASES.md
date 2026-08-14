@@ -2,7 +2,17 @@
 
 ## Marketplace rename (2026-08-14)
 
-The repository and root marketplace were renamed from `omri-cc-stuff` to `omri-marketplace` to reflect support for Claude Code, Codex, and Grok. Use `omriariav/omri-marketplace` for new installs; existing GitHub links redirect to the new repository. Individual plugin names are unchanged.
+The repository and root marketplace were renamed from `omri-cc-stuff` to `omri-marketplace` to reflect support for Claude Code, Codex, and Grok. Use `omriariav/omri-marketplace` for new installs; existing GitHub links redirect to the new repository. Individual plugin names and versions are unchanged.
+
+For Claude Code and Codex, this is an identity migration: a plugin installed as `x@omri-cc-stuff` is distinct from `x@omri-marketplace`. Existing users should migrate in this order:
+
+1. Register `omriariav/omri-marketplace` with the relevant plugin manager.
+2. Reinstall each existing plugin under its new `plugin@omri-marketplace` ID.
+3. Verify the new installation and preserve the previous enabled/disabled state.
+4. Remove the corresponding `plugin@omri-cc-stuff` registrations, keeping plugin data where the manager supports it.
+5. Remove the obsolete `omri-cc-stuff` marketplace source.
+
+See the README for Claude Code, Codex, and Grok registration commands.
 
 ## find-session v1.2.0 (2026-06-24)
 
