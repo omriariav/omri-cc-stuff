@@ -1,17 +1,17 @@
 {
-  "name": "omri-cc-stuff",
+  "name": "omri-marketplace",
   "owner": {
     "name": "Omri Ariav",
     "email": "omri.ariav@gmail.com"
   },
   "metadata": {
-    "description": "Personal Claude Code commands and utilities. Copy formatting, X posting and reading, and more."
+    "description": "Personal AI-agent plugins, skills, commands, and utilities for Claude Code, Codex, and Grok."
   },
   "plugins": [
     {
       "name": "copy",
       "source": "./plugins/copy",
-      "description": "Format and copy Claude output to clipboard for Slack, Email, Google Chat, Google Docs, or Jira.",
+      "description": "Format and copy AI-assistant output to clipboard for Slack, Email, Google Chat, Google Docs, or Jira.",
       "author": {
         "name": "Omri Ariav",
         "email": "omri.ariav@gmail.com"
@@ -47,7 +47,7 @@
     {
       "name": "x",
       "source": "./plugins/x",
-      "description": "Post and read tweets on X (Twitter) from Claude Code. /x:tweet drafts, previews, and posts (single, threads, replies). /x:read fetches a tweet by URL or ID into context.",
+      "description": "Post and read tweets on X (Twitter) from an AI-agent workflow. /x:tweet drafts, previews, and posts (single, threads, replies). /x:read fetches a tweet by URL or ID into context.",
       "author": {
         "name": "Omri Ariav",
         "email": "omri.ariav@gmail.com"
@@ -88,7 +88,7 @@
     {
       "name": "find-session",
       "source": "./plugins/find-session",
-      "description": "Search past Claude Code conversations by keyword and get session IDs for claude --resume.",
+      "description": "Search past Claude Code and Codex conversations by keyword and get the correct resume command.",
       "author": {
         "name": "Omri Ariav",
         "email": "omri.ariav@gmail.com"

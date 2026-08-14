@@ -1,6 +1,6 @@
 {
-  "name": "omri-cc-stuff",
-  "description": "Personal Claude Code commands and utilities. Copy formatting, tweet posting, and more.",
+  "name": "omri-marketplace",
+  "description": "Personal AI-agent plugins, skills, commands, and utilities for Claude Code, Codex, and Grok.",
   "author": {
     "name": "Omri Ariav",
     "email": "omri.ariav@gmail.com"

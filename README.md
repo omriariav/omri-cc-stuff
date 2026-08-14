@@ -1,12 +1,12 @@
-# Omri's Claude Code Stuff
+# Omri's AI Agent Marketplace
 
-Personal collection of Claude Code commands and utilities.
+Personal marketplace of plugins, skills, commands, and utilities for Claude Code, Codex, and Grok.
 
 ## Installation
 
 In Claude Code:
 ```
-/plugins → Marketplace → Add → omriariav/omri-cc-stuff
+/plugins → Marketplace → Add → omriariav/omri-marketplace
 ```
 
 Then install the `copy` plugin from the marketplace.

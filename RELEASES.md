@@ -1,5 +1,9 @@
 # Releases
 
+## Marketplace rename (2026-08-14)
+
+The repository and root marketplace were renamed from `omri-cc-stuff` to `omri-marketplace` to reflect support for Claude Code, Codex, and Grok. Use `omriariav/omri-marketplace` for new installs; existing GitHub links redirect to the new repository. Individual plugin names are unchanged.
+
 ## find-session v1.2.0 (2026-06-24)
 
 New feature: `/find-session` now searches **Codex** transcripts alongside Claude Code sessions.
@@ -27,7 +31,7 @@ Moved into the marketplace as a local plugin — was previously listed in `marke
 
 - `marketplace.json` entry flipped from the git URL to `source: ./plugins/coacher`. No behavior change: still injects the SessionStart collaborator frame and provides `/coacher:status`, `/coacher:audit`, `/coacher:reset`, `/coacher:rant`.
 - Dropped the imported repo's redundant nested `.claude-plugin/marketplace.json`.
-- The standalone `omriariav/claude-coacher` repo is now deprecated and points here. If you had it installed from there, reinstall as `coacher@omri-cc-stuff` to avoid double-firing the SessionStart hook.
+- The standalone `omriariav/claude-coacher` repo is now deprecated and points here. If you had it installed from there, reinstall as `coacher@omri-marketplace` to avoid double-firing the SessionStart hook.
 
 > Marketplace housekeeping: the root `plugin.json` no longer carries a `version` field — versioning is strictly per-plugin (Claude Code keys installs on each plugin's own version, namespaced by marketplace; the root version drove nothing).
 
