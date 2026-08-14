@@ -89,6 +89,20 @@ def sync_file(path: Path, contents: str, *, check: bool, stale: list[Path]) -> N
     path.write_text(contents, encoding="utf-8")
 
 
+def sync_cursor_hook_override(
+    path: Path, empty_hooks: str, *, check: bool, stale: list[Path]
+) -> None:
+    if path.is_file():
+        existing = load_json(path)
+        hooks = existing.get("hooks")
+        if not isinstance(hooks, dict):
+            raise ValueError(f"{path} must contain a hooks object")
+        if hooks:
+            # A non-empty file is a deliberate Cursor-native translation.
+            return
+    sync_file(path, empty_hooks, check=check, stale=stale)
+
+
 def manifest_metadata(source: dict[str, Any]) -> dict[str, Any]:
     allowed = (
         "name",
@@ -380,7 +394,7 @@ def main() -> int:
         cursor = cursor_manifest(source, plugin_root)
         grok = grok_manifest(source)
         if cursor.get("hooks") == "./.cursor-plugin/hooks.json":
-            sync_file(
+            sync_cursor_hook_override(
                 plugin_root / ".cursor-plugin" / "hooks.json",
                 empty_cursor_hooks,
                 check=args.check,

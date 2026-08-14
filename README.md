@@ -92,6 +92,8 @@ Display names, short descriptions, categories, and starter prompts are inferred 
 
 Pull requests run the same `--check` command, so a new or updated plugin cannot merge with stale native catalogs.
 
+For a plugin with Claude/Grok hooks, the generator creates an empty Cursor hook override to prevent incompatible hook discovery. Replace it with a non-empty Cursor-native `.cursor-plugin/hooks.json` when needed; regeneration preserves that hand-authored translation.
+
 > **Migrating from `omri-cc-stuff`?** GitHub redirects the old repository URL, but Claude Code and Codex plugin IDs include the marketplace name and do not migrate automatically. Register `omri-marketplace`, reinstall the same plugins under their new `plugin@omri-marketplace` IDs, verify them, and only then remove the old marketplace. Plugin names are unchanged; versions continue independently as features are added.
 
 ## Commands

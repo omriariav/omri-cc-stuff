@@ -116,7 +116,20 @@ def main() -> int:
             (hook / ".cursor-plugin" / "plugin.json").read_text(encoding="utf-8")
         )
         assert hook_cursor["hooks"] == "./.cursor-plugin/hooks.json"
-        assert (hook / ".cursor-plugin" / "hooks.json").is_file()
+        cursor_hooks_path = hook / ".cursor-plugin" / "hooks.json"
+        assert cursor_hooks_path.is_file()
+
+        custom_cursor_hooks = {
+            "hooks": {"sessionStart": [{"command": "./scripts/cursor-start.sh"}]}
+        }
+        write_json(cursor_hooks_path, custom_cursor_hooks)
+        regenerated = run_generator(root)
+        assert regenerated.returncode == 0, regenerated.stdout + regenerated.stderr
+        assert json.loads(cursor_hooks_path.read_text(encoding="utf-8")) == custom_cursor_hooks
+        preserved_check = run_generator(root, "--check")
+        assert preserved_check.returncode == 0, (
+            preserved_check.stdout + preserved_check.stderr
+        )
 
         mcp_codex = json.loads(
             (mcp / ".codex-plugin" / "plugin.json").read_text(encoding="utf-8")
