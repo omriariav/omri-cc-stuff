@@ -90,13 +90,15 @@ python3 scripts/sync-native-manifests.py --check
 
 Display names, short descriptions, categories, and starter prompts are inferred for new plugins. Optional curated overrides live near the top of the generator; they are not required for onboarding.
 
+Marketplace plugins are intentionally vendored in this repository: every source must be the local path `./plugins/<name>`. External or object-form Claude marketplace sources are not supported because Codex, Grok, and Cursor catalogs are generated from the vendored plugin files.
+
 Pull requests run the same `--check` command, so a new or updated plugin cannot merge with stale native catalogs.
 
 For a plugin with Claude/Grok hooks, the generator creates an empty Cursor hook override to prevent incompatible hook discovery. Replace it with a non-empty Cursor-native `.cursor-plugin/hooks.json` when needed; regeneration preserves that hand-authored translation.
 
 ### CI and releases
 
-Every pull request to `main` runs the required `CI` check. It validates JSON, Python, and shell syntax; exercises future-plugin generation and release fixtures; verifies generated marketplace catalogs; and confirms that every native manifest has the same plugin name and semantic version.
+Every pull request to `main` runs the required `CI` check. It validates tracked JSON, Python, and shell files; exercises future-plugin generation and release fixtures; verifies generated marketplace catalogs; and confirms that every native manifest has the same plugin name and semantic version. Files ending in `.json` must contain strict JSON; use `.jsonc` for comment-bearing configuration where the consuming tool supports it.
 
 Plugin releases are created from the source manifest, so adding a plugin does not require editing the release workflow:
 

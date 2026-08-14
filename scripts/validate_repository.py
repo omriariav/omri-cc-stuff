@@ -10,21 +10,27 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-IGNORED_PARTS = {".git", "__pycache__"}
 
 
-def repository_files(pattern: str) -> list[Path]:
-    return sorted(
-        path
-        for path in ROOT.rglob(pattern)
-        if not any(part in IGNORED_PARTS for part in path.relative_to(ROOT).parts)
+def tracked_files() -> list[Path]:
+    result = subprocess.run(
+        ["git", "-C", str(ROOT), "ls-files", "-z"],
+        check=True,
+        capture_output=True,
+        text=True,
     )
+    return [
+        ROOT / relative
+        for relative in result.stdout.split("\0")
+        if relative and (ROOT / relative).is_file()
+    ]
 
 
 def main() -> int:
-    json_files = repository_files("*.json")
-    python_files = repository_files("*.py")
-    shell_files = repository_files("*.sh")
+    files = tracked_files()
+    json_files = sorted(path for path in files if path.suffix == ".json")
+    python_files = sorted(path for path in files if path.suffix == ".py")
+    shell_files = sorted(path for path in files if path.suffix == ".sh")
 
     for path in json_files:
         json.loads(path.read_text(encoding="utf-8"))

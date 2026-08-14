@@ -61,16 +61,20 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           PLUGIN_NAME: ${{ steps.release.outputs.plugin }}
           PLUGIN_VERSION: ${{ steps.release.outputs.version }}
+          PREVIOUS_TAG: ${{ steps.release.outputs.previous_tag }}
+          IS_PRERELEASE: ${{ steps.release.outputs.prerelease }}
           RELEASE_TAG: ${{ steps.release.outputs.tag }}
         run: |
-          previous_tag="$(git tag --list "$PLUGIN_NAME-v*" --sort=-v:refname | head -n 1)"
           release_args=(
             release create "$RELEASE_TAG"
             --target "$GITHUB_SHA"
             --title "$PLUGIN_NAME v$PLUGIN_VERSION"
             --generate-notes
           )
-          if [[ -n "$previous_tag" ]]; then
-            release_args+=(--notes-start-tag "$previous_tag")
+          if [[ -n "$PREVIOUS_TAG" ]]; then
+            release_args+=(--notes-start-tag "$PREVIOUS_TAG")
+          fi
+          if [[ "$IS_PRERELEASE" == "true" ]]; then
+            release_args+=(--prerelease)
           fi
           gh "${release_args[@]}"

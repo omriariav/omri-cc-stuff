@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import json
 import re
+import subprocess
 from pathlib import Path
 from typing import Any
 
@@ -85,9 +86,84 @@ def validate_plugin(plugin: str, entries: list[dict[str, Any]]) -> tuple[str, st
     return version, f"{plugin}-v{version}"
 
 
-def write_github_output(path: Path, *, plugin: str, version: str, tag: str) -> None:
+def semver_parts(version: str) -> tuple[tuple[int, int, int], tuple[str, ...] | None]:
+    without_build = version.split("+", 1)[0]
+    core_text, separator, prerelease_text = without_build.partition("-")
+    core = tuple(int(part) for part in core_text.split("."))
+    prerelease = tuple(prerelease_text.split(".")) if separator else None
+    return (core[0], core[1], core[2]), prerelease
+
+
+def compare_semver(left: str, right: str) -> int:
+    left_core, left_prerelease = semver_parts(left)
+    right_core, right_prerelease = semver_parts(right)
+    if left_core != right_core:
+        return 1 if left_core > right_core else -1
+    if left_prerelease is None or right_prerelease is None:
+        if left_prerelease is right_prerelease:
+            return 0
+        return 1 if left_prerelease is None else -1
+
+    for left_part, right_part in zip(left_prerelease, right_prerelease):
+        if left_part == right_part:
+            continue
+        left_numeric = left_part.isdigit()
+        right_numeric = right_part.isdigit()
+        if left_numeric and right_numeric:
+            return 1 if int(left_part) > int(right_part) else -1
+        if left_numeric != right_numeric:
+            return -1 if left_numeric else 1
+        return 1 if left_part > right_part else -1
+    if len(left_prerelease) == len(right_prerelease):
+        return 0
+    return 1 if len(left_prerelease) > len(right_prerelease) else -1
+
+
+def previous_release_tag(plugin: str, version: str) -> str:
+    result = subprocess.run(
+        ["git", "-C", str(ROOT), "tag", "--list", f"{plugin}-v*"],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode != 0:
+        raise ReleaseError(f"could not read repository tags: {result.stderr.strip()}")
+
+    prefix = f"{plugin}-v"
+    best_tag = ""
+    best_version = ""
+    for tag in result.stdout.splitlines():
+        if not tag.startswith(prefix):
+            continue
+        candidate = tag.removeprefix(prefix)
+        if (
+            SEMVER.fullmatch(candidate) is None
+            or compare_semver(candidate, version) >= 0
+        ):
+            continue
+        if not best_tag or compare_semver(candidate, best_version) > 0:
+            best_tag = tag
+            best_version = candidate
+    return best_tag
+
+
+def write_github_output(
+    path: Path,
+    *,
+    plugin: str,
+    version: str,
+    tag: str,
+    previous_tag: str,
+) -> None:
+    prerelease = "true" if semver_parts(version)[1] is not None else "false"
     with path.open("a", encoding="utf-8") as output:
-        output.write(f"plugin={plugin}\nversion={version}\ntag={tag}\n")
+        output.write(
+            f"plugin={plugin}\n"
+            f"version={version}\n"
+            f"tag={tag}\n"
+            f"previous_tag={previous_tag}\n"
+            f"prerelease={prerelease}\n"
+        )
 
 
 def parse_args() -> argparse.Namespace:
@@ -124,10 +200,15 @@ def main() -> int:
         return 0
 
     version, tag = validate_plugin(args.plugin, entries)
+    previous_tag = previous_release_tag(args.plugin, version)
     print(tag)
     if args.github_output is not None:
         write_github_output(
-            args.github_output, plugin=args.plugin, version=version, tag=tag
+            args.github_output,
+            plugin=args.plugin,
+            version=version,
+            tag=tag,
+            previous_tag=previous_tag,
         )
     return 0
 
