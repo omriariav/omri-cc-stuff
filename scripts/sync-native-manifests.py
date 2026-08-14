@@ -65,6 +65,7 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Report generated files that are missing or stale without writing them.",
     )
+    parser.add_argument("--root", type=Path, default=ROOT, help=argparse.SUPPRESS)
     return parser.parse_args()
 
 
@@ -176,12 +177,16 @@ def command_skill_text(plugin_name: str, command_path: Path) -> str:
 
 
 def codex_manifest(
-    plugin: dict[str, Any], source: dict[str, Any], plugin_root: Path
+    plugin: dict[str, Any],
+    source: dict[str, Any],
+    plugin_root: Path,
+    *,
+    has_generated_skills: bool = False,
 ) -> dict[str, Any]:
     name = source["name"]
     description = neutral_description(source["description"])
     category = category_name(plugin.get("category", "utilities"))
-    has_skills = (plugin_root / "skills").is_dir()
+    has_skills = (plugin_root / "skills").is_dir() or has_generated_skills
     has_mcp = (plugin_root / ".mcp.json").is_file()
     has_apps = (plugin_root / ".app.json").is_file()
     if not any((has_skills, has_mcp, has_apps)):
@@ -270,8 +275,29 @@ def validate_source_manifest(name: str, source: dict[str, Any]) -> None:
         raise ValueError(f"{name}: Claude manifest author.name is required")
 
 
+def marketplace_entry_metadata(
+    plugin: dict[str, Any], source: dict[str, Any]
+) -> tuple[str, dict[str, Any], list[str] | None]:
+    description = plugin.get("description", source["description"])
+    if not isinstance(description, str) or not description.strip():
+        raise ValueError(f"{source['name']}: marketplace description must be a string")
+    author = plugin.get("author", source["author"])
+    if not isinstance(author, dict) or not isinstance(author.get("name"), str):
+        raise ValueError(f"{source['name']}: marketplace author.name must be a string")
+    keywords = plugin.get("keywords", source.get("keywords"))
+    if keywords is not None and (
+        not isinstance(keywords, list)
+        or not all(isinstance(keyword, str) for keyword in keywords)
+    ):
+        raise ValueError(f"{source['name']}: marketplace keywords must be strings")
+    return description, author, keywords
+
+
 def main() -> int:
+    global ROOT, CLAUDE_MARKETPLACE
     args = parse_args()
+    ROOT = args.root.resolve()
+    CLAUDE_MARKETPLACE = ROOT / ".claude-plugin" / "marketplace.json"
     marketplace = load_json(CLAUDE_MARKETPLACE)
     plugins = marketplace.get("plugins")
     if not isinstance(plugins, list):
@@ -279,28 +305,7 @@ def main() -> int:
 
     stale: list[Path] = []
 
-    frame = (ROOT / "plugins" / "coacher" / "frame.md").read_text(encoding="utf-8")
-    cursor_rule = (
-        "---\n"
-        "description: Maintain the coacher peer-collaborator stance.\n"
-        "alwaysApply: true\n"
-        "---\n\n"
-        + frame
-    )
-    sync_file(
-        ROOT / "plugins" / "coacher" / ".cursor-plugin" / "rules" / "coacher.mdc",
-        cursor_rule,
-        check=args.check,
-        stale=stale,
-    )
     empty_cursor_hooks = json_text({"hooks": {}})
-    for plugin_name in ("coacher", "natbag"):
-        sync_file(
-            ROOT / "plugins" / plugin_name / ".cursor-plugin" / "hooks.json",
-            empty_cursor_hooks,
-            check=args.check,
-            stale=stale,
-        )
 
     codex_entries: list[dict[str, Any]] = []
     cursor_entries: list[dict[str, Any]] = []
@@ -321,6 +326,25 @@ def main() -> int:
         validate_source_manifest(name, source)
         if source.get("name") != name:
             raise ValueError(f"Claude manifest name mismatch for {name}")
+        entry_description, entry_author, entry_keywords = marketplace_entry_metadata(
+            plugin, source
+        )
+
+        if name == "coacher":
+            frame = (plugin_root / "frame.md").read_text(encoding="utf-8")
+            cursor_rule = (
+                "---\n"
+                "description: Maintain the coacher peer-collaborator stance.\n"
+                "alwaysApply: true\n"
+                "---\n\n"
+                + frame
+            )
+            sync_file(
+                plugin_root / ".cursor-plugin" / "rules" / "coacher.mdc",
+                cursor_rule,
+                check=args.check,
+                stale=stale,
+            )
 
         # Codex is skill-first. If a command does not already point at a skill,
         # create a deterministic wrapper. An umbrella skills/<plugin>/SKILL.md
@@ -328,6 +352,7 @@ def main() -> int:
         commands_root = plugin_root / "commands"
         skills_root = plugin_root / "skills"
         umbrella_skill = skills_root / name / "SKILL.md"
+        plugin_has_generated_skills = False
         if commands_root.is_dir() and not umbrella_skill.is_file():
             for command_path in sorted(commands_root.glob("*.md")):
                 if (skills_root / command_path.stem / "SKILL.md").is_file():
@@ -338,6 +363,7 @@ def main() -> int:
                     / "SKILL.md"
                 )
                 expected_generated_skills.add(generated_skill)
+                plugin_has_generated_skills = True
                 sync_file(
                     generated_skill,
                     command_skill_text(name, command_path),
@@ -345,9 +371,21 @@ def main() -> int:
                     stale=stale,
                 )
 
-        codex = codex_manifest(plugin, source, plugin_root)
+        codex = codex_manifest(
+            plugin,
+            source,
+            plugin_root,
+            has_generated_skills=plugin_has_generated_skills,
+        )
         cursor = cursor_manifest(source, plugin_root)
         grok = grok_manifest(source)
+        if cursor.get("hooks") == "./.cursor-plugin/hooks.json":
+            sync_file(
+                plugin_root / ".cursor-plugin" / "hooks.json",
+                empty_cursor_hooks,
+                check=args.check,
+                stale=stale,
+            )
         sync_file(
             plugin_root / ".codex-plugin" / "plugin.json",
             json_text(codex),
@@ -383,15 +421,18 @@ def main() -> int:
             {
                 "name": name,
                 "source": f"plugins/{name}",
-                "description": neutral_description(plugin["description"]),
+                "description": neutral_description(entry_description),
                 "version": source["version"],
-                "author": plugin["author"],
+                "author": entry_author,
                 "category": category,
-                **({"keywords": plugin["keywords"]} if "keywords" in plugin else {}),
+                **({"keywords": entry_keywords} if entry_keywords is not None else {}),
             }
         )
         grok_entry = dict(plugin)
-        grok_entry["description"] = neutral_description(grok_entry["description"])
+        grok_entry["description"] = neutral_description(entry_description)
+        grok_entry["author"] = entry_author
+        if entry_keywords is not None:
+            grok_entry["keywords"] = entry_keywords
         grok_entries.append(grok_entry)
 
     # Remove only wrappers owned by this generator when their source command is
