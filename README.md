@@ -49,17 +49,18 @@ Then open `/marketplace` or `/plugins` in Grok to install the desired plugin.
 
 ### Cursor / `cursor-agent`
 
-Cursor currently manages plugins through **Customize** in the IDE or the team marketplace dashboard; `cursor-agent` does not expose a plugin-management subcommand. Once installed, the same plugin components are available to the IDE and CLI.
-
-For a team marketplace, import `https://github.com/omriariav/omri-marketplace` under **Dashboard → Plugins**. For local development, clone this repository and symlink the desired plugin:
+Cursor manages installation through **Customize** in the IDE, the interactive `/plugin` browser, or the team marketplace dashboard. The CLI can register and list marketplaces, but it does not yet expose a non-interactive `plugin install` command.
 
 ```bash
-mkdir -p ~/.cursor/plugins/local
-ln -s "$PWD/plugins/x" ~/.cursor/plugins/local/x
-cursor-agent
+cursor-agent plugin marketplace add https://github.com/omriariav/omri-marketplace
+cursor-agent plugin marketplace list --format json
 ```
 
-Restart Cursor (or run **Developer: Reload Window**) after adding the symlink.
+For a team marketplace, import `https://github.com/omriariav/omri-marketplace` under **Dashboard → Plugins**. For local development, clone this repository and load the desired plugin directly:
+
+```bash
+cursor-agent --plugin-dir "$PWD/plugins/x"
+```
 
 ## Runtime behavior
 
@@ -98,7 +99,7 @@ For a plugin with Claude/Grok hooks, the generator creates an empty Cursor hook 
 
 ### CI and releases
 
-Every pull request to `main` runs the required `CI` check. It validates tracked JSON, Python, and shell files; exercises future-plugin generation and release fixtures; verifies generated marketplace catalogs; and confirms that every native manifest has the same plugin name and semantic version. Files ending in `.json` must contain strict JSON; use `.jsonc` for comment-bearing configuration where the consuming tool supports it.
+Every pull request to `main` runs the required `CI` check. It validates tracked JSON, Python, and shell files; exercises future-plugin generation and release fixtures; verifies generated marketplace catalogs; confirms that every native manifest has the same plugin name and semantic version; and runs real Codex, Grok, and Cursor CLI plugin smoke tests against pinned versions. A daily scheduled matrix repeats those smoke tests against each vendor's latest stable CLI so upstream compatibility breaks are detected without making pull requests depend on a moving target. Files ending in `.json` must contain strict JSON; use `.jsonc` for comment-bearing configuration where the consuming tool supports it.
 
 Plugin releases are created from the source manifest, so adding a plugin does not require editing the release workflow:
 

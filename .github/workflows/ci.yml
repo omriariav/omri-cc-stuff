@@ -7,21 +7,34 @@ on:
   push:
     branches:
       - main
+  schedule:
+    - cron: "23 5 * * *"
   workflow_dispatch:
+    inputs:
+      cli_track:
+        description: CLI versions to exercise
+        required: true
+        default: latest
+        type: choice
+        options:
+          - latest
+          - pinned
 
 permissions:
   contents: read
 
 concurrency:
-  group: ci-${{ github.workflow }}-${{ github.ref }}
+  group: ci-${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   validate:
-    name: CI
+    name: Repository validation
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: "3.12"
@@ -35,3 +48,54 @@ jobs:
         run: python3 scripts/sync-native-manifests.py --check
       - name: Check releasable plugin metadata
         run: python3 scripts/release_plugin.py --check-all
+
+  cli-compatibility:
+    name: CLI compatibility (${{ matrix.runtime }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        runtime:
+          - codex
+          - grok
+          - cursor
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+      - name: Select CLI version track
+        id: version-track
+        env:
+          DISPATCH_TRACK: ${{ inputs.cli_track }}
+        run: |
+          track=pinned
+          if [[ "$GITHUB_EVENT_NAME" == "schedule" ]]; then
+            track=latest
+          elif [[ "$GITHUB_EVENT_NAME" == "workflow_dispatch" ]]; then
+            track="$DISPATCH_TRACK"
+          fi
+          echo "track=$track" >> "$GITHUB_OUTPUT"
+      - name: Install ${{ matrix.runtime }} CLI
+        run: bash scripts/install-cli-for-ci.sh "${{ matrix.runtime }}" "${{ steps.version-track.outputs.track }}"
+      - name: Smoke-test ${{ matrix.runtime }} plugin support
+        run: python3 scripts/test-cli-compatibility.py "${{ matrix.runtime }}"
+
+  gate:
+    name: CI
+    if: ${{ always() }}
+    needs:
+      - validate
+      - cli-compatibility
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require all CI jobs
+        env:
+          VALIDATION_RESULT: ${{ needs.validate.result }}
+          CLI_RESULT: ${{ needs.cli-compatibility.result }}
+        run: |
+          test "$VALIDATION_RESULT" = success
+          test "$CLI_RESULT" = success
