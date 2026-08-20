@@ -8,15 +8,15 @@ Respects ~/.natbag/config.json for daily_snapshot opt-out and dedup.
 
 import fcntl
 import json
-import os
 import shutil
 import sqlite3
-import ssl
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
 from urllib.request import urlopen, Request
 from urllib.error import URLError
+
+from ssl_fallback import get_ssl_context
 
 USER_AGENT = "datagov-external-client"
 
@@ -139,26 +139,9 @@ def init_db():
     return conn
 
 
-def make_ssl_context():
-    """SSL context that works even when the Python install has no CA bundle
-    (e.g. python.org macOS builds where Install Certificates.command never ran)."""
-    ctx = ssl.create_default_context()
-    if ctx.cert_store_stats().get("x509_ca", 0):
-        return ctx
-    try:
-        import certifi
-        return ssl.create_default_context(cafile=certifi.where())
-    except ImportError:
-        pass
-    for cafile in ("/etc/ssl/cert.pem", "/etc/ssl/certs/ca-certificates.crt"):
-        if os.path.exists(cafile):
-            return ssl.create_default_context(cafile=cafile)
-    return ctx
-
-
 def fetch_flights():
     req = Request(API_URL, headers={"User-Agent": USER_AGENT})
-    with urlopen(req, timeout=30, context=make_ssl_context()) as resp:
+    with urlopen(req, timeout=30, context=get_ssl_context()) as resp:
         data = json.loads(resp.read().decode("utf-8"))
     if not data.get("success"):
         raise RuntimeError(f"API returned success=false: {data}")
