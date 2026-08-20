@@ -25,8 +25,10 @@ Flags:
 """
 
 import json
+import os
 import re
 import sqlite3
+import ssl
 import sys
 from pathlib import Path
 from urllib.parse import quote
@@ -141,11 +143,28 @@ def _build_base_url(args):
     return url
 
 
+def _make_ssl_context():
+    """SSL context that works even when the Python install has no CA bundle
+    (e.g. python.org macOS builds where Install Certificates.command never ran)."""
+    ctx = ssl.create_default_context()
+    if ctx.cert_store_stats().get("x509_ca", 0):
+        return ctx
+    try:
+        import certifi
+        return ssl.create_default_context(cafile=certifi.where())
+    except ImportError:
+        pass
+    for cafile in ("/etc/ssl/cert.pem", "/etc/ssl/certs/ca-certificates.crt"):
+        if os.path.exists(cafile):
+            return ssl.create_default_context(cafile=cafile)
+    return ctx
+
+
 def _fetch_page(url):
     """Fetch a single API page and return (records, total)."""
     try:
         req = Request(url, headers={"User-Agent": USER_AGENT})
-        with urlopen(req, timeout=30) as resp:
+        with urlopen(req, timeout=30, context=_make_ssl_context()) as resp:
             data = json.loads(resp.read().decode("utf-8"))
     except URLError as e:
         print(f"Network error: {e}", file=sys.stderr)

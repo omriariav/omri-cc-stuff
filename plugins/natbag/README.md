@@ -91,6 +91,7 @@ python3 -c "import json; f=open('$HOME/.natbag/config.json','r+'); d=json.load(f
 
 | Version | Description |
 |---------|-------------|
+| 1.2.3 | SSL fallback for Python installs without a CA bundle (certifi → OS bundle) in `snapshot.py` and `query_flights.py` |
 | 1.2.1 | Version bump to force marketplace sync with v1.2.0 fixes |
 | 1.2.0 | `--date` filter for accurate single-day counts, automatic pagination, input validation |
 | 1.1.0 | Flight change history tracking — status/time/gate changes logged per snapshot |
