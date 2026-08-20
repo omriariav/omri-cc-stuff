@@ -159,7 +159,7 @@
       "name": "natbag",
       "source": "plugins/natbag",
       "description": "Ben Gurion Airport (TLV) live flight data, destination weather, and historical delay analysis. /natbag shows departures, arrivals, specific flights, status, destination weather, and accumulated on-time/delay history.",
-      "version": "1.2.2",
+      "version": "1.2.3",
       "author": {
         "name": "Omri Ariav",
         "email": "omri.ariav@gmail.com"

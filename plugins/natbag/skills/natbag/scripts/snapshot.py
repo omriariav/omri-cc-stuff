@@ -16,6 +16,8 @@ from pathlib import Path
 from urllib.request import urlopen, Request
 from urllib.error import URLError
 
+from ssl_fallback import get_ssl_context
+
 USER_AGENT = "datagov-external-client"
 
 NATBAG_DIR = Path.home() / ".natbag"
@@ -139,7 +141,7 @@ def init_db():
 
 def fetch_flights():
     req = Request(API_URL, headers={"User-Agent": USER_AGENT})
-    with urlopen(req, timeout=30) as resp:
+    with urlopen(req, timeout=30, context=get_ssl_context()) as resp:
         data = json.loads(resp.read().decode("utf-8"))
     if not data.get("success"):
         raise RuntimeError(f"API returned success=false: {data}")

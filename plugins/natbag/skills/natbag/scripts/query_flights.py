@@ -33,6 +33,8 @@ from urllib.parse import quote
 from urllib.request import urlopen, Request
 from urllib.error import URLError
 
+from ssl_fallback import get_ssl_context
+
 USER_AGENT = "datagov-external-client"
 
 DB_PATH = Path.home() / ".natbag" / "flights.db"
@@ -145,7 +147,7 @@ def _fetch_page(url):
     """Fetch a single API page and return (records, total)."""
     try:
         req = Request(url, headers={"User-Agent": USER_AGENT})
-        with urlopen(req, timeout=30) as resp:
+        with urlopen(req, timeout=30, context=get_ssl_context()) as resp:
             data = json.loads(resp.read().decode("utf-8"))
     except URLError as e:
         print(f"Network error: {e}", file=sys.stderr)

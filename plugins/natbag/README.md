@@ -91,6 +91,8 @@ python3 -c "import json; f=open('$HOME/.natbag/config.json','r+'); d=json.load(f
 
 | Version | Description |
 |---------|-------------|
+| 1.2.3 | SSL trust-store fallback (certifi → OS bundle) for Python installs without a CA bundle; snapshot hook logs to `~/.natbag/snapshot.log` instead of discarding errors |
+| 1.2.2 | Snapshot refresh moved into the invocation workflow so it runs on CLIs without hook support (Codex, Cursor) |
 | 1.2.1 | Version bump to force marketplace sync with v1.2.0 fixes |
 | 1.2.0 | `--date` filter for accurate single-day counts, automatic pagination, input validation |
 | 1.1.0 | Flight change history tracking — status/time/gate changes logged per snapshot |

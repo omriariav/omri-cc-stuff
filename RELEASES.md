@@ -1,5 +1,14 @@
 # Releases
 
+## natbag v1.2.3 (2026-08-21)
+
+Bugfix: SSL fallback for Python installs without a CA bundle.
+
+- python.org macOS Python builds ship with an empty certificate store until `Install Certificates.command` is run. When such a build owns `python3` on PATH, every data.gov.il request failed with `CERTIFICATE_VERIFY_FAILED`, and the daily snapshot hook swallowed the error — history silently stopped accumulating.
+- New shared `scripts/ssl_fallback.py` used by `snapshot.py` and `query_flights.py`: when the interpreter's default trust store is usable (including capath-based stores that report zero cached CAs), requests keep stdlib default behavior untouched; otherwise the first working CA bundle is used — `certifi` if importable, then OS bundles for macOS/BSD, Debian/Ubuntu, RHEL/Fedora, and openSUSE. Missing or corrupt bundles fall through to the next candidate, the resolved context is cached per process, and if nothing is usable a one-line actionable hint goes to stderr. No new hard dependencies.
+- The SessionStart snapshot hook now logs to `~/.natbag/snapshot.log` (size-capped) instead of `/dev/null`, so the next failure class leaves a trace instead of silently stopping history accumulation.
+- Native manifests (Codex/Grok/Cursor) regenerated via `scripts/sync-native-manifests.py`.
+
 ## Native multi-CLI marketplace support (2026-08-14)
 
 The marketplace now ships first-class manifests for Claude Code, Codex, Grok, and Cursor:
