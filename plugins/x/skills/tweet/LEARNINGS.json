@@ -1,29 +1,155 @@
 {
-  "description": "User voice preferences learned from tweet drafting and editing. Read before drafting, append after posting.",
+  "description": "User voice preferences learned from tweet drafting and editing. Read before drafting, append after posting. Consolidated 2026-06-21 (47 entries -> 19) and 2026-08-21 (39 -> 27, amq-squad release-thread cluster merged into master templates; worked-example anchors preserved).",
   "entries": [
-    {"date": "2026-03-30", "category": "tone", "observation": "Prefers direct, factual tone. No fluff, no hype."},
-    {"date": "2026-03-30", "category": "phrasing", "observation": "Avoids em dashes and dashes as punctuation. Use commas, periods, or restructure instead."},
-    {"date": "2026-03-30", "category": "structure", "observation": "Likes data-driven posts with visual elements (bar charts, lists, structured numbers)."},
-    {"date": "2026-03-30", "category": "structure", "observation": "Prefers threads over single tweets for complex topics."},
-    {"date": "2026-03-30", "category": "structure", "observation": "Wants sources credited at the end of a tweet or thread."},
-    {"date": "2026-03-30", "category": "tone", "observation": "Tone: informative, not preachy or political."},
-    {"date": "2026-04-01", "category": "phrasing", "observation": "When describing a pain point, use the user's actual experience, not a technical description. E.g., 'stuck browsing JSONL files' was wrong, the real issue was 'can't find it in the /resume list because sessions are untitled'."},
-    {"date": "2026-04-01", "category": "structure", "observation": "For announcement threads about personal projects, user wants to explain the 'why' (pain point) before the 'what' (solution), and give credit/context for tools used."},
-    {"date": "2026-04-26", "category": "structure", "observation": "When asked to draft a thread about a debugging story, user countered with 'one tweet, no thread' and accepted a single-tweet condensed version. When the story can plausibly fit in one tweet (<270 chars), draft single-tweet first and offer thread as an alternative, rather than defaulting to thread for technical/multi-act stories."},
-    {"date": "2026-04-28", "category": "phrasing", "observation": "For announcements about gws, the user wants to introduce it as 'gws (my unofficial Google Workspace CLI)' so unfamiliar readers immediately know what it is. Don't assume audience knows the project name."},
-    {"date": "2026-04-29", "category": "structure", "observation": "For gws release announcements, the user accepts a tight bullet-list single tweet: header line ('gws vX.Y.Z (my unofficial Google Workspace CLI):'), one bullet per shipped feature with key flag/behavior names inlined as `code`, then the GitHub release URL on its own line. Approved on v1.37.0."},
-    {"date": "2026-04-29", "category": "structure", "observation": "User accepts longer threads when content is dense and substantive. After approving a 4-part thread, asked to drop region-specific examples (e.g. Israel-specific DST mention) and pack each tweet closer to the 280-char limit rather than leaving slack. Treat 270-279 as the target ceiling per part when packing, not 240-260."},
-    {"date": "2026-04-29", "category": "feedback", "observation": "OPERATIONAL: never pass tweet text containing apostrophes through nested shell escapes (e.g. python3 -c 'print(...)' inside $()). Single quotes inside the inner python triple-quoted string collide with the outer shell '\\''-style escaping and render as triple apostrophes in the published tweet (yesterday's became yesterday'''s). ALWAYS write each tweet to a tempfile via Write, then post with $(cat /tmp/tweet_N.txt). Cost a delete-and-repost cycle once."},
-    {"date": "2026-04-29", "category": "structure", "observation": "Plugin breaking-change announcements use the same tight-bullet format as gws release tweets: header line with project name + parenthetical describing it ('my Claude Code plugin for X'), bullets with code-fenced flags/commands, URL on its own line. Approved on x v2.0.0 announcement. Pattern transfers across projects, not just gws."},
-    {"date": "2026-04-30", "category": "feedback", "observation": "OPERATIONAL: post.py's pre-flight uses raw len(text), NOT X's URL-weighted count. The 23-char URL discount only applies on X's server side. So a 274/280 X-adjusted tweet with a 60-char GitHub URL (raw 314) gets rejected by post.py before it ever leaves. Always count by raw len() when targeting the 270-279 ceiling, treating URLs at full length."},
-    {"date": "2026-05-04", "category": "structure", "observation": "For technical-discovery announcement threads (TIL framing): user wants the workflow/use-case stated FIRST, before the trick. Initial draft led with the discovery, then trick, then bolted on a generic 'use case' tweet — rejected. Approved version flipped to: tweet 1 = concrete user workflow (you're in Claude Code, you want to share with team) + the surprise hook, tweet 2 = the technical trick, tweet 3 = release line + URL. Lesson: lead with the human problem the trick solves, not with the trick itself."},
-    {"date": "2026-05-05", "category": "structure", "observation": "When the lead sentence already describes what the project IS (e.g., 'used my own tmux save daemon to recover'), the project-intro parenthetical from the 2026-04-28 pattern becomes redundant — `tmux-resurrect-launchd now has:` was approved without a `(my macOS launchd job for tmux state)` glossing. Rule: parenthetical is for when the project name appears cold; if the lead already explains the category, skip it."},
-    {"date": "2026-05-05", "category": "structure", "observation": "Dogfooding-led-to-shipping framing works as a single-tweet lead: `Mac crashed. used my own tmux save daemon to recover and immediately found bugs. tmux-resurrect-launchd now has: …`. The crash → dogfood → bugs → ship arc is a tight 3-clause lead. Variant of the 2026-04-01 'why before what' rule, specifically for tweets about the author's own tools where the author was also the customer."},
-    {"date": "2026-05-05", "category": "phrasing", "observation": "Avoid version numbers that don't formally exist. Initial draft said 'tmux-resurrect-launchd v2:' but there are no version tags in the repo — calling it v2 informally read as hype. Replaced with 'now has:'. Rule: only use version numbers in tweets when they correspond to actual git tags / GitHub releases."},
-    {"date": "2026-05-06", "category": "structure", "observation": "For PR/release tweets about own-tools, perf-only framing is incomplete. User edited twice to add (a) what the tool does for them in plain terms (transcribe hebrew, diarization), then (b) the end-user workflow that delights (drop mp4 in folder, magic happens). Lesson: tool-announcement tweets should include the workflow/use-case, not just the perf delta. The 7hr→30min number is the punchline, but the 'drop in folder, transcripts appear' detail is what makes the tweet land."},
-    {"date": "2026-05-06", "category": "phrasing", "observation": "Prefer plain-English equivalents over jargon when both fit. 'transcripts with speaker labels' was approved over 'transcripts + speaker diarization' in the same context. Diarization is the technical term; speaker labels is what the reader actually sees. Rule: if a non-jargon synonym fits the char budget, use it — tweets serve a broader audience than a PR description."},
-    {"date": "2026-05-06", "category": "tone", "observation": "Lowercase opening sentences are accepted (`gemini in google meet can't do hebrew`). User did not capitalize Gemini, Google Meet, or sentence-initial words during edits. This is a stylistic stance, not a typo. Match it: prefer lowercase prose throughout the tweet body unless a proper noun is genuinely ambiguous in lowercase."},
-    {"date": "2026-05-10", "category": "phrasing", "observation": "For flag-feature bullets, prefer a concrete example with recognizable values over abstract syntax. Initial draft used `--model role=name` (placeholder syntax); user asked for a use case and accepted `--model qa=haiku,cto=gpt-5` (real role IDs + real model aliases). Rule: when a bullet describes a flag, show one realistic invocation rather than the parameter shape, even at the cost of a few extra chars."},
-    {"date": "2026-05-10", "category": "structure", "observation": "When a project sits on top of someone else's tool, credit the upstream maintainer's @-handle inside the parenthetical: `(my agent team launcher on AMQ by @avivsinai)`. Not a separate sentence, not a hashtag, not a thanks line at the end — folded into the same parenthetical that introduces the project. Pattern complements the 2026-04-28 'introduce the project for cold readers' rule for projects that build on third-party tools."}
+    {
+      "date": "2026-03-30..2026-05-06",
+      "category": "tone",
+      "observation": "Baseline: direct, factual, informative. No fluff, hype, preaching, or politics. Lowercase opening sentences and lowercase prose are a deliberate stance, not typos ('gemini in google meet can't do hebrew', 'amq-squad v2.3.0 (...)'); match it unless a proper noun is genuinely ambiguous in lowercase."
+    },
+    {
+      "date": "2026-05-20..2026-06-21",
+      "category": "tone",
+      "observation": "When a bug or feature has a real human/physical consequence, make THAT the punchline, not the technical framing. claude-pulse alarm 'nearly gave the office a heart attack' beat 'wartime UI in opposite-day mode'. Lighter cousin: even a mundane bugfix reads better as the symptom the user noticed ('non-zero exit made the statusline render nothing') than the internal cause. Structure always: setup -> reveal -> consequence, never consequence-first."
+    },
+    {
+      "date": "2026-05-20..2026-06-03",
+      "category": "tone",
+      "observation": "Comic devices land when paired with a deadpan mechanism. ALL-CAPS for a genuinely funny feature + calm technical follow-through (/coacher:rant: 'you SHOUT YOUR FRUSTRATION... the plugin translates the rant into the actual task'). Deadpan self-deprecation works on genuinely embarrassing bugs ('the dumbest bug of the run', the if/elif silent-upload), but lead with the technical setup before the confession."
+    },
+    {
+      "date": "2026-03-30..2026-06-03",
+      "category": "phrasing",
+      "observation": "Mechanics: no em dashes or dashes as punctuation (use commas, periods, or restructure). Prefer plain-English over jargon when both fit ('transcripts with speaker labels' over 'diarization'). Keep the tweet body English even when the user phrases the ask with a Hebrew verb (use the concept, drop the word). For a bugfix bullet, lead with the user-facing SYMPTOM, not the code-level cause."
+    },
+    {
+      "date": "2026-04-01..2026-05-06",
+      "category": "phrasing",
+      "observation": "Describe a pain point as the user's actual lived experience, not a technical description ('can't find it in the /resume list because sessions are untitled', not 'stuck browsing JSONL files'). Tool-announcement tweets must include the workflow/use-case ('drop mp4 in folder, transcripts appear'), not just the perf delta. For flag/feature bullets, show one realistic invocation over abstract syntax ('--model qa=haiku,cto=gpt-5' beat '--model role=name')."
+    },
+    {
+      "date": "2026-05-05..2026-06-10",
+      "category": "phrasing",
+      "observation": "Only use version numbers that correspond to real git tags / GitHub releases (informal 'v2' on an untagged repo reads as hype). Exception: when the user is about to cut a release they may pick the FORTHCOMING version over the latest tag, so flag the mismatch, default the draft to the existing tag, offer the forthcoming as an option, and remind them the tag must exist by the time readers check. Anchor sibling-release references with verifiable timing ('v1.2.0 (just released)') not relative time ('yesterday's v1.2.0'), even when relative is accurate."
+    },
+    {
+      "date": "2026-04-28..2026-05-20",
+      "category": "structure",
+      "observation": "Upstream credit: inline the @-handle in the cold-reader parenthetical when the project builds on their tool ('my agent team launcher on @avivsinai's AMQ'). When a specific person enabled the work, front-load the @-attribution as the OPENING subject ('@avivsinai handed me a way to finetune...'), not a closer. Credit sources at the end of a standalone thread. Never drop the @avivsinai credit even when squeezing to one tweet."
+    },
+    {
+      "date": "2026-04-28..2026-05-05",
+      "category": "structure",
+      "observation": "Cold-reader parenthetical: introduce a project with a parenthetical naming what it IS ('gws (my unofficial Google Workspace CLI)') so unfamiliar readers get it. Skip it when the lead sentence already explains the category ('used my own tmux save daemon to recover' needs no gloss)."
+    },
+    {
+      "date": "2026-04-01..2026-05-05",
+      "category": "structure",
+      "observation": "Why-before-what: lead with the human problem before the solution. TIL/discovery threads state the concrete user workflow first, then the trick, then the release line (never trick-first). For own-tools where the author was also the customer, the dogfood arc is a tight lead ('Mac crashed, used my own tmux daemon to recover, immediately found bugs, X now has:')."
+    },
+    {
+      "date": "2026-04-29..2026-06-21",
+      "category": "structure",
+      "observation": "TIGHT ONE-TWEET BULLET FORMAT = header 'project vX.Y.Z (cold-reader parenthetical):' + one bullet per shipment with code-fenced flags/verbs + repo/release URL on its own line (skip per-PR URLs, ~60 chars each). Use for: tagged minor/patch releases (even 3-4 items), multi-PR work bundled in one session, plugin breaking-change/capability lists. Confirmed zero/low-edit across gws v1.37.0, x v2.0.0, amq-squad v1.2.0, claude-pulse v3.3.0."
+    },
+    {
+      "date": "2026-04-26..2026-08-05",
+      "category": "structure",
+      "observation": "THREAD-VS-ONE-TWEET decision, in priority order: (a) an EXPLICIT 'keep it one tweet' / 'you can thread' directive always wins (confirmed in BOTH directions: 'release thread' on a 3-issue patch overrode the single-narrative default, v2.29.2); (b) a natural draft running well over one tweet (~310-370 URL-weighted) is itself the thread signal, don't cram; (c) by type: major version x.0 -> 5-part thread; meaty minor shipping a new primitive -> 3-5 part thread; new single-capability tool -> 2-part; backup/safety tool -> 3-part (pain/protect/restore); same-day or next-day patch -> single NARRATIVE tweet (the recursive story is the value, not bullets); routine minor/patch -> tight one-tweet bullets. When pinned to one tweet despite over-length (v2.3.0 ran 340), trim to fit: keep ONLY the marquee feature descriptive, terse the rest, drop clarifying clauses before ever dropping the upstream credit; v2.28.1 dropped a bonus CI-caught race fix entirely rather than bulleting it."
+    },
+    {
+      "date": "2026-06-21..2026-06-29",
+      "category": "structure",
+      "observation": "amq-squad meaty-minor 3-PART THREAD template (zero-edit across v2.1.0, v2.2.0, v2.4.0, v2.13.0, v2.16.0): t1 = project + cold-reader parenthetical + @avivsinai credit + headline pain + the verb that fixes it; t2 = the second shippable verb + why-before-what; t3 = skill-internal/meta change + 'all dogfood-driven' closer + URL. When a release has >3 shippable items lead with the thread as the recommended option (offer trimmed one-tweet alongside); first-trim rule = drop connectives/intensifiers (', because'->':', 'very', 'every one of'->'all') before any content. An upstream DEPENDENCY FLOOR bump is announcement-worthy content, not an internal detail (v2.16.0's one user edit) — put it in the also-list by default."
+    },
+    {
+      "date": "2026-05-20..2026-05-28",
+      "category": "structure",
+      "observation": "For 'this was hard, here's the journey' threads, enumerate explicitly and keep each tweet to a single arc: ordered-FAILURE-list for debugging stories (one failure mode per tweet: container/import, OOM, silent upload, calibration), ordered-ITERATION-list for multi-PR design pivots (one PR/step per tweet showing how the design evolved). Beats chronological or thematic clustering."
+    },
+    {
+      "date": "2026-06-03..2026-06-10",
+      "category": "structure",
+      "observation": "For CAPABILITY announcements (what these tools DO, vs release/bugfix bundles), EXPAND each item into its own tweet rather than a terse bundle, and spend a standalone closer tweet spotlighting the single most fun/memorable feature even at the cost of balance (/coacher:rant got its own closer). Multi-project STACK that composes into one workflow -> ~7-part thread: t1 = the workflow as a lived outcome with the concrete roster as the hook, one tweet per layer, closer = per-project URLs with inline @-credit."
+    },
+    {
+      "date": "2026-03-30..2026-04-29",
+      "category": "structure",
+      "observation": "Likes data-driven posts with visual elements (bar charts, lists, structured numbers) where content supports it. When threading, pack each part to 270-279 URL-weighted (treat that as the target ceiling), not 240-260; user has asked to drop region-specific slack and pack tighter."
+    },
+    {
+      "date": "2026-05-18..2026-05-27",
+      "category": "feedback",
+      "observation": "OPERATIONAL char counting (CRITICAL): count via tweet_len() (URL-weighted, t.co-style 23-char) exported by post.py since x v2.1.1: python3 -c 'import sys; sys.path.insert(0, \"<x>/skills/tweet/scripts\"); from post import tweet_len; print(tweet_len(open(\"/tmp/tweet.txt\").read().rstrip()))'. Manual/preview counts run 5-30 chars LOW (backticks, newlines, URL weighting), so ALWAYS recount from the tempfile before posting and trim to the 270 target. Raw len() over-trims URL tweets (the inverse error pre-v2.1.1). URLs are t.co-weighted to 23 regardless of length, so prefer the specific plugin tree path over the bare repo root at no char cost."
+    },
+    {
+      "date": "2026-04-29",
+      "category": "feedback",
+      "observation": "OPERATIONAL posting: ALWAYS write each tweet body to a tempfile via Write and post with --from-file (never build bodies inline via python3 -c inside $(), apostrophes render as triple quotes). Threads: one tempfile per part + --reply-to chaining, never --thread (its auto-splitter ignores paragraph breaks and re-splits on word count)."
+    },
+    {
+      "date": "2026-06-22",
+      "category": "feedback",
+      "observation": "OPERATIONAL (two gotchas that broke the v2.4.0 thread post): (1) PYTHON: a bare `python3` in the agent's non-interactive Bash shell may resolve to /usr/local/bin/python3 which LACKS requests_oauthlib (and keychain access), giving false 'Missing credentials'/'No module' errors even when creds ARE in the keychain (service 'x-api', accounts api_key/api_secret/access_token/access_token_secret). Use the python that actually has the deps + keychain access — here /usr/bin/python3 (identifiable by the urllib3 LibreSSL NotOpenSSLWarning). Verify with `/usr/bin/python3 -c 'import requests_oauthlib,keyring; print(bool(keyring.get_password(\"x-api\",\"api_key\")))'`. (2) REPLY-CHAIN ID CAPTURE: if the tweet-id capture from post.py returns empty, the next `--reply-to ''` posts a STANDALONE tweet, not a reply — silently producing N ROOT tweets instead of a thread. Capture robustly (`grep -oE '\"id\": *\"[0-9]+\"'`), assert each id is non-empty BEFORE posting the next part, and VERIFY the final chain via GET /2/tweets/<id>?tweet.fields=referenced_tweets. Recovery when it breaks: delete the orphan replies (post.py --delete <id>), keep the root, re-post the rest as a proper chain — deleting clears the duplicate-content 403 block so identical text re-posts fine."
+    },
+    {
+      "date": "2026-06-24",
+      "category": "structure",
+      "observation": "find-session v1.2.0 (single-capability minor: an existing tool gains a second data source) posted ZERO-EDIT as a 3-part thread once the user granted '1-3 tweets' latitude. Arc that held (counts 220/248/230): t1 = project + parenthetical + why-before-what pain ('i live in both claude code and codex, but the tool only searched claude') -> the one-line fix; t2 = how (the two paths searched, interleaved) + one concrete flag (`--source claude|codex|both`) + the noise-filtering default; t3 = a RECURSIVE/DOGFOOD CLOSER spotlighting that the build process itself was the ironic punchline ('i had codex review the PR that taught the tool to search codex, it flagged 2 real bugs, re-review came back green') + repo URL. Reusable: when a release's own toolchain is the funny part, make that the closer."
+    },
+    {
+      "date": "2026-06-29",
+      "category": "structure",
+      "observation": "No @-credit when a claude-pulse feature integrates with amq-squad: both are the user's OWN projects, so naming 'amq-squad' inline as plain context (not an @-handle) is correct. The @avivsinai credit rule is specifically for tweets ABOUT amq-squad/AMQ itself, not for a different own-tool that merely reads amq-squad's files."
+    },
+    {
+      "date": "2026-07-01",
+      "category": "structure",
+      "observation": "New sub-pattern confirmed ZERO-EDIT: a CAPABILITY/MECHANISM explainer tweet, not tied to any version or release at all (the evidence-file + `verify merge` preflight discipline, which predates the in-flight untagged release). Arc held (counts 256/222/210): t1 = project+parenthetical+@avivsinai credit + the pain (agents claiming 'ready to merge' isn't trustworthy) + the mechanism that kills it; t2 = concrete PROOF via specific bugs the mechanism actually caught, described by user-facing symptom not internal issue numbers, each 'past the point an agent had already claimed green'; t3 = a live dogfood closer + URL. Deliberately omitted any version number since the release in flight was not yet tagged — the flag-the-mismatch rule extends to: when in doubt, describe the CAPABILITY generically rather than naming an untagged version at all."
+    },
+    {
+      "date": "2026-07-08",
+      "category": "feedback",
+      "observation": "amq-squad v2.17.0 (orchestrator-bootstrap minor) went to a 6-part thread through heavy live edits; reusable lessons: (1) for a capability riding a live AI-discourse trend, OPEN by naming the hype ('the hype right now: a superior model supervising other models') then land the product as the one-command way to do it; (2) the flagship 'superior model' example must be FABLE, never opus; (3) token-saving is a first-class selling point shown with a concrete per-role invocation `--model cto=fable,qa=sonnet` and SONNET 5 (not haiku) as the worker tier; (4) include an EFFORT example via the real per-member form `team member add reviewer --model fable --claude-args \"--effort high\"`; (5) call out the mutable roster; (6) when a hard dependency exists, add a forward-looking caveat+roadmap. Capability-example-heavy releases legitimately run longer than the 3-part meaty-minor default."
+    },
+    {
+      "date": "2026-07-09",
+      "category": "structure",
+      "observation": "gws v1.41.0 (4-item minor: my unofficial Google Workspace CLI) posted ZERO-EDIT as the tight one-tweet bullet format, reconfirming that gws tagged minors default to one tweet, not a thread, even at 4 shippable items. Marquee (Drive file approvals) kept descriptive with its full verb list code-fenced; the two sibling chat flags MERGED onto one line ('chat send `--quote` (reply/forward) + `--notify`') to reclaim a bullet, and the deps line tersed. First draft ran 288 URL-weighted; collapsing sibling flags + dropping the adjective landed 254. Reusable trim: when two bullets are variants of the same verb/command, fold them into one line before dropping any content."
+    },
+    {
+      "date": "2026-07-10..2026-08-11",
+      "category": "structure",
+      "observation": "amq-squad 5-PART RELEASE THREAD master template, zero-edit across v2.18.0, v2.19.0, v2.22.0, v2.24.0, v2.25.0, v2.26.0, v2.27.0, v2.29.0, v2.29.3, v2.29.4 (parts packed 250-279): t1 = marquee pain->verb + parenthetical + @avivsinai; hook variants: PAIN-CONTINUITY from the previous release's stated caveat or lived workaround ('needs tmux today' paid off by 'your agents lived in tmux or nowhere'; 'last release we hand-drafted every persona'), ABSURDITY-AS-BARE-FACTS closed by a one-word verb ('process alive, pane alive, and the readiness gate still ruled \"lead pane not live\". fixed.'), ROSTER-AS-HOOK when the ask centers on who/how built it (models, effort tiers, task count), MOTIVATION-LED for deletion releases (open with the bug history ending 'it never caught a real defect. it only broke launches.', never the deletion itself). t2 = mechanism/honesty-mechanics: open with the failure-mode question ('no provider key? it does not fail:'), literal error text or typo as the vivid beat ('typo a key (\"chian\")? it fails closed'). t3 = 'also:' bundle: dependency-floor line ALWAYS (bumped or 'floor unchanged'), breaking changes named plainly ('the trust rule is the breaking part') + security consequence + one concrete invocation. t4 = review-gauntlet, all by symptom, no issue numbers: mutation-testing stats ('planted bugs' as the plain-English gloss, 42/42), reviewer-refused/withdrew-its-own-approval, worker-overrules-lead-on-facts ('refused to publish a number it checked and found wrong, and won'), one-word docs-vs-code catches. t5 = recursive-dogfood closer + URL: release ran on its own machinery, self-validating gate firing first on its own release PR, operator-closed-the-lid checkpoint/thaw/resume, mid-run worker retirement with the survivor finishing solo, teardown irony, notes-reviewed-like-code. Doctrine tweets ('roles are a menu, not a whitelist') carry a whole part when the release shipped the doctrine. HARD RULES: velocity/wall-clock stats EXCLUDED per standing operator constraint (v2.25.0); NEVER reference personal/private projects even anonymized (v2.28.0 forced a full delete-and-repost); reconstruct facts from the squad's durable artifacts (roster json, role.md frontmatter, task ledger, timestamps), not memory; delete-then-repost clears the duplicate-content block cleanly."
+    },
+    {
+      "date": "2026-06-29..2026-08-09",
+      "category": "structure",
+      "observation": "PATCH templates. Default = ONE NARRATIVE tweet, 'project vX.Y.Z (parenthetical): <lived symptom, escalation beat>. now it <fix as visible outcome>.' + URL, mechanism internals omitted — holds for single bugfixes (claude-pulse v3.3.1 'said i was a different agent, on a team i'm not on'), multi-item patches where one bug is vivid and the rest cosmetic (v3.4.2: lead the marquee, DROP the weak items rather than bullet), and FEATURE patches (amq-squad v2.29.1, 264: 'every mid-run member add halved whichever pane was active. three adds in, the lead was a sliver.' -> 'lead pinned full-height, workers stacked beside it'). Explicit thread ask or capability-heavy patch escalates to the 3-5 part PATCH THREAD (v2.19.1, v2.23.1, v2.25.1, v2.29.2): t1 = flagship bug as narrative, absurd-error-text-as-sequel when the bug is in yesterday's release ('agent PID 73060 is not a descendant of recorded pane PID 73060', 'same number, twice'), or lived-consequence-during-the-release-run promoted to hook ('that exact bug froze the operator's terminal. three times.'); t2 = remaining fixes symptom-led in one breath, or operator-caused-outage repaired-live arc; closer = velocity stat only if unconstrained (v2.19.1 'first bug report to signed release: about 80 minutes' predates the exclusion rule), else recursive-dogfood-inversion ('the squad building this ran on the broken version the whole time'). Predictable trim classes when over: parenthetical adjectives, scene-setting, intensifiers, compounds ('long-dead'->'dead')."
+    },
+    {
+      "date": "2026-07-10..2026-08-09",
+      "category": "feedback",
+      "observation": "OPERATIONAL preview visibility: if the user asks to 'see the draft' after an AskUserQuestion preview, re-present every part as plain labeled sections and re-ask; if they STILL cannot see it (plain-text messages between tool calls may not render in their UI), embed the full tweet text inside the AskUserQuestion option `preview` field, which renders in the dialog itself — now applied preemptively (full text in the message AND the preview field). GET /2/tweets chain verification can 503 on this API tier; treat non-empty id capture per part as the chain-integrity guard."
+    },
+    {
+      "date": "2026-08-21",
+      "category": "structure",
+      "observation": "natbag v1.2.3 (silent-failure patch on the TLV flights plugin) posted ZERO-EDIT as the single narrative-patch tweet (270): hook = DISCOVERY-IN-USE ('asked about a friend's flight, found delay history stopped in july'), cause + swallowed-error in one breath, fix as a 'now:' clause pair. Trim precedents: compress the cold-reader parenthetical to a recognizable abbreviation ('my TLV flights plugin' over 'my ben gurion airport flights plugin') before dropping content; absolute month ('stopped in july') beat relative time ('5 weeks ago'), shorter and cleaner."
+    },
+    {
+      "date": "2026-08-27",
+      "category": "structure",
+      "observation": "amq-squad v2.30.0 (architecture-shift minor: becoming an opt-in layer above upstream's new public API) posted ZERO-EDIT as the 5-part release thread (272/274/274/274/278). New hook variants that held: t1 = BEFORE/AFTER ARCHITECTURE in two clauses ('it launched agents by composing tmux pane commands. AMQ now has a public launch API; amq-squad becomes an opt-in layer above it') closed by 'legacy stays default, nothing removed, test-enforced'; t2 = 'why a release for a seam:' + the reproduced state-corruption bug as bare facts. t3 also-bundle carried the upstream-limitation-as-plain-fact (scoped grants rejected, only bare Bash, 'so no worker preauth yet') and the per-path floor ('amq v0.70.0, this path only'). t4 review catches named the refusal-only-path bug by consequence ('could raise operator gates but never read an answer, so no launch could finish') and an inaccurate 'make ci green' report with the author owning it. t5 closer = squad roster + the workers' own permission classifier refusing the merge + a filed tooling bug. Drafting lesson: first-pass 5-fact parts ran 310-380 URL-weighted; four trim passes were needed. When 20+ over, DROP a whole weak item (the third review catch, the second follow-up bug) before micro-tersing; 'a test enforces that' -> 'test-enforced' and 'own worktree each' -> 'own worktrees' are cheap 5-8 char finishers."
+    },
+    {
+      "date": "2026-08-27",
+      "category": "structure",
+      "observation": "amq-squad v2.30.1 (next-day patch that adopts an upstream release which shipped the previous release's stated asks) posted ZERO-EDIT as a 3-part PATCH THREAD on the explicit 'short thread' directive (273/279/279). Arc that held: t1 = PAIN-CONTINUITY from yesterday's stated limitation ('v2.30.0 shipped with a limitation ... a day later amq v0.72.0 shipped all three of our asks') closed by two verbs ('re-verify, adopt'); t2 = 'measured first:' + the one surprising measurement (accepted form differs from what we always emitted) + the mechanism in one breath; t3 = 'also:' bundle (floor, module, named seats) + the finding that did NOT change ('one finding stayed: ... so our seam stays') + 'same squad as yesterday' + URL. Trim lessons: ', because' -> ':' and 'a known limitation' -> 'a limitation' are the first cuts; 'from a nested worktree, X discovery' -> 'nested-worktree X discovery' saves ~12; drop the roster detail ('fable lead, two sonnet coders') to 'same squad as yesterday' when the previous day's thread already named it. First drafts for 3-part patch threads run 300-345 URL-weighted; budget three trim passes."
+    },
+    {
+      "date": "2026-09-03",
+      "category": "structure",
+      "observation": "amq-squad v2.31.0 (default-flip minor) posted as the 5-part release thread (278/275/276/277/278) with ONE user edit: the 'no LLM on the launch path' + 'start/plan/wizard never invoke a drafter' framing read as 'the drafter is gone'; user asked 'we don't use yoetz/claude/codex if available?'. Fix that held: lead t2 with what STILL happens and where ('the drafter (yoetz/claude/codex) still writes your brief, but only inside the new brief verb') before the never-invokes claim, scoped to start/plan only. Reusable: when a release MOVES a capability rather than removing it, the tweet must name the surviving home first; 'no X on the Y path' phrasing needs the still-exists clause in the same breath."
+    }
   ]
 }
